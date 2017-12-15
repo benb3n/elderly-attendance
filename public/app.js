@@ -1,6 +1,7 @@
 angular.module('iCityLab', [
-    'ngRoute', 
-    'appRoutes', 
+    'ngRoute',
+    'appRoutes',
     'RealTimeCtrl',
-    'HistoricalCtrl'
-]); 
+    'HistoricalCtrl',
+    'SystemMonitoringCtrl'
+]);

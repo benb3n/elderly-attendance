@@ -1,0 +1,80 @@
+
+<!-- Alert Container-->
+<div class="row s12">
+  <div class="col s12">
+  <font size="4"> <br>Battery Replacement Needed For:</font>
+</div>
+  <div>
+    <div class="col s6 m2">
+      <div class="card red lighten-3">
+        <div class="card-content white-text">
+          <span class="card-title">
+            <i class="small material-icons">battery_alert</i>
+            Person 3
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col s6 m2">
+      <div class="card red lighten-3">
+        <div class="card-content white-text">
+          <span class="card-title">
+            <i class="small material-icons">battery_alert</i>
+            Person 4
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Search Container-->
+<div class="row">
+    <div class ="card">
+        <div class="input-field col s3 m2">
+            <select>
+                <option value = "" disabled selected>Select Person</option>
+                <option value = "1">Person 1</option>
+                <option value = "2">Person 2</option>
+                <option value = "3">Person 3</option>
+                <option value = "3">Person 4</option>
+            </select>
+            <label>Person</label>
+        </div>
+    </div>
+      <a class=" btn-floating btn-small waves-effect waves-light red modal-trigger" data-target="modal1" >
+        <i class="material-icons">add</i>
+      </a>
+
+      <!-- Modal Structure -->
+      <div id="modal1" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <h4>Modal Header</h4>
+          <p>A bunch of text</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+        </div>
+      </div>
+    </div>
+
+<!-- individual display -->
+<div class="row">
+    <div class="col s12 m3">
+      <div class="card">
+        <span class="card-title">Battery Status</span>
+        <div class="card-content">
+          <p>percentage</p>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m3">
+      <div class="card">
+        <span class="card-title">Days Since last changed</span>
+        <div class="card-content">
+          <p>number</p>
+        </div>
+      </div>
+    </div>
+</div>

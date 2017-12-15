@@ -1,6 +1,6 @@
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.otherwise('/home');
-    $routeProvider    
+    $routeProvider
         // home page
         .when('/home', {
             templateUrl: 'modules/real-time/views/real-time.html',
@@ -14,6 +14,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             controllerAs: 'historical'
         })
 
+        .when('/system-monitoring', {
+            templateUrl: 'modules/system-monitoring/views/system-monitoring.html',
+            controller: 'SystemMonitoringController',
+            controllerAs: 'sm'
+        })
+
         $locationProvider.html5Mode(true);
-    
+
     }]);
