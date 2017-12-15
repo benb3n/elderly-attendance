@@ -1,3 +1,20 @@
 body{
     font-family: Roboto !important;
 }
+.select-wrapper input.select-dropdown {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.side-nav li>a {
+    padding: 0 16px;
+}
+.sidenav-header {
+    margin-bottom: 0px;
+    padding: 15px 0 0 15px;
+    
+}
+.sidenav-header > .row {
+    margin-bottom: 0 !important;
+}
