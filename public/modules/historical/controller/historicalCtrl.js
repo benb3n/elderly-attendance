@@ -1,6 +1,7 @@
 angular.module('HistoricalCtrl', [])
 .controller('HistoricalController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     $(document).ready(function() {
+        $('ul.tabs').tabs();
         $('.button-collapse').sideNav({
             menuWidth: 300, // Default is 240
             edge: 'left', // Choose the horizontal origin

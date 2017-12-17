@@ -33,10 +33,16 @@
       <font size="6"> Present </font>
     </div>
     <div class="col s1"></div>
-    <div class="col s12 m4">
-      <div class="card teal lighten-3">
-        <div class="card-content white-text">
-          <span class="card-title">Person 1</span>
+
+    <div ng-repeat="person in rt.elderly_present">
+      <div class="col s12 m2">
+        <div class="card  teal lighten-2">
+          <div class="card-image">
+            <img src={{person.image}}>
+          </div>
+          <div class="card-content" style="font-weight: 300">
+              {{person.name}}
+          </div>
         </div>
       </div>
     </div>
@@ -48,26 +54,17 @@
       <font size="6"> Absent </font>
     </div>
     <div class="col s1"></div>
-    <div class="col s12 m4">
-      <div class="card red lighten-3">
-        <div class="card-content white-text">
-          <span class="card-title">Person 2</span>
+
+    <div ng-repeat="person in rt.elderly_present">
+        <div class="col s12 m2">
+          <div class="card  red lighten-2">
+            <div class="card-image">
+              <img src={{person.image}}>
+            </div>
+            <div class="card-content" style="font-weight: 300">
+                {{person.name}}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col s12 m4">
-      <div class="card red lighten-3">
-        <div class="card-content white-text">
-          <span class="card-title">Person 3</span>
-        </div>
-      </div>
-    </div>
-    <div class="col s12 m4">
-      <div class="card red lighten-3">
-        <div class="card-content white-text">
-          <span class="card-title">Person 4</span>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

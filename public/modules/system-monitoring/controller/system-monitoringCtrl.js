@@ -1,6 +1,12 @@
 angular.module('SystemMonitoringCtrl', [])
 .controller('SystemMonitoringController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     $(document).ready(function() {
+        $('.button-collapse').sideNav({
+            menuWidth: 300, // Default is 240
+            edge: 'left', // Choose the horizontal origin
+            closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            }
+        );
         $('select').material_select();
         $('.datepicker').pickadate({
             selectMonths: true, // Creates a dropdown to control month

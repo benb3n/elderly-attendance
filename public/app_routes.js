@@ -1,7 +1,12 @@
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-    $routeProvider.otherwise('/home');
+    $routeProvider.otherwise('/login');
     $routeProvider
         // home page
+        .when('/login', {
+            templateUrl: 'modules/login/views/login.html',
+            controller: 'LoginController',
+            controllerAs: "login"
+        })
         .when('/home', {
             templateUrl: 'modules/real-time/views/real-time.html',
             controller: 'RealTimeController',
@@ -12,6 +17,12 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
             templateUrl: 'modules/historical/views/historical.html',
             controller: 'HistoricalController',
             controllerAs: 'historical'
+        })
+
+        .when('/attendance', {
+            templateUrl: 'modules/attendance/views/attendance.html',
+            controller: 'AttendanceController',
+            controllerAs: 'attendace'
         })
 
         .when('/system-monitoring', {

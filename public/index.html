@@ -26,9 +26,11 @@
         <script src="/node_modules/materialize-css/dist/js/materialize.js"></script>
 
         <!-- CONTROLLERS -->
+        <script src="modules/login/controller/loginCtrl.js"></script>
         <script src="modules/real-time/controller/real-timeCtrl.js"></script>
         <script src="modules/historical/controller/historicalCtrl.js"></script>
         <script src="modules/system-monitoring/controller/system-monitoringCtrl.js"></script>
+        <script src="modules/attendance/controller/attendanceCtrl.js"></script>
 
         <!-- APP -->
         <script src="app_routes.js"></script>
@@ -36,17 +38,23 @@
     </head>
     <body id="body_content" ng-app="iCityLab" style="overflow-x: hidden">
     
-        <nav class="teal darken-1 z-depth-0">
+        <nav id="navbar" class="teal darken-1 z-depth-0">
             <div class="nav-wrapper">
                 <div class="row">
                     <div class="col s12">
                         <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
                         <a href="#" class="brand-logo">GoodLife</a>
                         <ul class="right hide-on-med-and-down">
-                            <li><a href="/home">Real-Time View</a></li>
-                            <li><a href="/historical">Historical Trends</a></li>
-                            <li><a href="collapsible.html">Elderly Attendance</a></li>
-                            <li><a href="/system-monitoring">System Monitoring</a></li>
+                            <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Real Time Dashboard" href="/home">
+                                <i class="material-icons">desktop_mac</i> </a></li>
+                            <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Historical Trends" href="/historical">
+                                <i class="material-icons">trending_up</i> </a></li>
+                            <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Elderly Attendance" href="/attendance">
+                                <i class="material-icons">chrome_reader_mode</i> </a></li> 
+                            <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="System Monitoring" href="/system-monitoring">
+                                <i class="material-icons">settings  </i>  </a></li>
+                            <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Logout" href="#">
+                                <i class="material-icons">exit_to_app</i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -61,11 +69,11 @@
                             </div>
                         </div>
                     </li>
-                    <li><a class="waves-effect waves-red" href="/home">Real-Time View</a></li>
-                    <li><a class="waves-effect waves-red" href="/historical">Historical Trends</a></li>
-                    <li><a class="waves-effect waves-red" href="collapsible.html">Elderly Attendance</a></li>
-                    <li><a class="waves-effect waves-red" href="/system-monitoring">System Monitoring</a></li>
-                    <li><a class="waves-effect waves-red" href="#"><i class="material-icons">exit_to_app</i>Logout</a></li>
+                    <li><a class="waves-effect waves-red" href="/home"><i class="material-icons">desktop_mac</i> Real-Time View</a></li>
+                    <li><a class="waves-effect waves-red" href="/historical"><i class="material-icons">trending_up</i> Historical Trends</a></li>
+                    <li><a class="waves-effect waves-red" href="collapsible.html"><i class="material-icons">chrome_reader_mode</i> Elderly Attendance</a></li> 
+                    <li><a class="waves-effect waves-red" href="/system-monitoring"><i class="material-icons">settings </i> System Monitoring <span class="new badge" data-badge-caption="">3</span> </a></li>
+                    <li><a class="waves-effect waves-red" href="#"><i class="material-icons">exit_to_app</i> Logout</a></li>
                 </ul>
             </div>
         </nav>
