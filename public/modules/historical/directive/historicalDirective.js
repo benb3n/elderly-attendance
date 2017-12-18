@@ -42,7 +42,10 @@ angular.module('HistoricalDirective', [])
                     .transition().duration(500)
                     .call(chart);
 
-                nv.utils.windowResize(chart.update);
+                nv.utils.windowResize(function(){
+                    console.log("RESIZE");
+                    chart.update();      
+                });
                 /*}else {
                     d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
                 }*/

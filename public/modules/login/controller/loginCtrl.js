@@ -20,7 +20,7 @@ angular.module('LoginCtrl', [])
             if (result === true) {
                 $location.path('/campaigns-report');
             } else {
-                loginSelf.error = 'Username or password is incorrect';
+                vm.error = 'Username or password is incorrect';
                 loginSelf.loading = false;
             }
         });*/

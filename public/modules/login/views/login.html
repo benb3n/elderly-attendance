@@ -12,26 +12,24 @@
  
         <div class="col m1"></div>
         <div class="col m4 offset-s1 z-depth-1" id="panell" style=" padding-top:10px; background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))">
-            <form id="login" name="login" ng-submit="form.$valid && loggingin.login" novalidate>
-              
-                <div class="input-field" name="username" id="username">
+            <form id="login" name="login" role="form" ng-submit="form.$valid && signin.login()" novalidate>
+
+                
+
+
+                <div class="input-field" name="username" id="usernameField" ng-class="{ 'has-error': form.$submitted && form.username.$invalid }">
                     <i class="material-icons prefix">account_circle</i>
-                    <input id="usernameIcon" type="text" class="validate" ng-model="loggingin.username" required>
-                    <label for="usernameIcon">Username</label>
-                    <div ng-messages="form.$submitted && form.username.$error" class="help-block">
-                        <div ng-message="required">Username is required</div>
-                    </div>
+                    <input id="username" type="text" class="validate" ng-model="signin.username" required>
+                    <label for="username" data-error="Username is required" data-success="">Username</label>
                 </div>
-                <div class="input-field" name="password" id="password">
+                <div class="input-field" name="password" id="passwordField" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
                     <i class="material-icons prefix">lock</i>
-                    <input id="passwordIcon" type="password" class="validate" ng-model="loggingin.password" required>
-                    <label for="passwordIcon">Password</label>
-                    <div ng-messages="form.$submitted && form.password.$error" class="help-block">
-                        <div ng-message="required">Password is required</div>
-                    </div>
+                    <input id="password" name="password" type="password" class="validate" ng-model="signin.password" required>
+                    <label for="username" data-error="Password is required" data-success="">Password</label>
                 </div>
                 
-                <a class="btn waves-effect waves-light" type="submit" id="loginbtn" style="width:80%">Login</a>
+                <button type="submit" class="btn waves-effect waves-light" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Login</button>
+
                 <p></p>
             </form>
 

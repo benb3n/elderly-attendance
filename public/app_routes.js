@@ -5,7 +5,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
         .when('/login', {
             templateUrl: 'modules/login/views/login.html',
             controller: 'LoginController',
-            controllerAs: "loggingin"
+            controllerAs: "signin"
         })
         .when('/home', {
             templateUrl: 'modules/real-time/views/real-time.html',
