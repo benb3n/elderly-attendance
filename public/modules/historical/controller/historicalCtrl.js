@@ -17,6 +17,35 @@ angular.module('HistoricalCtrl', [])
 
     var vm = this;
     vm.data = [
-        {"data" : "hello"}
-    ]
+        {
+            key: "Cumulative Return",
+            values: [
+                {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
+        }
+      ];
+    vm.line_data = [
+{
+key:"workload",
+values:[
+[1, 5],
+[2, 5],
+[3, 5],
+[4, 5],
+[5, 7],
+[6, 6],
+[7, 0],
+],
+},{
+key:"check speed",
+values:[
+[1, 3],
+[2, 5],
+[3, 2],
+[4, 15],
+[5, 9],
+[6, 13],
+[7, 3],
+],
+}
+]
 }])
