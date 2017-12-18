@@ -3,12 +3,11 @@ body{
 }
 
 .login{
-    background: url('../img/bg_2.png') no-repeat;
+    background: url('../img/bg_3.png') no-repeat;
     background-position: center center;
     background-repeat:  no-repeat;
 	background-attachment: fixed;
-	background-size:  cover;
-
+    background-size: cover;
 }
 
 .select-wrapper input.select-dropdown {

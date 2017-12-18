@@ -1,11 +1,11 @@
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-    $routeProvider.otherwise('/login');
+    $routeProvider.otherwise('/home');
     $routeProvider
         // home page
         .when('/login', {
             templateUrl: 'modules/login/views/login.html',
             controller: 'LoginController',
-            controllerAs: "login"
+            controllerAs: "loggingin"
         })
         .when('/home', {
             templateUrl: 'modules/real-time/views/real-time.html',
