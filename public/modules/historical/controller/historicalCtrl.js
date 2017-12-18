@@ -16,5 +16,7 @@ angular.module('HistoricalCtrl', [])
     });
 
     var vm = this;
-
+    vm.data = [
+        {"data" : "hello"}
+    ]
 }])
