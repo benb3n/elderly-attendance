@@ -1,6 +1,16 @@
 body{
     font-family: Roboto !important;
 }
+
+.login{
+    background: url('../img/bg_2.png') no-repeat;
+    background-position: center center;
+    background-repeat:  no-repeat;
+	background-attachment: fixed;
+	background-size:  cover;
+    
+}
+
 .select-wrapper input.select-dropdown {
     max-width: 100%;
     text-overflow: ellipsis;

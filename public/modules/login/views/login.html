@@ -1,0 +1,29 @@
+<div class="container">
+      <div class="row" style="text-align: center;">
+
+        <h1 id="title" style="font-weight:275; margin-bottom:50px">GoodLife</h1>
+     
+        <div class="col m4"></div>
+        <div class="col m4 offs-set-s1 z-depth-1" id="panell" style="padding-top:10px; background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))">
+            
+            <form id="login_form" ng-submit="form.$valid && logn.login()" novalidate>
+              
+                <div class="input-field" id="username">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input id="usernameIcon" type="text" class="validate">
+                    <label for="usernameIcon">Username</label>
+                </div>
+                <div class="input-field" id="password">
+                        <i class="material-icons prefix">lock</i>
+                        <input id="passwordIcon" type="password" class="validate">
+                        <label for="passwordIcon">Password</label>
+                </div>
+
+                <a class="btn waves-effect waves-light" id="loginbtn" style="width:325px">Login</a>
+                <p></p>
+            </form>
+
+        </div>
+        <div class="col m4"></div>
+    </div>
+</div>
