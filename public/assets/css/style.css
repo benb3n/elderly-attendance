@@ -1,5 +1,40 @@
 body{
     font-family: Roboto !important;
+}   
+
+.card-profile{
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    margin: 25px 0;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+    border-radius: 3px;
+    color: rgba(0, 0, 0, 0.87);
+    background: #fff;
+    margin-top: 30px;
+    text-align: center;
+}
+.card-profile .card-profile-avatar{
+    max-width: 130px;
+    max-height: 130px;
+    margin: -50px auto 0;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+}
+.card-profile img{
+    width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+.card-profile .card-profile-avatar+.card-profile-content {
+    margin-top: 15px;
+}
+.card-red {
+    background: #f55a4e;
+}
+.card-green {
+    background: #5cb860;
 }
 
 .login{

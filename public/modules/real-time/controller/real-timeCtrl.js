@@ -14,16 +14,64 @@ angular.module('RealTimeCtrl', [])
         $('select').material_select();
     });
 
-    // Watchers
+    /*************** 
+        WATCHERS
+    ****************/
     $scope.$watch(function() {
         return vm.selectedCenter;
     },function(newCenter, oldCenter) {
         if(newCenter != oldCenter) {
-            
         }
     });
+    $scope.$watch(function() {
+        return vm.selectedStatus;
+    },function(newStatus, oldStatus) {
+        if(newStatus != oldStatus) {
+            applyFilters();    
+        }
+    });
+    $scope.getkeys = function(event){
+        applyFilters();    
+    }
+    /********************* 
+        SEARCH FILTERS
+    **********************/
+    function applyFilters(){
+        var result = []
 
+        if(typeof vm.searchname == 'undefined' ){
+            result = angular.copy(vm.elderly_attendance_backup);
+        }else{
+            result = applySearchFilter();
+        }   
+        result = angular.copy(applyEventTypeFilter(result));
+        
+        
+        vm.elderly_attendance = angular.copy(result);
+    }
+    function applySearchFilter(data){
+        if(vm.searchname == ""){
+            return vm.elderly_attendance_backup;
+        }else{
+            return filterByAttr("name", vm.searchname, vm.elderly_attendance_backup);
+        }
+    }
+    function applyEventTypeFilter(data){
+        var result = [];
+        vm.selectedStatus.forEach(function(value, index) {
+            result = result.concat(filterByAttr("status", value, data));
+        });
+        return result;
+      }
+    function filterByAttr(attr, value, data) {
+        var value = value.toLowerCase();
+        return $.grep(data, function(n, i) {
+          return n[attr].toLowerCase().indexOf(value) != -1;
+        });
+    }
     
+
+
     
     initController();
     function initController(){
@@ -32,14 +80,32 @@ angular.module('RealTimeCtrl', [])
             {name:"6902", value:6902},
             {name:"6903", value:6903}
         ]
-    
-        vm.elderly_present = [
-            {name: "John Tan Wei Jie" , image:"https://gravatar.com/avatar/961997eb7fd5c22b3e12fb3c8ca14e11?s=80&d=https://codepen.io/assets/avatars/user-avatar-80x80-bdcd44a3bfb9a5fd01eb8b86f9e033fa1a9897c3a15b33adfc2649a002dab1b6.png"},
-            {name: "Amos Tan Wei Jie" , image:"https://gravatar.com/avatar/961997eb7fd5c22b3e12fb3c8ca14e11?s=80&d=https://codepen.io/assets/avatars/user-avatar-80x80-bdcd44a3bfb9a5fd01eb8b86f9e033fa1a9897c3a15b33adfc2649a002dab1b6.png"},
-            {name: "Nam Hyunsuk" , image:"https://gravatar.com/avatar/961997eb7fd5c22b3e12fb3c8ca14e11?s=80&d=https://codepen.io/assets/avatars/user-avatar-80x80-bdcd44a3bfb9a5fd01eb8b86f9e033fa1a9897c3a15b33adfc2649a002dab1b6.png"},
-            {name: "Jane Ng as as" , image:"https://gravatar.com/avatar/961997eb7fd5c22b3e12fb3c8ca14e11?s=80&d=https://codepen.io/assets/avatars/user-avatar-80x80-bdcd44a3bfb9a5fd01eb8b86f9e033fa1a9897c3a15b33adfc2649a002dab1b6.png"},
-            {name: "P5" , image:"https://gravatar.com/avatar/961997eb7fd5c22b3e12fb3c8ca14e11?s=80&d=https://codepen.io/assets/avatars/user-avatar-80x80-bdcd44a3bfb9a5fd01eb8b86f9e033fa1a9897c3a15b33adfc2649a002dab1b6.png"}
+        vm.courses = [
+            {name:"6901", value:6901},
+            {name:"6902", value:6902},
+            {name:"6903", value:6903}
         ]
+        vm.status = [
+            {name:"Present", value:"Present"},
+            {name:"Absent", value:"NA"},
+        ]
+
+        vm.selectedStatus = ['Present', 'NA']
+        vm.searchname = "";
+    
+        vm.elderly_attendance = [
+            {name: "John Tan Wei Jie", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
+            {name: "Amos Tan Wei Jie", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
+            {name: "Nam Hyunsuk", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
+            {name: "Jane Ng asd asd", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
+            {name: "Person5", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
+            {name: "Person6", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
+            {name: "Person7", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
+            {name: "Person8", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
+            {name: "Person9", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
+            {name: "Person10", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"}
+        ]
+        vm.elderly_attendance_backup = angular.copy(vm.elderly_attendance);
 
         generateDataForInit ();
     }
@@ -55,6 +121,9 @@ angular.module('RealTimeCtrl', [])
         
     }
     
+    /******************** 
+        WEB SERVICES
+    *********************/
     function getSensorReadings (gw_device) {
         var _defer = $q.defer();
         RTService.getSensorReadings(gw_device, function (result) {
@@ -66,5 +135,9 @@ angular.module('RealTimeCtrl', [])
         });
         return _defer.promise;
     }
+
+    /******************** 
+        HELPERS METHOD
+    *********************/
 
 })
