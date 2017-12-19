@@ -34,8 +34,8 @@ angular.module('HistoricalDirective', [])
                     .call(chart);
 
                 nv.utils.windowResize(function(){
-       
-                    chart.update();      
+
+                    chart.update();
                 });
                 /*}else {
                     d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
@@ -65,9 +65,7 @@ angular.module('HistoricalDirective', [])
             d3.select(Element[0]).selectAll("*").remove();
 
             var chart = nv.models.cumulativeLineChart()
-                      .x(function(d) {
-                         console.log(d);
-                         return d[0] })
+                      .x(function(d) {return d[0] })
                       .y(function(d) { return d[1] }) //adjusting, 100% is 1.00, not 100 as it is in the data
                       .color(d3.scale.category10().range())
                       .useInteractiveGuideline(true)
@@ -92,4 +90,5 @@ angular.module('HistoricalDirective', [])
           }
         }
       }
+
 })
