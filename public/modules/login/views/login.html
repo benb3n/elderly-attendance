@@ -1,21 +1,14 @@
 <div class="container" style="text-align:center;">
-    <div class="row" style="margin-top:80px;">
-        <div class="col m1"></div>
-
-        <div class="col m4 offset-s1" >
-                <h1 id="title" style="font-weight:275; margin-bottom:50px">GoodLife</h1>
-        </div>
+    <div class="row" style="margin-top:50px;">
+        <h1 id="title" style="font-weight:275; margin-bottom:50px">GoodLife!</h1>
     </div>
     
 
     <div class="row" >
  
-        <div class="col m1"></div>
-        <div class="col m4 offset-s1 z-depth-1" id="panell" style=" padding-top:10px; background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))">
-            <form id="login" name="login" role="form" ng-submit="form.$valid && signin.login()" novalidate>
-
-                
-
+        <div class="col s12 m4"></div>
+        <div class="col s12 m4 z-depth-1" id="panell" style=" padding-top:10px; background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.7))">
+            <form id="login" name="login" role="form" ng-submit=" signin.login()" novalidate>
 
                 <div class="input-field" name="username" id="usernameField" ng-class="{ 'has-error': form.$submitted && form.username.$invalid }">
                     <i class="material-icons prefix">account_circle</i>
@@ -27,13 +20,13 @@
                     <input id="password" name="password" type="password" class="validate" ng-model="signin.password" required>
                     <label for="username" data-error="Password is required" data-success="">Password</label>
                 </div>
-                
-                <button type="submit" class="btn waves-effect waves-light" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Login</button>
+                <p></p>
+                <button type="submit" class="btn waves-effect waves-light" style="width:80% !important" ng-disabled="form.$invalid || signin.dataLoading" >Login</button>
 
                 <p></p>
             </form>
 
         </div>
-        <div class="col m4"></div>
+        <div class="col s12 m4"></div>
     </div>
 </div>

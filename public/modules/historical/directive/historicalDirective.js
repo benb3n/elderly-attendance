@@ -9,22 +9,13 @@ angular.module('HistoricalDirective', [])
         },
         link: function(scope, Element, Attrs) {
             scope.$watch('data', function(data) {
-                var data = [
-                    {
-                        key: "Cumulative Return",
-                        values: [
-                            {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
-                    }
-                    ]
-
-
                     scope.renderChart(data, "")
             },true);
-            
+
             scope.renderChart = function(parsedData, color){
                 console.log(parsedData)
                 d3.select(Element[0]).selectAll("*").remove();
-                
+
                 //if(){
                 var chart = nv.models.multiBarChart()
                     .reduceXTicks(false)   //If 'false', every single x-axis tick label will be rendered.
@@ -32,7 +23,7 @@ angular.module('HistoricalDirective', [])
                     .showControls(0)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
                     .groupSpacing(0.1)    //Distance between each group of bars.
                     .stacked(true)
-                
+
                 chart.xAxis.rotateLabels(-30);
                 chart.yAxis.tickFormat(d3.format(',.0f'));
 
@@ -43,7 +34,7 @@ angular.module('HistoricalDirective', [])
                     .call(chart);
 
                 nv.utils.windowResize(function(){
-                    console.log("RESIZE");
+       
                     chart.update();      
                 });
                 /*}else {
@@ -51,8 +42,54 @@ angular.module('HistoricalDirective', [])
                 }*/
 
 
-             
+
             }
         }
     }
+})
+
+.directive('cumulativeLineChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+        scope.$watch('data', function(data) {
+                scope.renderChart(data, "")
+        },true);
+
+        scope.renderChart = function(parsedData, color){
+            console.log(parsedData)
+            d3.select(Element[0]).selectAll("*").remove();
+
+            var chart = nv.models.cumulativeLineChart()
+                      .x(function(d) {
+                         console.log(d);
+                         return d[0] })
+                      .y(function(d) { return d[1] }) //adjusting, 100% is 1.00, not 100 as it is in the data
+                      .color(d3.scale.category10().range())
+                      .useInteractiveGuideline(true)
+                      .showControls(false)
+                      ;
+            //chart.xAxis
+                    /*.tickValues([1025409600000,1036040400000,1041310800000,1049086800000])
+                    .tickFormat(function(d) {
+                        return d3.time.format('%x')(new Date(d))
+                    });*/
+
+            /*chart.yAxis
+                .tickFormat(d3.format(',.1%'));*/
+
+            d3.select(Element[0])
+                .append("svg")
+                .datum(parsedData)
+                .transition().duration(500)
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+          }
+        }
+      }
 })

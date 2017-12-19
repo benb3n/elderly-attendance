@@ -3,14 +3,15 @@ body{
 }
 
 .login{
-    background: url('../img/bg_3.png') no-repeat;
+    background: url('../img/bg_5.jpg') no-repeat;
     background-position: center center;
     background-repeat:  no-repeat;
 	background-attachment: fixed;
     background-size: cover;
-    
 }
-
+nav .brand-logo {
+    font-weight: 250;
+}
 .select-wrapper input.select-dropdown {
     max-width: 100%;
     text-overflow: ellipsis;
@@ -22,8 +23,6 @@ body{
 }
 .sidenav-header {
     margin-bottom: 0px;
-    padding: 15px 0 0 15px;
-    
 }
 .sidenav-header > .row {
     margin-bottom: 0 !important;

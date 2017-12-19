@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col s12">
       <ul class="tabs ">
-        <li class="tab col s3"><a class="active" href="#course">Courses 1</a></li>
+        <li class="tab col s3"><a class="active" href="#course">Courses</a></li>
         <li class="tab col s3"><a href="#person">Person</a></li>
       </ul>
     </div>
@@ -18,26 +18,26 @@
                     <option value = "2">C2</option>
                     <option value = "3">C3</option>
                 </select>
-                <label>Course</label>
+                <label>Center</label>
             </div>
             <div class="input-field col s2 m3">
-                <select>
-                    <option value = "" disabled selected>Select Course</option>
-                    <option value = "1">C1</option>
-                    <option value = "2">C2</option>
-                    <option value = "3">C3</option>
-                </select>
-                <label>Course</label>
+              <select>
+                  <option value = "" disabled selected>Select Course</option>
+                  <option value = "1">C1</option>
+                  <option value = "2">C2</option>
+                  <option value = "3">C3</option>
+              </select>
+              <label>Course</label>
             </div>
             <div class="input-field col s2 m3">
-                <i class="material-icons prefix">today</i>
-                <input type="date" class="datepicker">
-                <label>Start Date</label>
+              <i class="material-icons prefix">today</i>
+              <input type="date" class="datepicker">
+              <label>Start Date</label>
             </div>
             <div class="input-field col s2 m3">
-                <i class="material-icons prefix">today</i>
-                <input type="date" class="datepicker">
-                <label>End Date</label>
+              <i class="material-icons prefix">today</i>
+              <input type="date" class="datepicker">
+              <label>End Date</label>
             </div>
         </div>
 
@@ -45,61 +45,56 @@
 
       <!-- CONTENT -->
       <div class="row">
-        <div class="col s12 m3">
+        <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title">Total Sign Ups</span>
+            <div class="card-content">
+              <bar-Chart data="historical.data" color=""></bar-Chart>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Popular Courses</span>
+            <div class="card-content">
+              <cumulative-Line-Chart data="historical.line_data" color=""></cumulative-Line-Chart>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Total Signups per Time Slot</span>
             <div class="card-content">
                 <bar-Chart data="historical.data" color=""></bar-Chart>
             </div>
           </div>
         </div>
-        <div class="col s12 m3">
-          <div class="card">
-              <span class="card-title">Popular Courses</span>
-            <div class="card-content">
-              <p>chart</p>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m3">
-          <div class="card">
-              <span class="card-title">Most Popular Course Time</span>
-            <div class="card-content">
-              <p>chart</p>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m3">
+        <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title">Best Performing Course Time</span>
             <div class="card-content">
               <p>chart</p>
             </div>
           </div>
-      </div>
-      <div class="col s12 m3">
-        <div class="card">
-                <span class="card-title">Time Spent In Course</span>
-              <div class="card-content">
-                <p>chart</p>
-              </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Time Spent In Course</span>
+            <div class="card-content">
+              <p>chart</p>
             </div>
           </div>
-          <div class="col s12 m3">
-            <div class="card">
-                <span class="card-title">Percentage Attendance</span>
-              <div class="card-content">
-                <p>(signup vs acutal attendance)</p>
-                <p>chart</p>
-              </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Percentage Attendance</span>
+            <div class="card-content">
+              <p>(signup vs acutal attendance)</p>
+              <p>chart</p>
             </div>
           </div>
-        
-
+        </div>
       </div>
-      
-  
-
     </div>
 
     <!-- PERSON TAB -->
@@ -107,52 +102,47 @@
       <!-- FILTER BAR -->
       <div class="row">
         <div class ="card">
-            <div class="input-field col s2 m3">
-                <select>
-                    <option value = "" disabled selected>Select Center</option>
-                    <option value = "1">C1</option>
-                    <option value = "2">C2</option>
-                    <option value = "3">C3</option>
-                </select>
-                <label>Course</label>
-            </div>
-            <div class="input-field col s2 m3">
-                <select>
-                    <option value = "" disabled selected>Select Course</option>
-                    <option value = "1">C1</option>
-                    <option value = "2">C2</option>
-                    <option value = "3">C3</option>
-                </select>
-                <label>Course</label>
-            </div>
-            <div class="input-field col s2 m3">
-                <i class="material-icons prefix">today</i>
-                <input type="date" class="datepicker">
-                <label>Start Date</label>
-            </div>
-            <div class="input-field col s2 m3">
-                <i class="material-icons prefix">today</i>
-                <input type="date" class="datepicker">
-                <label>End Date</label>
-            </div>
+          <div class="input-field col s2 m3">
+            <select>
+                <option value = "" disabled selected>Select Center</option>
+                <option value = "1">C1</option>
+                <option value = "2">C2</option>
+                <option value = "3">C3</option>
+            </select>
+            <label>Course</label>
+          </div>
+          <div class="input-field col s2 m3">
+            <select>
+                <option value = "" disabled selected>Select Course</option>
+                <option value = "1">C1</option>
+                <option value = "2">C2</option>
+                <option value = "3">C3</option>
+            </select>
+            <label>Course</label>
+          </div>
+          <div class="input-field col s2 m3">
+            <i class="material-icons prefix">today</i>
+            <input type="date" class="datepicker">
+            <label>Start Date</label>
+          </div>
+          <div class="input-field col s2 m3">
+            <i class="material-icons prefix">today</i>
+            <input type="date" class="datepicker">
+            <label>End Date</label>
+          </div>
         </div>
      </div>
 
      <!-- CONTENT -->
      <div class="row">
-        <div class="col s12 m3">
+        <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title">Total Sign Ups</span>
             <div class="card-content">
-              
+              nil
             </div>
           </div>
         </div>
      </div>
-
     </div>
-
   </div>
-    
-
-    

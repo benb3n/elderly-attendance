@@ -16,12 +16,10 @@
         <link rel="stylesheet" href="/node_modules/materialize-css/dist/css/materialize.css">
         <link rel="stylesheet" href="/node_modules/nvd3/build/nv.d3.css">
         <link rel="stylesheet" href="assets/css/style.css"> <!-- custom styles -->
-        
 
         <!-- JS -->
         <!--<script src="/node_modules/jquery/dist/jquery.js"></script>-->
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="/node_modules/jquery-validation/dist/jquery.validate.js"></script>
         <script src="/node_modules/angular/angular.min.js"></script>
         <script src="/node_modules/angular-route/angular-route.min.js"></script>
         <script src="/node_modules/angular-animate/angular-animate.min.js"></script>
@@ -44,12 +42,16 @@
         <!-- DIRECTIVES -->
         <script src="modules/historical/directive/historicalDirective.js"></script>
 
+        <!-- SERVICES -->
+        <script src="modules/real-time/service/real-timeService.js"></script>
+
         <!-- APP -->
+        <script src="app.configurations.js"></script>
         <script src="app_routes.js"></script>
         <script src="app.js"></script>
     </head>
     <body id="body_content" ng-app="iCityLab" style="overflow-x: hidden">
-    
+
         <nav id="navbar" class="teal darken-1 z-depth-0">
             <div class="nav-wrapper">
                 <div class="row">
@@ -62,7 +64,7 @@
                             <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Historical Trends" href="/historical">
                                 <i class="material-icons">trending_up</i> </a></li>
                             <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Elderly Attendance" href="/attendance">
-                                <i class="material-icons">chrome_reader_mode</i> </a></li> 
+                                <i class="material-icons">chrome_reader_mode</i> </a></li>
                             <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="System Monitoring" href="/system-monitoring">
                                 <i class="material-icons">settings  </i>  </a></li>
                             <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Logout" href="#">
@@ -83,16 +85,16 @@
                     </li>
                     <li><a class="waves-effect waves-red" href="/home"><i class="material-icons">desktop_mac</i> Real-Time View</a></li>
                     <li><a class="waves-effect waves-red" href="/historical"><i class="material-icons">trending_up</i> Historical Trends</a></li>
-                    <li><a class="waves-effect waves-red" href="collapsible.html"><i class="material-icons">chrome_reader_mode</i> Elderly Attendance</a></li> 
+                    <li><a class="waves-effect waves-red" href="collapsible.html"><i class="material-icons">chrome_reader_mode</i> Elderly Attendance</a></li>
                     <li><a class="waves-effect waves-red" href="/system-monitoring"><i class="material-icons">settings </i> System Monitoring <span class="new badge" data-badge-caption="">3</span> </a></li>
                     <li><a class="waves-effect waves-red" href="#"><i class="material-icons">exit_to_app</i> Logout</a></li>
                 </ul>
             </div>
         </nav>
-        
+
         <!-- ANGULAR DYNAMIC CONTENT -->
         <div ng-view></div>
 
-      
+
     </body>
 </html>

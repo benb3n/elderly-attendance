@@ -1,5 +1,5 @@
 angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-    $routeProvider.otherwise('/home');
+    $routeProvider.otherwise('/login');
     $routeProvider
         // home page
         .when('/login', {

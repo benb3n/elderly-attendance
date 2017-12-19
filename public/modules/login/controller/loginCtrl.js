@@ -1,5 +1,5 @@
 angular.module('LoginCtrl', [])
-.controller('LoginController', ['$scope', '$routeParams', function ($scope, $routeParams, $location) {
+.controller('LoginController', ['$scope', '$location', function ($scope, $location) {
     document.getElementById("navbar").style.visibility = "hidden";
     document.getElementById("body_content").setAttribute('class', 'login');
 
@@ -15,7 +15,8 @@ angular.module('LoginCtrl', [])
         console.log("TESTTING")
         vm.loading = true;
         document.getElementById("body_content").setAttribute('class', '');
-        $location.path('/home');
+        document.getElementById("navbar").style.visibility = "visible";
+        $location.path("/home");
         /*loginService.Login(loginSelf.username, loginSelf.password, function (result) {
             if (result === true) {
                 $location.path('/campaigns-report');
