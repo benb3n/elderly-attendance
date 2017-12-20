@@ -24,6 +24,7 @@ angular.module('HistoricalCtrl', [])
     return vm.selectedCenter;
   },function(newCenter, oldCenter) {
     if(newCenter != oldCenter) {
+      
     }
   });
 

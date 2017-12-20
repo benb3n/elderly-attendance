@@ -92,8 +92,10 @@ angular.module('RealTimeCtrl', [])
 
         vm.selectedStatus = ['Present', 'NA']
         vm.searchname = "";
-    
-        vm.elderly_attendance = [
+        
+        vm.elderly_attendance =[];
+
+        /*vm.elderly_attendance = [
             {name: "John Tan Wei Jie", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
             {name: "Amos Tan Wei Jie", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
             {name: "Nam Hyunsuk", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
@@ -105,11 +107,26 @@ angular.module('RealTimeCtrl', [])
             {name: "Person9", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
             {name: "Person10", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"}
         ]
-        vm.elderly_attendance_backup = angular.copy(vm.elderly_attendance);
+        vm.elderly_attendance_backup = angular.copy(vm.elderly_attendance);*/
 
-        generateDataForInit ();
+        
+        generateDeviceList();
+        generateDataForInit();
     }
 
+    function generateDeviceList(){
+        $q.when()
+        .then(function(){
+            return getAllDevices('mp')
+        })
+        .then(function(result){
+            console.log(result)
+            console.log("NONOANDOASNDOAS")
+            /*result.forEach(function(value,index){
+
+            })*/
+        });
+    }
     function generateDataForInit () {
         $q.when()
         .then(function(){
@@ -117,13 +134,37 @@ angular.module('RealTimeCtrl', [])
         })
         .then(function(result){
             console.log(result)
+
         })
         
     }
+
     
     /******************** 
         WEB SERVICES
     *********************/
+    vm.allDevice = [];
+    function getAllDevices (project_prefix, url, _defer, overall) {
+        if(typeof _defer == 'undefined'){
+            var _defer = $q.defer();
+            var overall = [];
+        }
+        RTService.getAllDevices(project_prefix, url, function (result) {
+            if (result) {
+                if(result.next != null){
+                    overall = overall.concat(result.results)
+                    getAllDevices(project_prefix, result.next, _defer, overall) 
+                }else{
+                    overall = overall.concat(result.results)
+                    _defer.resolve(overall);
+                }
+            } else {
+                _defer.reject();
+            }
+        });
+        
+        return _defer.promise;
+    }
     function getSensorReadings (gw_device) {
         var _defer = $q.defer();
         RTService.getSensorReadings(gw_device, function (result) {
