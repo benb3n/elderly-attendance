@@ -1,5 +1,5 @@
 angular.module('HistoricalCtrl', [])
-.controller('HistoricalController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+.controller('HistoricalController', function ($scope, $q, HService) {
     $(document).ready(function() {
         $('ul.tabs').tabs();
         $('.button-collapse').sideNav({
@@ -15,7 +15,65 @@ angular.module('HistoricalCtrl', [])
         });
     });
 
-    var vm = this;
+  var vm = this;
+
+  /*************** 
+      WATCHERS
+  ****************/
+  $scope.$watch(function() {
+    return vm.selectedCenter;
+  },function(newCenter, oldCenter) {
+    if(newCenter != oldCenter) {
+    }
+  });
+
+  $scope.$watch(function() {
+    return vm.selectedStartDate;
+  },function(newStartDate, oldStartDate) {
+    if(newStartDate != oldStartDate) {
+    }
+  });
+
+  $scope.$watch(function() {
+    return vm.selectedEndDate;
+  },function(newEndDate, oldEndate) {
+    if(newEndDate != oldEndate) {
+    }
+  });
+  
+
+  initController();
+  function initController(){
+    vm.centers = [
+      {name:"6901", value:6901},
+      {name:"6902", value:6902},
+      {name:"6903", value:6903}
+    ]
+
+    $q.when()
+      .then(function(){
+          return getSensorReadings(6901, '2017-10-18T10:00:00', '2017-11-18T10:00:00');
+      })
+      .then(function(result){
+          console.log(result)
+      })      
+  }
+
+  /******************** 
+      WEB SERVICES
+  *********************/
+  function getSensorReadings (gw_device, start_date, end_date) {
+    var _defer = $q.defer();
+    HService.getSensorReadings(gw_device, start_date, end_date, function (result) {
+      if (result) {
+        _defer.resolve(result);
+      } else {
+        _defer.reject();
+      }
+    });
+    return _defer.promise;
+  }
+
     vm.data = [
         {
             key: "Cumulative Return",
@@ -49,96 +107,6 @@ angular.module('HistoricalCtrl', [])
               ]
       }
     ]; //end line_data
-/*
-    vm.calendarheatmapdata = [
-    {
-      2017:{
-            "date": "2017-04-01",
-            "total": 17164,
-            "details": [{
-              "name": "Project 1",
-              "date": "2017-04-01 12:30:45",
-              "value": 9192
-            }, {
-              "name": "Project 2",
-              "date": "2017-04-01 13:37:00",
-              "value": 6753
-            },
-            {
-              "name": "Project N",
-              "date": "2017-04-01 17:52:41",
-              "value": 1219
-            }]
-          },{
-          "date": "2017-12-19",
-          "total": 17164,
-          "details": [{
-            "name": "Project 1",
-            "date": "2017-12-19 12:30:45",
-            "value": 9192
-          }, {
-            "name": "Project 2",
-            "date": "2017-12-19 13:37:00",
-            "value": 6753
-          },
-          {
-            "name": "Project N",
-            "date": "2017-12-19 17:52:41",
-            "value": 1219
-          }]
-        }
-      }//end 2017
-      {
-        2016:
-          {"date": "2016-03-19",
-          "total": 17164,
-          "details": [{
-            "name": "Project 1",
-            "date": "2016-03-19 12:30:45",
-            "value": 9192
-          }, {
-            "name": "Project 2",
-            "date": "2016-03-19 13:37:00",
-            "value": 6753
-          },
-          {
-            "name": "Project N",
-            "date": "2016-03-19 17:52:41",
-            "value": 1219
-          }]
-        }
-      }//end 2016
-    ]//end of heatmap data
-*/
-/*
-    // Initialize random data for the demo
-        var now = moment().endOf('day').toDate();
-        var time_ago = moment().startOf('day').subtract(10, 'year').toDate();
-        vm.calendarheatmapdata = d3.time.days(time_ago, now).map(function (dateElement, index) {
-          return {
-            date: dateElement,
-            details: Array.apply(null, new Array(Math.round(Math.random() * 15))).map(function(e, i, arr) {
-              return {
-                'name': 'Project ' + Math.ceil(Math.random() * 10),
-                'date': function () {
-                  var projectDate = new Date(dateElement.getTime());
-                  projectDate.setHours(Math.floor(Math.random() * 24))
-                  projectDate.setMinutes(Math.floor(Math.random() * 60));
-                  return projectDate;
-                }(),
-                'value': 3600 * ((arr.length - i) / 5) + Math.floor(Math.random() * 3600) * Math.round(Math.random() * (index / 365))
-              }
-            }),
-            init: function () {
-              this.total = this.details.reduce(function (prev, e) {
-                return prev + e.value;
-              }, 0);
-              return this;
-            }
-          }.init();
-        });
-        console.log(  vm.calendarheatmapdata )
-  */
 
   vm.calendarheatmapdata = [
     {
@@ -180,4 +148,4 @@ angular.module('HistoricalCtrl', [])
 ]
 
 
-}])
+})

@@ -1,5 +1,6 @@
 body{
     font-family: Roboto !important;
+    font-weight: 300;
 }   
 
 .card-profile{
@@ -55,9 +56,53 @@ nav .brand-logo {
 }
 .side-nav li>a {
     padding: 0 16px;
+    font-weight: 300;
+    font-size: 15px;
 }
-.sidenav-header {
-    margin-bottom: 0px;
+.sidebar-background {
+    position: absolute;
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    display: block;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-position: center center;
+}
+.sidebar-background:after {
+    position: absolute;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    content: "";
+    display: block;
+    background: #FFFFFF;
+    opacity: .93;
+}
+.sidebar-logo {
+    position: relative;
+    padding: 1px 1px;
+    z-index: 4;
+}
+.sidebar-logo:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 10%;
+    height: 1px;
+    width: 80%;
+    background-color: rgba(180, 180, 180, 0.3);
+}
+.sidebar-logo .simple-text {
+    text-transform: uppercase;
+    padding: 5px 0px;
+    display: block;
+    font-size: 20px;
+    color: #3C4858;
+    text-align: center;
+    font-weight: 300;
+    line-height: 30px;
 }
 .sidenav-header > .row {
     margin-bottom: 0 !important;

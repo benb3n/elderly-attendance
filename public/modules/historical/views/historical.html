@@ -11,16 +11,14 @@
       <!-- FILTER BAR -->
       <div class="row">
         <div class ="card">
-            <div class="input-field col s2 m3">
+            <div class="input-field col s2 m2">
                 <select>
                     <option value = "" disabled selected>Select Center</option>
-                    <option value = "1">C1</option>
-                    <option value = "2">C2</option>
-                    <option value = "3">C3</option>
+                    <option value={{center.value}} ng-repeat="center in historical.centers">{{center.name}}</option>
                 </select>
                 <label>Center</label>
             </div>
-            <div class="input-field col s2 m3">
+            <div class="input-field col s2 m2">
               <select>
                   <option value = "" disabled selected>Select Course</option>
                   <option value = "1">C1</option>
@@ -29,12 +27,12 @@
               </select>
               <label>Course</label>
             </div>
-            <div class="input-field col s2 m3">
+            <div class="input-field col s2 m2">
               <i class="material-icons prefix">today</i>
               <input type="date" class="datepicker">
               <label>Start Date</label>
             </div>
-            <div class="input-field col s2 m3">
+            <div class="input-field col s2 m2">
               <i class="material-icons prefix">today</i>
               <input type="date" class="datepicker">
               <label>End Date</label>
@@ -102,16 +100,14 @@
       <!-- FILTER BAR -->
       <div class="row">
         <div class ="card">
-          <div class="input-field col s2 m3">
-            <select>
+          <div class="input-field col s2 m2">
+            <select ng-model="historical.selectedCenter">
                 <option value = "" disabled selected>Select Center</option>
-                <option value = "1">C1</option>
-                <option value = "2">C2</option>
-                <option value = "3">C3</option>
+                <option value={{center.value}} ng-repeat="center in historical.centers">{{center.name}}</option>
             </select>
             <label>Course</label>
           </div>
-          <div class="input-field col s2 m3">
+          <div class="input-field col s2 m2">
             <select>
                 <option value = "" disabled selected>Select Course</option>
                 <option value = "1">C1</option>
@@ -120,14 +116,14 @@
             </select>
             <label>Course</label>
           </div>
-          <div class="input-field col s2 m3">
+          <div class="input-field col s2 m2">
             <i class="material-icons prefix">today</i>
-            <input type="date" class="datepicker">
+            <input ng-model="historical.selectedStartDate" type="date" class="datepicker">
             <label>Start Date</label>
           </div>
-          <div class="input-field col s2 m3">
+          <div class="input-field col s2 m2">
             <i class="material-icons prefix">today</i>
-            <input type="date" class="datepicker">
+            <input ng-model="historical.selectedEndDate" type="date" class="datepicker">
             <label>End Date</label>
           </div>
         </div>

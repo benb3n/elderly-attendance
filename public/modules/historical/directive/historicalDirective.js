@@ -13,7 +13,6 @@ angular.module('HistoricalDirective', [])
             },true);
 
             scope.renderChart = function(parsedData, color){
-                console.log(parsedData)
                 d3.select(Element[0]).selectAll("*").remove();
 
                 //if(){
@@ -61,7 +60,6 @@ angular.module('HistoricalDirective', [])
         },true);
 
         scope.renderChart = function(parsedData, color){
-            console.log(parsedData)
             d3.select(Element[0]).selectAll("*").remove();
 
             var chart = nv.models.cumulativeLineChart()

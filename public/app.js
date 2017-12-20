@@ -7,6 +7,7 @@ angular.module('iCityLab', [
     'RealTimeService',
     'HistoricalCtrl',
     'HistoricalDirective',
+    'HistoricalService',
     'SystemMonitoringCtrl',
     'AttendanceCtrl',
     'nvd3',
