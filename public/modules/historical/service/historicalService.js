@@ -25,8 +25,14 @@ angular.module('HistoricalService', [])
         );
     }
 
-    function getSensorReadings (gw_device, start_date, end_date, callback) { 
-        $http.get(sensorReadingAPI.url ,
+    function getSensorReadings (gw_device, start_date, end_date, page_size, callback) { 
+        /*var apiURL = "";
+        if(typeof url != 'undefined'){
+            apiURL = url;
+        }else{
+            apiURL = sensorReadingAPI.url;
+        }*/
+        $http.get(sensorReadingAPI.url,
             {
                 headers: {
                     "Authorization": APIToken.token
@@ -34,7 +40,8 @@ angular.module('HistoricalService', [])
                 params: {
                     gw_device: gw_device,
                     start_datetime: start_date,
-                    end_datetime: end_date
+                    end_datetime: end_date,
+                    page_size: page_size
                 }
             }
         )

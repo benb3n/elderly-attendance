@@ -18,7 +18,7 @@ app.set('env', 'development');
 // config files
 //var db = require('./config/db');
 
-var port = process.env.PORT || 8000; // set our port
+var port = process.env.PORT || 8001; // set our port
 
 // get all data/stuff of the body (POST) parameters
 app.use(bodyParser.json()); // parse application/json 

@@ -117,9 +117,10 @@ angular.module('RealTimeCtrl', [])
     function generateDeviceList(){
         $q.when()
         .then(function(){
-            return getAllDevices('mp')
+            return getAllDevices('mp',1000)
         })
         .then(function(result){
+            console.log(vm.centers)
             console.log(result)
             console.log("NONOANDOASNDOAS")
             /*result.forEach(function(value,index){
@@ -144,20 +145,22 @@ angular.module('RealTimeCtrl', [])
         WEB SERVICES
     *********************/
     vm.allDevice = [];
-    function getAllDevices (project_prefix, url, _defer, overall) {
-        if(typeof _defer == 'undefined'){
+    function getAllDevices (project_prefix, page_size) { //url, _defer, overall
+        var _defer = $q.defer();
+        /*if(typeof _defer == 'undefined'){
             var _defer = $q.defer();
             var overall = [];
-        }
-        RTService.getAllDevices(project_prefix, url, function (result) {
+        }*/
+        RTService.getAllDevices(project_prefix, page_size, function (result) {
             if (result) {
-                if(result.next != null){
+                _defer.resolve(result)
+                /*if(result.next != null){
                     overall = overall.concat(result.results)
                     getAllDevices(project_prefix, result.next, _defer, overall) 
                 }else{
                     overall = overall.concat(result.results)
                     _defer.resolve(overall);
-                }
+                }*/
             } else {
                 _defer.reject();
             }

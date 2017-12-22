@@ -61,7 +61,7 @@ angular.module('HistoricalCtrl', [])
 function callSensorReadings (center, start_date_time, end_date_time){
   $q.when()
     .then(function(){
-        return getSensorReadings(center, start_date_time, end_date_time);
+        return getSensorReadings(center, start_date_time, end_date_time, 6000);
     })
     .then(function(result){
         console.log(result)
@@ -211,9 +211,9 @@ function update_heatmap_chart(result){
   /********************
       WEB SERVICES
   *********************/
-  function getSensorReadings (gw_device, start_date, end_date) {
+  function getSensorReadings (gw_device, start_date, end_date, page_size) {
     var _defer = $q.defer();
-    HService.getSensorReadings(gw_device, start_date, end_date, function (result) {
+    HService.getSensorReadings(gw_device, start_date, end_date, page_size, function (result) {
       if (result) {
         _defer.resolve(result);
       } else {
