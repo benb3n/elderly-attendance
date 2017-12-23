@@ -1,19 +1,19 @@
-<div class="row">
-
-  <div class="card">
+ <div>
+  <div class="row">
+    <div class="card">
     <div class="input-field col s12 m2">
       <i class="material-icons prefix">store</i>
       <select ng-model="rt.selectedCenter">
         <option value= "" disabled selected>Select Center</option>
-        <option value={{center.value}} ng-repeat="center in rt.centers">{{center.name}}</option>
+        <option value={{center.value}} ng-repeat="center in rt.display.centers">{{center.name}}</option>
       </select>
       <label>Center</label>
     </div>
     <div class="input-field col s12 m2">
       <i class="material-icons prefix">description</i>
-      <select>
+      <select ng-model="rt.selectedCourse">
         <option value = "" disabled selected>Select Course</option>
-        <option value={{course.value}} ng-repeat="course in rt.courses">{{course.name}}</option>
+        <option value={{course.value}} ng-repeat="course in rt.display.courses">{{course.name}}</option>
       </select>
       <label>Course</label>
     </div>
@@ -21,7 +21,7 @@
         <i class="material-icons prefix">person</i>
         <select multiple ng-model="rt.selectedStatus">
           <option value = "" disabled selected>Select Ederly Status</option>
-          <option value={{status.value}} ng-repeat="status in rt.status">{{status.name}}</option>
+          <option value={{status.value}} ng-repeat="status in rt.display.status">{{status.name}}</option>
         </select>
         <label>Status</label>
       </div>
@@ -38,47 +38,43 @@
 
   </div>
 
-</div>
-
-<div class="row">
-  <div class="col s12 m12">
-
-
-    <div ng-repeat="person in rt.elderly_attendance">
-      <div class="col s6 m3 l2">
-
-        <div ng-class="{'card card-profile card-red': person.status == 'NA', 'card card-profile card-green': person.status == 'Present'}">
-          <div class="card-profile-avatar">
-            <img src={{person.image}}>
-          </div>
-          <div class="card-profile-content" style="font-weight: 300">
-            <h4 class="card-title">{{person.name}}</h4>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
+  <div class="row">
+    <div class="col s12 m12">
+      <div ng-repeat="person in rt.display.elderly_attendance">
+        <div class="col s6 m3 l2 animated fadeIn">
 
-  <!--<div class="col s12 m6">
-    <div class="row">
-      <div class="col s10 offset-s1 m9 offset-m1 l9 offset-l1 card-panel red lighten-3 white-text">
-        <div class="card-content center-align"><font size="6"> Absent </font></div>
-      </div>
-    </div>
-
-    <div ng-repeat="person in rt.elderly_present">
-      <div class="col s6 m5 l3">
-        <div class="card red lighten-2">
-          <div class="card-image">
-            <img src={{person.image}}>
-          </div>
-          <div class="card-content" style="font-weight: 300">
-              {{person.name}}
+          <div ng-class="{'card card-profile card-red': person.status == 'NA', 'card card-profile card-green': person.status == 'Present'}">
+            <div class="card-profile-avatar">
+              <img src={{person.image}}>
+            </div>
+            <div class="card-profile-content" style="font-weight: 300">
+              <h4 class="card-title">{{person.name}}</h4>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>-->
 
+
+    </div>
+
+    <div ng-if="rt.loading" class="col s12">
+        <div class="col s6"></div>
+        <div class="preloader-wrapper big active" style="text-align: center">
+          <div class="spinner-layer spinner-green-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+              <div class="circle"></div>
+            </div><div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+  
 </div>

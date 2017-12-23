@@ -1,6 +1,6 @@
-angular.module('RealTimeService', [])
+angular.module('SystemMonitoringService', [])
 
-.factory('RTService', function($http, $q, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('SMService', function($http, $q, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
 
     var service = {};
     service.getSensorReadings = getSensorReadings;
@@ -9,13 +9,6 @@ angular.module('RealTimeService', [])
     return service;
     
     function getAllDevices(project_prefix, page_size, callback){
-        /*var apiURL = "";
-        if(typeof url != 'undefined'){
-            apiURL = url;
-        }else{
-            apiURL = deviceAPI.url;
-        }*/
-
         $http.get(deviceAPI.url  ,
             {
                 headers: {
@@ -35,14 +28,15 @@ angular.module('RealTimeService', [])
      
     }
 
-    function getSensorReadings (gw_device, page_size, callback) { 
-        $http.get(sensorReadingAPI.url ,
+    function getSystemMonitoringDevices (gw_device, reading_type, page_size, callback) { 
+        $http.get(systemMonitoringAPI.url ,
             {
                 headers: {
                     "Authorization": APIToken.token
                 },
                 params: {
                     gw_device :gw_device,
+                    reading_type: reading_type,
                     page_size: page_size
                 }
             }

@@ -28,4 +28,6 @@ angular.module('SystemMonitoringCtrl', [])
 
     });
     var vm = this;
+
+    //https://dev-starlight.icitylab.com/api/v1/readings/sysmonreading/?gw_device=6902&reading_type=battery_voltage
 }])

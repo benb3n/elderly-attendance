@@ -1,6 +1,12 @@
 angular.module('RealTimeCtrl', [])
-.controller('RealTimeController', function ($scope, $q, RTService) { 
+.controller('RealTimeController', function ($scope, $q, $timeout, RTService) { 
     var vm = this;
+    vm.api = {
+        project: 'mp',
+        all_device_count: 1000,
+        latest_sensor_reading_count: 1000
+    }
+
 
     $(document).ready(function() {
         // TABS
@@ -21,6 +27,9 @@ angular.module('RealTimeCtrl', [])
         return vm.selectedCenter;
     },function(newCenter, oldCenter) {
         if(newCenter != oldCenter) {
+            console.log(newCenter)
+            vm.selectedCenter = newCenter;
+            generateRealTimeData();
         }
     });
     $scope.$watch(function() {
@@ -33,27 +42,27 @@ angular.module('RealTimeCtrl', [])
     $scope.getkeys = function(event){
         applyFilters();    
     }
+
     /********************* 
         SEARCH FILTERS
     **********************/
     function applyFilters(){
         var result = []
-
-        if(typeof vm.searchname == 'undefined' ){
-            result = angular.copy(vm.elderly_attendance_backup);
-        }else{
-            result = applySearchFilter();
-        }   
-        result = angular.copy(applyEventTypeFilter(result));
-        
-        
-        vm.elderly_attendance = angular.copy(result);
+        if(vm.display.elderly_attendance_backup.length > 0){
+            if(typeof vm.searchname == 'undefined' ){
+                result = angular.copy(vm.display.elderly_attendance_backup);
+            }else{
+                result = applySearchFilter();
+            }   
+            result = angular.copy(applyEventTypeFilter(result));
+        }
+        vm.display.elderly_attendance = angular.copy(result);
     }
     function applySearchFilter(data){
         if(vm.searchname == ""){
-            return vm.elderly_attendance_backup;
+            return vm.display.elderly_attendance_backup;
         }else{
-            return filterByAttr("name", vm.searchname, vm.elderly_attendance_backup);
+            return filterByAttr("name", vm.searchname, vm.display.elderly_attendance_backup);
         }
     }
     function applyEventTypeFilter(data){
@@ -75,70 +84,89 @@ angular.module('RealTimeCtrl', [])
     
     initController();
     function initController(){
-        vm.centers = [
-            {name:"6901", value:6901},
-            {name:"6902", value:6902},
-            {name:"6903", value:6903}
-        ]
-        vm.courses = [
-            {name:"6901", value:6901},
-            {name:"6902", value:6902},
-            {name:"6903", value:6903}
-        ]
-        vm.status = [
-            {name:"Present", value:"Present"},
-            {name:"Absent", value:"NA"},
-        ]
+        vm.loading = true;
+        vm.data = {};
+        vm.display = {
+            elderly_attendance: [],
+            elderly_attendance_backup: [],
+            status: [{name:"Present", value:"Present"}, {name:"Absent", value:"NA"}]
+        };
 
         vm.selectedStatus = ['Present', 'NA']
         vm.searchname = "";
+        vm.selectedCenter = 6901;
         
-        vm.elderly_attendance =[];
-
-        /*vm.elderly_attendance = [
-            {name: "John Tan Wei Jie", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
-            {name: "Amos Tan Wei Jie", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
-            {name: "Nam Hyunsuk", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
-            {name: "Jane Ng asd asd", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
-            {name: "Person5", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"NA"},
-            {name: "Person6", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
-            {name: "Person7", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
-            {name: "Person8", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
-            {name: "Person9", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"},
-            {name: "Person10", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg", status:"Present"}
-        ]
-        vm.elderly_attendance_backup = angular.copy(vm.elderly_attendance);*/
-
-        
-        generateDeviceList();
         generateDataForInit();
     }
 
-    function generateDeviceList(){
-        $q.when()
-        .then(function(){
-            return getAllDevices('mp',1000)
-        })
-        .then(function(result){
-            console.log(vm.centers)
-            console.log(result)
-            console.log("NONOANDOASNDOAS")
-            /*result.forEach(function(value,index){
-
-            })*/
-        });
-    }
+  
     function generateDataForInit () {
         $q.when()
         .then(function(){
-            return getSensorReadings(6901);
+            return getAllDevices(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
-            console.log(result)
+            vm.data.all_devices = result;
+            vm.data.all_devices_pairs = {};
+            result.results.forEach(function(value, index){
+                if(value.device_id.indexOf("-") != -1 && value.device_type == "Beacon"){
+                    var index = value.device_id.indexOf("-") + 1;
+                    var id = value.device_id.substring(index)
+                    vm.data.all_devices_pairs[id] = value;
+                }
+            })
 
+            return generateRealTimeData();  
+        })  
+        .then(function(){
+            vm.loading = false;
         })
+
         
     }
+
+    function generateRealTimeData(){
+        $q.when()
+        .then(function(){
+            return getSensorReadings(vm.selectedCenter, vm.api.latest_sensor_reading_count);
+        })
+        .then(function(result){
+            vm.display.elderly_attendance = [];
+            vm.display.elderly_attendance_backup = [];
+            result.results.forEach(function(value, index){
+                if(value.reading_type == "beacon"){
+                    var index = value.device_id.indexOf("-") + 1;
+                    var id = value.device_id.substring(index);
+                    vm.display.elderly_attendance.push({
+                        resident_id: vm.data.all_devices_pairs[id].id,
+                        name: vm.data.all_devices_pairs[id].resident_list,
+                        image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
+                        status: "Present"
+                    })
+                }
+            })
+            vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
+            
+
+            vm.display.centers = [
+                {name:"6901", value:6901},
+                {name:"6902", value:6902},
+                {name:"6903", value:6903}
+            ]
+            vm.display.courses = [
+                {name:"6901", value:6901},
+                {name:"6902", value:6902},
+                {name:"6903", value:6903}
+            ]
+        })
+        .then(function(result){
+            $timeout(function () {
+                $('select').material_select()
+            });
+        });
+        
+    }
+    
 
     
     /******************** 
@@ -168,9 +196,9 @@ angular.module('RealTimeCtrl', [])
         
         return _defer.promise;
     }
-    function getSensorReadings (gw_device) {
+    function getSensorReadings (gw_device, page_size) {
         var _defer = $q.defer();
-        RTService.getSensorReadings(gw_device, function (result) {
+        RTService.getSensorReadings(gw_device, page_size, function (result) {
             if (result) {
                 _defer.resolve(result);
             } else {

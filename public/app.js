@@ -9,6 +9,7 @@ angular.module('iCityLab', [
     'HistoricalDirective',
     'HistoricalService',
     'SystemMonitoringCtrl',
+    'SystemMonitoringService',
     'AttendanceCtrl',
     'nvd3',
     'g1b.calendar-heatmap'
