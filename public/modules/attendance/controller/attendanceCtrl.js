@@ -1,5 +1,5 @@
 angular.module('AttendanceCtrl', [])
-.controller('AttendanceController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+.controller('AttendanceController', ['$scope', '$routeParams', function ($scope, $q, $timeout, AService) {
     var vm = this;
     vm.api = {
         project: 'mp',
@@ -20,4 +20,30 @@ angular.module('AttendanceCtrl', [])
         $('select').material_select();
     });
 
+    initController();
+    function initController(){
+        vm.data = {};
+
+        generateDataForInit();
+    }
+
+    function generateDataForInit(){
+
+    }
+
+    /******************
+        WEB SERVICE 
+    ******************/
+    function getAllDevices (project_prefix, page_size) { //url, _defer, overall
+        var _defer = $q.defer();
+        AService.getAllDevices(project_prefix, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        
+        return _defer.promise;
+    }
 }])
