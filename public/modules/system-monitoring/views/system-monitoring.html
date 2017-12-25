@@ -1,60 +1,105 @@
 
 <!-- Alert Container-->
 <div class="row s12">
-  <div class="col s12">
-  <font size="4"> <br>Battery Replacement Needed For:</font>
-</div>
-  <div>
-    <div class="col s6 m2">
-      <div class="card red lighten-3">
-        <div class="card-content white-text">
-          <span class="card-title">
-            <i class="small material-icons">battery_alert</i>
-            Person 3
-          </span>
+
+    <h5>Battery Replacement Needed For:</h5>
+
+  <div class="row s12" style="margin-top:50px !important">
+    <div ng-repeat="person in sm.display.elderly_sys_mon">
+      <div class="col s6 m3 l2 animated fadeIn">
+        <div class="card card-profile ">
+          <div class="card-profile-avatar">
+            <img src={{person.image}}>
+          </div>
+          <div class="card-profile-content" style="font-weight: 300">
+            <h4 class="card-title">{{person.name}}</h4>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col s6 m2">
-      <div class="card red lighten-3">
-        <div class="card-content white-text">
-          <span class="card-title">
-            <i class="small material-icons">battery_alert</i>
-            Person 4
-          </span>
+    <div ng-if="sm.loading" class="col s12">
+        <div class="col s6"></div>
+          <div class="preloader-wrapper big active" style="text-align: center">
+            <div class="spinner-layer spinner-green-only">
+              <div class="circle-clipper left">
+                <div class="circle"></div>
+              </div><div class="gap-patch">
+                <div class="circle"></div>
+              </div><div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
   </div>
 </div>
+
+
 
 
 <!--Search Container-->
 <div class="row">
     <div class ="card">
-        <div class="input-field col s3 m2">
+        <div class="input-field col s7 m2">
             <select>
-                <option value = "" disabled selected>Select Person</option>
-                <option value = "1">Person 1</option>
-                <option value = "2">Person 2</option>
-                <option value = "3">Person 3</option>
-                <option value = "3">Person 4</option>
+              <option value = "" disabled selected>Select Person</option>
+              <option value={{device.value}} ng-repeat="device in sm.display.all_devices">{{device.name}}</option>
             </select>
             <label>Person</label>
         </div>
+        <div class="col s5">
+          <a class="btn-floating btn-large waves-effect waves-light red modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Update device"  data-target="updateModal" style="margin-right  :10px !important">
+            <i class="material-icons">edit</i>
+          </a>
+          <a class="btn-floating btn-large waves-effect waves-light red modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Add/Pair a new device"   data-target="addModal" >
+            <i class="material-icons">add</i>
+          </a>
+        </div>
     </div>
-      <a class=" btn-floating btn-small waves-effect waves-light red modal-trigger" data-target="modal1" >
-        <i class="material-icons">add</i>
-      </a>
+    
+    
 
       <!-- Modal Structure -->
-      <div id="modal1" class="modal modal-fixed-footer">
+      <div id="addModal" class="modal modal-fixed-footer">
         <div class="modal-content">
-          <h4>Modal Header</h4>
-          <p>A bunch of text</p>
+          <h4>Add/Pair a New Device</h4>
+          <div class="input-field col s12">
+            <i class="material-icons prefix">account_circle</i>
+            <input id="new_name" type="text" class="validate">
+            <label for="new_name" data-error="Kindly enter a name" data-success="">Name</label>
+          </div>
+          <div class="input-field col s12">
+              <i class="material-icons prefix">devices_other</i>
+              <input id="new_device_id" type="text" class="validate">
+              <label for="new_device_id" data-error="Kindly enter a beacon ID" data-success="">Beacon Device Id</label>
+            </div>
         </div>
         <div class="modal-footer">
-          <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+          <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.addNewDevice()">Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="updateModal" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <h4>Update Device</h4>
+          <div class="input-field col s12">
+            <i class="material-icons prefix">account_circle</i>
+            <input id="update_name" type="text" class="validate" ng-model="sm.update_selectedPerson">
+            <label for="update_name" data-error="Kindly enter a name" data-success="">Name</label>
+          </div>
+          <div class="input-field col s12">
+              <i class="material-icons prefix">devices_other</i>
+              <input id="update_device_id" type="text" class="validate" ng-model="sm.update_selectedPerson">
+              <label for="update_device_id" data-error="Kindly enter a beacon ID" data-success="">Beacon Device Id</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+          <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.updateNewDevice()">Submit</button>
         </div>
       </div>
     </div>
