@@ -1,39 +1,39 @@
  <div>
   <div class="row">
     <div class="card">
-    <div class="input-field col s12 m2">
-      <i class="material-icons prefix">store</i>
-      <select ng-model="rt.selectedCenter">
-        <option value= "" disabled selected>Select Center</option>
-        <option value={{center.value}} ng-repeat="center in rt.display.centers">{{center.name}}</option>
-      </select>
-      <label>Center</label>
-    </div>
-    <div class="input-field col s12 m2">
-      <i class="material-icons prefix">description</i>
-      <select ng-model="rt.selectedCourse">
-        <option value = "" disabled selected>Select Course</option>
-        <option value={{course.value}} ng-repeat="course in rt.display.courses">{{course.name}}</option>
-      </select>
-      <label>Course</label>
-    </div>
-    <div class="input-field col s12 m2">
-        <i class="material-icons prefix">person</i>
-        <select multiple ng-model="rt.selectedStatus">
-          <option value = "" disabled selected>Select Ederly Status</option>
-          <option value={{status.value}} ng-repeat="status in rt.display.status">{{status.name}}</option>
+      <div class="input-field col s12 m2">
+        <i class="material-icons prefix">store</i>
+        <select ng-model="rt.selectedCenter">
+          <option value= "" disabled selected>Select Center</option>
+          <option value={{center.value}} ng-repeat="center in rt.display.centers">{{center.name}}</option>
         </select>
-        <label>Status</label>
+        <label>Center</label>
       </div>
-    <div class="input-field col s12 m2">
-      <i class="material-icons prefix">search</i>
-      <input id="search" type="search" ng-model="rt.searchname" ng-keyup="getkeys($event)" required>
-      <label for="search">Search Name</label>
-      <i class="material-icons">close</i>
-    </div>
-    <div class="col s12 m2">
+      <div class="input-field col s12 m2">
+        <i class="material-icons prefix">description</i>
+        <select ng-model="rt.selectedCourse">
+          <option value = "" disabled selected>Select Course</option>
+          <option value={{course.value}} ng-repeat="course in rt.display.courses">{{course.name}}</option>
+        </select>
+        <label>Course</label>
+      </div>
+      <div class="input-field col s12 m2">
+          <i class="material-icons prefix">person</i>
+          <select multiple ng-model="rt.selectedStatus">
+            <option value = "" disabled selected>Select Ederly Status</option>
+            <option value={{status.value}} ng-repeat="status in rt.display.status">{{status.name}}</option>
+          </select>
+          <label>Status</label>
+        </div>
+      <div class="input-field col s12 m2">
+        <i class="material-icons prefix">search</i>
+        <input id="search" type="search" ng-model="rt.searchname" ng-keyup="getkeys($event)" required>
+        <label for="search">Search Name</label>
+        <i class="material-icons">close</i>
+      </div>
+      <div class="col s12 m2">
 
-    </div>
+      </div>
     
 
   </div>
