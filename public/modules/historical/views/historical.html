@@ -48,17 +48,17 @@
       <div class="row">
         <div class="col s12 m6 l4">
           <div class="card">
-            <span class="card-title">Total Sign Ups</span>
+            <span class="card-title">Uniqe visitors</span>
             <div class="card-content">
-              <bar-Chart data="historical.data" color=""></bar-Chart>
+              <cumulative-Line-Chart data="historical.unique_visitors_data" color=""></cumulative-Line-Chart>
             </div>
           </div>
         </div>
         <div class="col s12 m6 l4">
           <div class="card">
-            <span class="card-title">Popular Courses</span>
+            <span class="card-title">Comparison between centers(TODO)</span>
             <div class="card-content">
-              <cumulative-Line-Chart data="historical.line_data" color=""></cumulative-Line-Chart>
+              <cumulative-Line-Chart data="historical.center_attendance_data" color=""></cumulative-Line-Chart>
             </div>
           </div>
         </div>
@@ -70,19 +70,21 @@
             </div>
           </div>
         </div>
-        <div class="col s12 m6 l4">
+        <div class="col s12">
           <div class="card">
-            <span class="card-title">Best Performing Course Time</span>
+            <span class="card-title">Most Active</span>
             <div class="card-content">
-              <p>chart</p>
+              <label id="active_error">No Data Available </label>
+              <horizontal-bar-chart data="historical.active_time_Data"></horizontal-bar-chart>
             </div>
           </div>
         </div>
         <div class="col s12 m6 l4">
           <div class="card">
-            <span class="card-title">Time Spent In Course</span>
+            <span class="card-title">Activity Comparison(TODO)</span>
             <div class="card-content">
-              <p>chart</p>
+              <p>Number of unique attendance</p>
+              <line-chart height="250px" data="historical.activity_comparison_data"></line-chart>
             </div>
           </div>
         </div>
@@ -91,11 +93,26 @@
             <span class="card-title">Percentage Attendance</span>
             <div class="card-content">
               <p>(signup vs acutal attendance)</p>
-              <p>chart</p>
             </div>
           </div>
         </div>
-      </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Avg time spent in course(TODO)</span>
+            <div class="card-content">
+              <cr-d3-bars data="historical.myData"></cr-d3-bars>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Best Performing Course Time (TODO)</span>
+            <div class="card-content">
+              <cr-d3-bars data="historical.myData"></cr-d3-bars>
+            </div>
+          </div>
+        </div>
+      </div> <!--end content container -->
     </div>
 
     <!-- PERSON TAB -->

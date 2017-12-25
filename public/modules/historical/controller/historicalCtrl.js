@@ -98,16 +98,9 @@ Materialize.updateTextFields();
       {name:"6902", value:6902},
       {name:"6903", value:6903}
     ]
-    vm.data = [
-        {
-            key: "Cumulative Return",
-            values: [
-                {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
-        }
-      ]; //end data
-    vm.line_data = [
+    vm.unique_visitors_data= [
       {
-            key:"workload",
+            key:"language lesson",
             values:[
               [1, 5],
               [2, 5],
@@ -119,9 +112,59 @@ Materialize.updateTextFields();
             ]
       },
       {
-            key:"check speed",
+            key:"physical exercise",
             values:[
-              [1, 3],
+              [1, 7],
+              [2, 6],
+              [3, 6],
+              [4, 5],
+              [5, 7],
+              [6, 7],
+              [7, 6],
+            ]
+      },
+      {
+            key:"bingo",
+            values:[
+              [1, 4],
+              [2, 20],
+              [3, 12],
+              [4, 10],
+              [5, 1],
+              [6, 3],
+              [7, 1],
+            ]
+      },
+      {
+            key:"karaoke",
+            values:[
+              [1, 19],
+              [2, 0],
+              [3, 10],
+              [4, 4],
+              [5, 6],
+              [6, 7],
+              [7, 9],
+            ]
+      }
+      ]; //end unique_visitors_data
+    vm.center_attendance_data = [
+      {
+            key:"6901",
+            values:[
+              [1, 5],
+              [2, 5],
+              [3, 5],
+              [4, 5],
+              [5, 7],
+              [6, 6],
+              [7, 0],
+            ]
+      },
+      {
+            key:"6902",
+            values:[
+              [1, 6],
               [2, 5],
               [3, 2],
               [4, 15],
@@ -129,11 +172,132 @@ Materialize.updateTextFields();
               [6, 13],
               [7, 3],
               ]
+      },
+      {
+            key:"6903",
+            values:[
+              [1, 3],
+              [2, 5],
+              [3, 6],
+              [4, 8],
+              [5, 10],
+              [6, 20],
+              [7, 2],
+              ]
       }
     ]; //end line_data
-    vm.selectedCenter = 6901;
+    vm.activity_comparison_data =[
+      {
+        key: 'language lesson',
+        values: [
+          {x: 0,y: 3},
+          {x: 1,y: 7},
+          {x: 2,y: 7},
+          {x: 3,y: 8},
+          {x: 4,y: 11},
+          {x: 5,y: 17}
+        ]
+      },
+      {
+        key: 'physical exercise',
+        values: [
+          {x: 0,y: 9},
+          {x: 1,y: 5},
+          {x: 2,y: 10},
+          {x: 3,y: 15},
+          {x: 4,y: 3},
+          {x: 5,y: 8}
+        ]
+      }];
 
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate);
+    //testing data
+    vm.myData = [
+      {
+        "date": "2015-10-01",
+        "trendingValue": "244"
+      },
+      {
+          "date": "2015-07-01",
+          "trendingValue": "0"
+      },
+      {
+          "date": "2015-06-01",
+          "trendingValue": "117"
+      },
+      {
+          "date": "2015-05-01",
+          "trendingValue": "5353"
+      },
+      {
+          "date": "2015-04-01",
+          "trendingValue": "11159"
+      },
+      {
+          "date": "2015-03-01",
+          "trendingValue": "7511"
+      },
+      {
+          "date": "2015-02-01",
+          "trendingValue": "6906"
+      },
+      {
+          "date": "2015-01-01",
+          "trendingValue": "10816"
+      },
+      {
+          "date": "2014-12-01",
+          "trendingValue": "3481"
+      },
+      {
+          "date": "2014-11-01",
+          "trendingValue": "1619"
+      },
+      {
+          "date": "2014-10-01",
+          "trendingValue": "4084"
+      },
+      {
+          "date": "2014-09-01",
+          "trendingValue": "1114"
+      }
+    ];
+    vm.thisData = [{
+        key: 'language lesson',
+        values: [
+          {x: 0,y: 3},
+          {x: 1,y: 7},
+          {x: 2,y: 7},
+          {x: 3,y: 8},
+          {x: 4,y: 11},
+          {x: 5,y: 17}
+        ]
+      },
+      {
+        key: 'physical exercise',
+        values: [
+          {x: 0,y: 9},
+          {x: 1,y: 5},
+          {x: 2,y: 10},
+          {x: 3,y: 15},
+          {x: 4,y: 3},
+          {x: 5,y: 8}
+        ]
+    }];
+    vm.data = [
+        {
+            key: "Cumulative Return",
+            values: [
+                {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
+        }
+      ]; //end data
+
+    vm.selectedCenter = 6901;
+    vm.selectedEndDate_courses = new Date('30 November 2017');
+    vm.selectedStartDate_courses = new Date('1 November 2017');
+
+    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
+    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
+
 
     }//end initController
 
@@ -144,16 +308,17 @@ Materialize.updateTextFields();
   *********************/
 function callSensorReadings (center, start_date_time, end_date_time){
   start_date_time =moment(start_date_time).format('YYYY-MM-DD') + 'T00:00:00'
-console.log("bef: " + end_date_time);
   end_date_time =moment(end_date_time).format('YYYY-MM-DD') + 'T00:00:00'
-console.log("aft: " + end_date_time);
+
   $q.when()
     .then(function(){
       console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
         return getSensorReadings(center, start_date_time, end_date_time, 500 );
     })
     .then(function(result){
-        update_heatmap_chart(result)
+        //update_heatmap_chart(result)
+        console.log(result);
+        update_most_active_chart(result)
     })//end when.then
 }//end callSensorReadings
 
@@ -301,19 +466,319 @@ function update_heatmap_chart(result){
   }//end else
 }//end func
 
+function update_activity_comparison_chart(result){
+  //todo
+  activity_array = [
+    ["Monday","9:30am","10:30am","Physical Exercise"],
+    ["Monday","10:30am","12:30pm","Language Lessons"],
+    ["Monday","2:30pm","4:00pm","Bingo"],
+    ["Tuesday","9:30am","10:30am","Physical Exercise"],
+    ["Tuesday","10:30am","12:30pm","Language Lessons"],
+    ["Tuesday","2:30pm","4:00pm","Karaoke"],
+    ["Wednesday","9:30am","10:30am","Arts & Music"],
+    ["Wednesday","1:30pm","2:30pm","Physical Exercise"],
+    ["Wednesday","2:20pm","5:00pm","TCM"],
+    ["Thursday","9:30am","10:30am","Physical Exercise"],
+    ["Thursday","2:00pm","3:30pm","Language Lessons"],
+    ["Thursday","1:00pm","4:30pm","Karaoke"],
+    ["Friday","9:30am","10:30am","Physical Exercise"],
+    ["Friday","10:30am","12:30pm","Language Lessons"],
+    ["Friday","2:30pm","3:30pm","Movie"],
+    ["Friday","3:30pm","4:30pm","Arts & Music"]
+  ]
+  /*
+  activity_array = [
+    [
+      ["9:30am","10:30am","Physical Exercise"],
+      ["10:30am","12:30pm","Language Lessons"],
+      ["2:30pm","4:00pm","Bingo"]
+    ],//monday
+    [
+      ["9:30am","10:30am","Physical Exercise"],
+      ["10:30am","12:30pm","Language Lessons"],
+      ["2:30pm","4:00pm","Karaoke"]
+    ],//tueday
+    [
+      ["9:30am","10:30am","Arts & Music"],
+      ["1:30pm","2:30pm","Physical Exercise"],
+      ["2:20pm","5:00pm","TCM"]
+    ],//wednesday
+    [
+      ["9:30am","10:30am","Physical Exercise"],
+      ["2:00pm","3:30pm","Language Lessons"],
+      ["1:00pm","4:30pm","Karaoke"]
+    ],//thursday
+    [
+      ["9:30am","10:30am","Physical Exercise"],
+      ["10:30am","12:30pm","Language Lessons"],
+      ["2:30pm","3:30pm","Movie"],
+      ["3:30pm","4:30pm","Arts & Music"]
+    ]//friday
+  ]
+  */
+  //seperate data by activity then day
+
+  var activity_day_array = [];
+
+
+
+
+  //seperate data by day
+  var day_obj_array = [];
+  var curr_day = moment(result.results[0].gw_timestamp).format("YYYY-MM-DD");
+  var day_list = [curr_day];
+  day_obj_array.push([]);
+  result.results.forEach(function(value){
+    this_day = moment(value.gw_timestamp).format("YYYY-MM-DD");
+    //if day of this object is different from curr_day, create new array
+    if(this_day != curr_day){
+      day_obj_array.push([]);
+      day_list.push(this_day);
+      curr_day = this_day;
+    }//end if
+    day_obj_array[day_obj_array.length -1].push(value);
+  })//end forEach loop
+  //end Method 2
+  //day_obj_array[day[],day[],day[]...]
+  //day[obj,obj,obj...]
+
+
+
+  //add data TODO
+
+  console.log(center_attendance_data);
+  vm.center_attendance_data=angular.copy(center_attendance_data);
+
+}
+
+function update_most_active_chart(result){
+  if (result.results.length == 0){
+    document.getElementById("active_error").style.visibility='visible';
+  }else{
+    document.getElementById("active_error").style.visibility='hidden';
+  }
+
+    //sort the data by mac ID
+    var temp_arr = objArr_to_macObjArr(result.results);
+    console.log(temp_arr);
+    var mac_id_list = temp_arr[0];//array that stores all the unique ID
+    var mac_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular mac id
+
+    //var mac_time_list = [];//array that stores total time per corresponding mac id
+    var time_data = [];
+    time_data.push({
+      "key": "Time Spent (Hrs)",
+      "color": "#d67777",
+      "values": []
+    });
+
+    //get timings of each mac_id and store in object
+    mac_obj_array.forEach(function(value,index){
+      var id_time = objArr_to_instances(value)[0] /(60*60);
+        time_data[0].values.push({
+          "label": ""+ mac_id_list[index],
+          "value": id_time
+        });
+        //mac_time_list.push(objArr_to_instances(value));
+    });
+    //sort objects by timing
+    time_data[0].values.sort(compare_time_data);
+
+
+    vm.active_time_Data = angular.copy(time_data);
+    console.log(time_data);
+
+    /*vm.active_time_Data = [
+        {
+          "key": "Series 1",
+          "color": "#d67777",
+          "values": [
+            {
+              "label" : "Group A" ,
+              "value" : -1.8746444827653
+            } ,
+            {
+              "label" : "Group B" ,
+              "value" : -8.0961543492239
+            } ,
+            {
+              "label" : "Group C" ,
+              "value" : -0.57072943117674
+            } ,
+            {
+              "label" : "Group D" ,
+              "value" : -2.4174010336624
+            } ,
+            {
+              "label" : "Group E" ,
+              "value" : -0.72009071426284
+            } ,
+            {
+              "label" : "Group F" ,
+              "value" : -0.77154485523777
+            } ,
+            {
+              "label" : "Group G" ,
+              "value" : -0.90152097798131
+            } ,
+            {
+              "label" : "Group H" ,
+              "value" : -0.91445417330854
+            } ,
+            {
+              "label" : "Group I" ,
+              "value" : -0.055746319141851
+            }
+          ]
+        },
+        {
+          "key": "Series 2",
+          "color": "#4f99b4",
+          "values": [
+            {
+              "label" : "Group A" ,
+              "value" : 25.307646510375
+            } ,
+            {
+              "label" : "Group B" ,
+              "value" : 16.756779544553
+            } ,
+            {
+              "label" : "Group C" ,
+              "value" : 18.451534877007
+            } ,
+            {
+              "label" : "Group D" ,
+              "value" : 8.6142352811805
+            } ,
+            {
+              "label" : "Group E" ,
+              "value" : 7.8082472075876
+            } ,
+            {
+              "label" : "Group F" ,
+              "value" : 5.259101026956
+            } ,
+            {
+              "label" : "Group G" ,
+              "value" : 0.30947953487127
+            } ,
+            {
+              "label" : "Group H" ,
+              "value" : 0
+            } ,
+            {
+              "label" : "Group I" ,
+              "value" : 0
+            }
+          ]
+        }
+      ]
+      */
+
+
+}//end update_most_active_chart function
+    /********************
+      REUSEABLE FUNCTIONS
+    *********************/
+function compare_time_data(a,b){
+  //helps sorting by decending order
+  aTime = a.value;
+  bTime = b.value;
+
+  let comparison = 0;
+  if (aTime > bTime) {
+    comparison = -1;
+  } else if (aTime < bTime) {
+    comparison = 1;
+  }
+  return comparison;
+}
+
+function objArr_to_macObjArr(object_array){
+  //takes an array of result objects and returns array of 2 arrays [mac_id_list,mac_obj_array]
+  //mac_id_list, each index contains one mac id(String)
+  //mac_obj_array, each index contains all objects of the corresponding mac id
+
+  mac_id_list = [];
+  mac_obj_array = [];
+  object_array.forEach(function(value){
+    //var id = value.device_id.substring(5);//assumes the center id is always 4 chars long followed by a "-"
+    var id = value.device_id.substring(value.device_id.indexOf("-")+1); //assumes there will only be one "-" in device_id, and it seperates center ID from mac ID
+
+    //check if that mac ID already has an array in mac_obj_array by checking if ID exist in mac_id_list
+    //if not, then add ID into mac_id_list AND create the array for that day in mac_obj_array
+    if(mac_id_list.indexOf(id) == -1){ //does not exist in mac_id_list
+      //add into mac_id_list
+      mac_id_list.push(id);
+      //create array for that ID in mac_obj_array
+      mac_obj_array.push([]);
+    }//end if
+    //add object into the corresponding array
+    mac_obj_array[mac_id_list.indexOf(id)].push(value);
+  })//end of forEach loop
+
+  return [mac_id_list,mac_obj_array];
+}
+
+function objArr_to_instances(object_array){
+  //takes an array of result objects and returns array of 2 arrays [array_total_time,instances_array];
+  //array_total_time is the accumulated time of all valid instances captured by objects
+  //instances_array an array of instances that stores mac_id,start time of instance and time spent for that instance
+
+  var instances_array = []; //array of instances
+  //instance = [mac_id,instance_start_date_time,time_spent]
+  var min_time_spent_seconds = 600 //minimum 10 mins to count that instance
+  var array_total_time = 0;
+
+  var time_spent = 0;
+  var next_date_time = moment(object_array[0].gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
+
+  object_array.forEach(function(value){
+    var this_datetime = moment(value.gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
+    var time_diff = moment(next_date_time).diff(moment(this_datetime),"seconds");
+    if ( time_diff == 0){
+      //do nothing
+    }else if( time_diff > min_time_spent_seconds){
+      //new instance
+      time_spent = time_spent + (10*60);//add 10mins after last scan
+      instances_array.push([value.device_id.substring(value.device_id.indexOf("-")+1),next_date_time,time_spent]); //[mac_id,instance_start_date_time,time_spent]
+      array_total_time = array_total_time + time_spent;
+      //move on to next instance, reset time_spent etc
+      time_spent = 0;
+      start_date_time = this_datetime;
+    }else{
+      //current instance, add to time and update next_date_time
+      time_spent = time_spent + time_diff;
+    }//end if else statement
+    next_date_time = this_datetime;
+  })//end of forEach loop
+
+  //add last entry
+  time_spent = time_spent + (10*60);//add 10mins after last scan
+  var last_obj = object_array[object_array.length -1];
+  var last_mac_id = last_obj.device_id;
+  instances_array.push([last_mac_id.substring(last_mac_id.indexOf("-")+1),next_date_time,time_spent]);
+  array_total_time = array_total_time + time_spent;
+
+  return[array_total_time,instances_array];
+}//end func objArr_to_instances
+
   /********************
     BUTTON FUNCTIONS
   *********************/
+
   vm.generateDataPerson = generateDataPerson;
   vm.generateDataCourses = generateDataCourses;
 
   function generateDataPerson(){
     console.log(vm.selectedCenter +"\n"+ vm.selectedStartDate_person +"\n"+ vm.selectedEndDate_person);
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
+    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
+    console.log("disabled for now");
   }
   function generateDataCourses(){
-    console.log("hi");
-
+    console.log("updating courses data");
+    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
   }
 
   /********************
