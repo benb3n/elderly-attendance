@@ -27,11 +27,9 @@ angular.module('HistoricalCtrl', [])
         $('#start_date_courses').pickadate('picker').set('select', new Date())
         $('#end_date_courses').pickadate('picker').set('select', new Date())
 
-
-
-$('#center_courses option[value='+vm.selectedCenter+']').attr('selected', true);
-$('select').material_select();
-Materialize.updateTextFields();
+        $('#center_courses option[value='+vm.selectedCenter+']').attr('selected', true);
+        $('select').material_select();
+        Materialize.updateTextFields();
 
     });
 
@@ -290,6 +288,1011 @@ Materialize.updateTextFields();
                 {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
         }
       ]; //end data
+    vm.dayHourHeatmapData = [
+      {
+        "day": 1,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 1,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 1,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 1,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 1,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 1,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 1,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 1,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 1,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 1,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 1,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 1,
+        "hour": 25,
+        "value": 10
+      }
+    ];
+    vm.dayHourHeatmapData = [
+      {
+        "day": 1,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 1,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 1,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 1,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 1,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 1,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 1,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 1,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 1,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 1,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 1,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 1,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 1,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 1,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 1,
+        "hour": 25,
+        "value": 10
+      },
+      {
+        "day": 2,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 2,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 2,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 2,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 2,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 2,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 2,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 2,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 2,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 2,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 2,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 2,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 2,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 2,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 2,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 2,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 2,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 2,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 2,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 2,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 2,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 2,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 2,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 2,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 2,
+        "hour": 25,
+        "value": 10
+      },
+      {
+        "day": 3,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 3,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 3,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 3,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 3,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 3,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 3,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 3,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 3,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 3,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 3,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 3,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 3,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 3,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 3,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 3,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 3,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 3,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 3,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 3,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 3,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 3,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 3,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 3,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 3,
+        "hour": 25,
+        "value": 10
+      },
+      {
+        "day": 4,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 4,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 4,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 4,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 4,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 4,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 4,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 4,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 4,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 4,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 4,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 4,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 4,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 4,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 4,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 4,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 4,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 4,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 4,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 4,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 4,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 4,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 4,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 4,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 4,
+        "hour": 25,
+        "value": 10
+      },
+      {
+        "day": 5,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 5,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 5,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 5,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 5,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 5,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 5,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 5,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 5,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 5,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 5,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 5,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 5,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 5,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 5,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 5,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 5,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 5,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 5,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 5,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 5,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 5,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 5,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 5,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 5,
+        "hour": 25,
+        "value": 10
+      },
+      {
+        "day": 6,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 6,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 6,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 6,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 6,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 6,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 6,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 6,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 6,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 6,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 6,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 6,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 6,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 6,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 6,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 6,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 6,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 6,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 6,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 6,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 6,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 6,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 6,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 6,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 6,
+        "hour": 25,
+        "value": 10
+      },
+      {
+        "day": 7,
+        "hour":	1,
+        "value": 16
+      },
+      {
+        "day": 7,
+        "hour": 2,
+        "value": 20
+      },
+      {
+        "day": 7,
+        "hour": 3,
+        "value": 0
+      },
+      {
+        "day": 7,
+        "hour": 4,
+        "value": 0
+      },
+      {
+        "day": 7,
+        "hour": 5,
+        "value": 0
+      },
+      {
+        "day": 7,
+        "hour": 6,
+        "value": 2
+      },
+      {
+        "day": 7,
+        "hour": 7,
+        "value": 0
+      },
+      {
+        "day": 7,
+        "hour": 8,
+        "value": 9
+      },
+      {
+        "day": 7,
+        "hour": 9,
+        "value": 25
+      },
+      {
+        "day": 7,
+        "hour": 10,
+        "value": 9
+      },
+      {
+        "day": 7,
+        "hour": 11,
+        "value": 25
+      },
+      {
+        "day": 7,
+        "hour": 12,
+        "value": 25
+      },
+      {
+        "day": 7,
+        "hour": 13,
+        "value": 25
+      },
+      {
+        "day": 7,
+        "hour": 14,
+        "value": 5
+      },
+      {
+        "day": 7,
+        "hour": 15,
+        "value": 2
+      },
+      {
+        "day": 7,
+        "hour": 16,
+        "value": 13
+      },
+      {
+        "day": 7,
+        "hour": 17,
+        "value": 2
+      },
+      {
+        "day": 7,
+        "hour": 18,
+        "value": 2
+      },
+      {
+        "day": 7,
+        "hour": 19,
+        "value": 18
+      },
+      {
+        "day": 7,
+        "hour": 20,
+        "value": 12
+      },
+      {
+        "day": 7,
+        "hour": 21,
+        "value": 2
+      },
+      {
+        "day": 7,
+        "hour": 22,
+        "value": 8
+      },
+      {
+        "day": 7,
+        "hour": 23,
+        "value": 18
+      },
+      {
+        "day": 7,
+        "hour": 24,
+        "value": 18
+      },
+      {
+        "day": 7,
+        "hour": 25,
+        "value": 10
+      }
+    ];
+
 
     vm.selectedCenter = 6901;
     vm.selectedEndDate_courses = new Date('30 November 2017');
@@ -297,8 +1300,6 @@ Materialize.updateTextFields();
 
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
-
-
     }//end initController
 
 
@@ -312,13 +1313,15 @@ function callSensorReadings (center, start_date_time, end_date_time){
 
   $q.when()
     .then(function(){
-      console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
+      //console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
         return getSensorReadings(center, start_date_time, end_date_time, 500 );
     })
     .then(function(result){
         //update_heatmap_chart(result)
-        console.log(result);
-        update_most_active_chart(result)
+        //console.log(result);
+        //update_most_active_chart(result);
+        //update_avg_week_heatmap_chart(result);
+
     })//end when.then
 }//end callSensorReadings
 
@@ -466,88 +1469,81 @@ function update_heatmap_chart(result){
   }//end else
 }//end func
 
-function update_activity_comparison_chart(result){
+function update_avg_week_heatmap_chart(result){
   //todo
-  activity_array = [
-    ["Monday","9:30am","10:30am","Physical Exercise"],
-    ["Monday","10:30am","12:30pm","Language Lessons"],
-    ["Monday","2:30pm","4:00pm","Bingo"],
-    ["Tuesday","9:30am","10:30am","Physical Exercise"],
-    ["Tuesday","10:30am","12:30pm","Language Lessons"],
-    ["Tuesday","2:30pm","4:00pm","Karaoke"],
-    ["Wednesday","9:30am","10:30am","Arts & Music"],
-    ["Wednesday","1:30pm","2:30pm","Physical Exercise"],
-    ["Wednesday","2:20pm","5:00pm","TCM"],
-    ["Thursday","9:30am","10:30am","Physical Exercise"],
-    ["Thursday","2:00pm","3:30pm","Language Lessons"],
-    ["Thursday","1:00pm","4:30pm","Karaoke"],
-    ["Friday","9:30am","10:30am","Physical Exercise"],
-    ["Friday","10:30am","12:30pm","Language Lessons"],
-    ["Friday","2:30pm","3:30pm","Movie"],
-    ["Friday","3:30pm","4:30pm","Arts & Music"]
-  ]
-  /*
-  activity_array = [
-    [
-      ["9:30am","10:30am","Physical Exercise"],
-      ["10:30am","12:30pm","Language Lessons"],
-      ["2:30pm","4:00pm","Bingo"]
-    ],//monday
-    [
-      ["9:30am","10:30am","Physical Exercise"],
-      ["10:30am","12:30pm","Language Lessons"],
-      ["2:30pm","4:00pm","Karaoke"]
-    ],//tueday
-    [
-      ["9:30am","10:30am","Arts & Music"],
-      ["1:30pm","2:30pm","Physical Exercise"],
-      ["2:20pm","5:00pm","TCM"]
-    ],//wednesday
-    [
-      ["9:30am","10:30am","Physical Exercise"],
-      ["2:00pm","3:30pm","Language Lessons"],
-      ["1:00pm","4:30pm","Karaoke"]
-    ],//thursday
-    [
-      ["9:30am","10:30am","Physical Exercise"],
-      ["10:30am","12:30pm","Language Lessons"],
-      ["2:30pm","3:30pm","Movie"],
-      ["3:30pm","4:30pm","Arts & Music"]
-    ]//friday
-  ]
-  */
-  //seperate data by activity then day
+  var temp_arr = objArr_to_dateObjArr(result.results);
+  console.log(temp_arr);
+  var date_list = temp_arr[0];//array that stores all the unique dates
+  var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
 
-  var activity_day_array = [];
+  //get instances of each day, instance[id,instance_start_date_time,time_spent]
+  var date_instances_array = //array of instances for corresponding date
+  date_obj_array.forEach(function(value){
+  date_instances_array.push(objArr_to_instances(value)[1]);
+  })//end of for each
 
-
-
-
-  //seperate data by day
-  var day_obj_array = [];
-  var curr_day = moment(result.results[0].gw_timestamp).format("YYYY-MM-DD");
-  var day_list = [curr_day];
-  day_obj_array.push([]);
-  result.results.forEach(function(value){
-    this_day = moment(value.gw_timestamp).format("YYYY-MM-DD");
-    //if day of this object is different from curr_day, create new array
-    if(this_day != curr_day){
-      day_obj_array.push([]);
-      day_list.push(this_day);
-      curr_day = this_day;
-    }//end if
-    day_obj_array[day_obj_array.length -1].push(value);
-  })//end forEach loop
-  //end Method 2
-  //day_obj_array[day[],day[],day[]...]
-  //day[obj,obj,obj...]
-
-
+  //for each date from date_list, check which instances activity
 
   //add data TODO
+  weekly_activity_data = [];
+  weekly_activity_data.push({
+    "day": 1,
+    "hour":	1,
+    "value":1
+  })
 
-  console.log(center_attendance_data);
-  vm.center_attendance_data=angular.copy(center_attendance_data);
+  console.log(weekly_activity_data);
+  vm.weekly_activity_data=angular.copy(weekly_activity_data_data);
+
+  /*
+  vm.dayHourHeatmapData = [
+    {
+      "day": 1,
+      "hour":	1,
+      "value": 16
+    },
+    {
+      "day": 1,
+      "hour": 2,
+      "value": 20
+    },
+    {
+      "day": 1,
+      "hour": 3,
+      "value": 0
+    },
+    {
+      "day": 1,
+      "hour": 4,
+      "value": 0
+    },
+    {
+      "day": 1,
+      "hour": 5,
+      "value": 0
+    },
+    {
+      "day": 1,
+      "hour": 6,
+      "value": 2
+    },
+    {
+      "day": 1,
+      "hour": 7,
+      "value": 0
+    },
+    {
+      "day": 1,
+      "hour": 8,
+      "value": 9
+    },
+    {
+      "day": 1,
+      "hour": 9,
+      "value": 25
+    }
+  ];
+  */
 
 }
 
@@ -681,6 +1677,31 @@ function update_most_active_chart(result){
     /********************
       REUSEABLE FUNCTIONS
     *********************/
+function objArr_to_dateObjArr(object_array){
+  //takes an array of result objects and returns array[day_list,day_obj_array];
+  //date_list is an array where each index is a specific date
+  //date_obj_array an array where each index stores an array of all objects for the corresponding date
+  var date_obj_array = [];
+  var date_list = [];
+
+  var curr_date = moment(result.results[0].gw_timestamp).format("YYYY-MM-DD");
+  date_list.push(curr_date);
+  date_obj_array.push([]);
+
+  object_array.forEach(function(value){
+    var this_date = moment(value.gw_timestamp).format("YYYY-MM-DD");
+    //if day of this object is different from curr_date, create new array
+    if(this_date != curr_day){
+      date_obj_array.push([]);
+      date_list.push(this_date);
+      curr_day = this_date;
+    }//end if
+    date_obj_array[date_obj_array.length -1].push(value);
+  })//end forEach loop
+
+  return[day_list,day_obj_array]
+}//end func objArr_to_dateObjArr
+
 function compare_time_data(a,b){
   //helps sorting by decending order
   aTime = a.value;
@@ -839,3 +1860,56 @@ function objArr_to_instances(object_array){
 */
 
 })
+
+
+
+/*
+activity_array = [
+  ["Monday","9:30am","10:30am","Physical Exercise"],
+  ["Monday","10:30am","12:30pm","Language Lessons"],
+  ["Monday","2:30pm","4:00pm","Bingo"],
+  ["Tuesday","9:30am","10:30am","Physical Exercise"],
+  ["Tuesday","10:30am","12:30pm","Language Lessons"],
+  ["Tuesday","2:30pm","4:00pm","Karaoke"],
+  ["Wednesday","9:30am","10:30am","Arts & Music"],
+  ["Wednesday","1:30pm","2:30pm","Physical Exercise"],
+  ["Wednesday","2:20pm","5:00pm","TCM"],
+  ["Thursday","9:30am","10:30am","Physical Exercise"],
+  ["Thursday","2:00pm","3:30pm","Language Lessons"],
+  ["Thursday","1:00pm","4:30pm","Karaoke"],
+  ["Friday","9:30am","10:30am","Physical Exercise"],
+  ["Friday","10:30am","12:30pm","Language Lessons"],
+  ["Friday","2:30pm","3:30pm","Movie"],
+  ["Friday","3:30pm","4:30pm","Arts & Music"]
+]
+
+activity_array = [
+  [
+    ["9:30am","10:30am","Physical Exercise"],
+    ["10:30am","12:30pm","Language Lessons"],
+    ["2:30pm","4:00pm","Bingo"]
+  ],//monday
+  [
+    ["9:30am","10:30am","Physical Exercise"],
+    ["10:30am","12:30pm","Language Lessons"],
+    ["2:30pm","4:00pm","Karaoke"]
+  ],//tueday
+  [
+    ["9:30am","10:30am","Arts & Music"],
+    ["1:30pm","2:30pm","Physical Exercise"],
+    ["2:20pm","5:00pm","TCM"]
+  ],//wednesday
+  [
+    ["9:30am","10:30am","Physical Exercise"],
+    ["2:00pm","3:30pm","Language Lessons"],
+    ["1:00pm","4:30pm","Karaoke"]
+  ],//thursday
+  [
+    ["9:30am","10:30am","Physical Exercise"],
+    ["10:30am","12:30pm","Language Lessons"],
+    ["2:30pm","3:30pm","Movie"],
+    ["3:30pm","4:30pm","Arts & Music"]
+  ]//friday
+]
+*/
+//seperate data by day

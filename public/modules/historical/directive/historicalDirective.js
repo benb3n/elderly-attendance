@@ -56,7 +56,9 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-                scope.renderChart(data, "")
+                if(typeof data != 'undefined' && data.length>0){
+                  scope.renderChart(data, "");
+                };
         },true);
 
         scope.renderChart = function(parsedData, color){
@@ -318,13 +320,16 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-                scope.renderChart(data, "")
+          if(typeof data != 'undefined' && data.length>0){
+            scope.renderChart(data, "");
+          };
         },true);
 
         scope.renderChart = function(parsedData, color){
             d3.select(Element[0]).selectAll("*").remove();
 
             var chart = nv.models.multiBarHorizontalChart()
+                    .height(400)
                     .x(function(d) { return d.label })
                     .y(function(d) { return d.value })
                     //.margin({top: 30, right: 20, bottom: 50, left: 175})
@@ -335,7 +340,6 @@ angular.module('HistoricalDirective', [])
                     .stacked(true)
                     .groupSpacing(0)
                     .valuePadding(10);
-                    //.height(400);
 
 
             d3.select(Element[0])
@@ -354,3 +358,238 @@ angular.module('HistoricalDirective', [])
 
 
 })
+
+.directive('dayHourHeatmapChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+        scope.$watch('data', function(data) {
+                //scope.renderChart(data, "")
+                console.log(data);
+                scope.heatmapChart(data);
+        },true);
+
+
+        scope.heatmapChart =  function(data) {
+          var margin = { top: 40, right: 0, bottom: 50, left: 30 },
+            width = screen.width - margin.left - margin.right,
+            gridSize = Math.floor(width / 29),
+            height = gridSize*7 + margin.top + margin.bottom,
+            legendElementWidth = gridSize*2,
+            buckets = 9,
+            colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+            days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+            times = ["8am", "", "9am", "9:30am", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];
+          var svg = d3.select(Element[0]).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          var dayLabels = svg.selectAll(".dayLabel")
+            .data(days)
+            .enter().append("text")
+              .text(function (d) { return d; })
+              .attr("x", 0)
+              .attr("y", function (d, i) { return i * gridSize; })
+              .style("text-anchor", "end")
+              .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+              .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+          var timeLabels = svg.selectAll(".timeLabel")
+            .data(times)
+            .enter().append("text")
+              .text(function(d) { return d; })
+              .attr("x", function(d, i) { return i * gridSize; })
+              .attr("y", 0)
+              .style("text-anchor", "middle")
+              .style("font-size",'10px')
+              .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+              .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+            console.log(data);
+            var colorScale = d3.scale.quantile()
+                .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+                .range(colors);
+
+            var cards = svg.selectAll(".hour")
+                .data(data, function(d) {return d.day+':'+d.hour;});
+
+            cards.append("title");
+
+            cards.enter().append("rect")
+                .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+                .attr("y", function(d) { return (d.day - 1) * gridSize; })
+                .attr("rx", 4)
+                .attr("ry", 4)
+                .attr("class", "hour bordered")
+                .attr("width", gridSize)
+                .attr("height", gridSize)
+                .style("color", colors[0]);
+
+            cards.transition().duration(1000)
+                .style("fill", function(d) { return colorScale(d.value); });
+
+            cards.enter().append("text")
+              .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/3); })
+              .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.6); })
+              .attr("rx", 4)
+              .attr("ry", 4)
+              .text(function(d) { return d.value; })
+              .style("fill",'#CBC8B4')
+              .style("font-weight",'bold');
+
+            cards.select("title").text(function(d) { return d.value; });
+
+            cards.exit().remove();
+
+            var legend = svg.selectAll(".legend")
+                .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+
+            legend.enter().append("g")
+                .attr("class", "legend");
+
+            legend.append("rect")
+              .attr("x", function(d, i) { return legendElementWidth * i; })
+              .attr("y", height)
+              .attr("width", legendElementWidth)
+              .attr("height", gridSize / 2)
+              .style("fill", function(d, i) { return colors[i]; })
+
+            legend.append("text")
+              .attr("class", "mono")
+              .text(function(d) { return "≥ " + Math.round(d); })
+              .attr("x", function(d, i) { return legendElementWidth * i; })
+              .attr("y", height + gridSize);
+
+            legend.exit().remove();
+        };
+    }
+  }
+})//end dayHourHeatmapChart
+
+
+.directive('flipDayHourHeatmapChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+        scope.$watch('data', function(data) {
+                //scope.renderChart(data, "")
+                console.log(data);
+                scope.heatmapChart(data);
+        },true);
+
+
+        scope.heatmapChart =  function(data) {
+          var margin = { top: 50, right: 40, bottom: 24, left: 50 },
+            hMargin = 15,
+            buckets = 9,
+            colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+            days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+            times = ["8am", "8:30am", "9am", "9:30am", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"],
+            width = screen.width - margin.left - margin.right -72,
+            gridSize = Math.floor(width / 7),
+            legendElementWidth = gridSize,
+            height = gridSize*times.length;
+
+          var svg = d3.select(Element[0]).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          var dayLabels = svg.selectAll(".dayLabel")
+            .data(times)
+            .enter().append("text")
+              .text(function (d) { return d; })
+              .attr("x", 0)
+              .attr("y", function (d, i) { return i * gridSize + hMargin; })
+              .style("text-anchor", "end")
+              .style("font-size",'13px')
+              .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+              .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+          var timeLabels = svg.selectAll(".timeLabel")
+            .data(days)
+            .enter().append("text")
+              .text(function(d) { return d; })
+              .attr("x", function(d, i) { return i * gridSize; })
+              .attr("y", hMargin)
+              .style("text-anchor", "middle")
+              //.style("font-size",'10px')
+              .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+              .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+            console.log(data);
+            var colorScale = d3.scale.quantile()
+                .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+                .range(colors);
+
+            var cards = svg.selectAll(".hour")
+                .data(data, function(d) {return d.day+':'+d.hour;});
+
+            cards.append("title");
+
+            cards.enter().append("rect")
+                .attr("y", function(d) { return (d.hour - 1) * gridSize + hMargin; })
+                .attr("x", function(d) { return (d.day - 1) * gridSize; })
+                .attr("rx", 4)
+                .attr("ry", 4)
+                .attr("class", "hour bordered")
+                .attr("width", gridSize)
+                .attr("height", gridSize)
+                .style("color", colors[0]);
+
+            cards.transition().duration(1000)
+                .style("fill", function(d) { return colorScale(d.value); });
+
+            cards.enter().append("text")
+              .attr("y", function(d) { return (d.hour - 1) * gridSize + 23 + hMargin; })
+              .attr("x", function(d) { return (d.day - 1) * gridSize+9 ;})
+              .attr("rx", 4)
+              .attr("ry", 4)
+              .text(function(d) { return d.value; })
+              .style("fill",'#CBC8B4')
+              .style("font-weight",'bold');
+
+            cards.select("title").text(function(d) { return d.value; });
+
+            cards.exit().remove();
+
+            var legend = svg.selectAll(".legend")
+                .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+
+            legend.enter().append("g")
+                .attr("class", "legend");
+
+            legend.append("rect")
+              .attr("x", function(d, i) { return legendElementWidth * i -50; })
+              .attr("y", -50)
+              .attr("width", legendElementWidth)
+              .attr("height", gridSize / 2)
+              .style("fill", function(d, i) { return colors[i]; })
+
+            legend.append("text")
+              .attr("class", "mono")
+              .text(function(d) { return "≥ " + Math.round(d); })
+              .attr("x", function(d, i) { return legendElementWidth * i -50; })
+              .attr("y", -50 + gridSize);
+
+            legend.exit().remove();
+
+          //});
+
+        };
+
+
+    }
+  }
+})//end dayHourHeatmapChart

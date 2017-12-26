@@ -110,3 +110,7 @@ nav .brand-logo {
 .sidenav-header > .row {
     margin-bottom: 0 !important;
 }
+
+svg.nvd3-svg{
+  margin-top: -40px !important;
+}
