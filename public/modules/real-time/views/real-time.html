@@ -35,11 +35,14 @@
 
       </div>
     
-
+    </div>
   </div>
 
+  <div ng-if="rt.status.no_data" class="row">
+    <div class="col s6 offset-s6" style="color:#b71c1c; font-size:20px">
+        No Data Avaliable</div>
+    </div>
   </div>
-
   <div class="row">
     <div class="col s12 m12">
       <div ng-repeat="person in rt.display.elderly_attendance">
@@ -53,10 +56,13 @@
               <h4 class="card-title">{{person.name}}</h4>
             </div>
           </div>
+
         </div>
       </div>
 
     </div>
+
+    
 
     <div ng-if="rt.loading" class="col s12">
       <div class="col s6"></div>
