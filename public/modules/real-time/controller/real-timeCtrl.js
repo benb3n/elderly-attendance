@@ -94,7 +94,7 @@ angular.module('RealTimeCtrl', [])
 
         vm.selectedStatus = ['Present', 'NA']
         vm.searchname = "";
-        vm.selectedCenter = 6901;
+        
         
         generateDataForInit();
     }
@@ -115,6 +115,22 @@ angular.module('RealTimeCtrl', [])
                     vm.data.all_devices_pairs[id] = value;
                 }
             })
+            
+            vm.display.centers = [
+                {name:"6901", value:6901},
+                {name:"6902", value:6902},
+                {name:"6903", value:6903}
+            ]
+            vm.display.courses = [
+                {name:"6901", value:6901},
+                {name:"6902", value:6902},
+                {name:"6903", value:6903}
+            ]
+            vm.selectedCenter = "6901";
+            $timeout(function () {
+                $('select').material_select()
+            });
+
 
             return generateRealTimeData();  
         })  
@@ -148,22 +164,7 @@ angular.module('RealTimeCtrl', [])
             vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
             
 
-            vm.display.centers = [
-                {name:"6901", value:6901},
-                {name:"6902", value:6902},
-                {name:"6903", value:6903}
-            ]
-            vm.display.courses = [
-                {name:"6901", value:6901},
-                {name:"6902", value:6902},
-                {name:"6903", value:6903}
-            ]
         })
-        .then(function(result){
-            $timeout(function () {
-                $('select').material_select()
-            });
-        });
         
     }
     

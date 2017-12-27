@@ -34,7 +34,89 @@
             <div class="col s12 m2">
 
             </div>
-    
+            
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col s3">
+        <select name="resultlimit" ng-model="resultlimit" ng-init="resultlimit=5">
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="100">100</option>
+        </select>
+        </div>   
+        <div class="sorter">
+            <h6 style="display: inline-block;">Order by: </h6>
+            <a  ng-class="{'activetab waves-effect waves-light' : predicate == 'name',  'disabled': predicate != 'name'}" ng-click="predicate = 'name'; reverse=!reverse" class="btn">Name
+                <i ng-show="predicate == 'name' && !reverse" class="material-icons right">expand_more</i>
+                <i ng-show="predicate == 'name' && reverse" class="material-icons right">expand_less</i>
+            </a>
+            <a ng-class="{'activetab waves-effect waves-light' : predicate == 'phone',  'disabled': predicate != 'phone'}" ng-click="predicate = 'phone'; reverse=!reverse" class="btn">Phone
+                <i ng-show="predicate == 'phone' && !reverse" class="material-icons right">expand_more</i>
+                <i ng-show="predicate == 'phone' && reverse" class="material-icons right">expand_less</i>
+            </a>
+            <a ng-class="{'activetab waves-effect waves-light' : predicate == 'email',  'disabled': predicate != 'email'}" ng-click="predicate = 'email'; reverse=!reverse" class="btn">Email
+                <i ng-show="predicate == 'email' && !reverse" class="material-icons right">expand_more</i>
+                <i ng-show="predicate == 'email' && reverse" class="material-icons right">expand_less</i>
+            </a>
+            <a ng-class="{'activetab waves-effect waves-light' : predicate == 'status',  'disabled': predicate != 'status'}" ng-click="predicate = 'status'; reverse=!reverse" class="btn">Status<i ng-show="predicate == 'status' && !reverse" class="material-icons right">expand_more</i>
+                <i ng-show="predicate == 'status' && reverse" class="material-icons right">expand_less</i>
+            </a>
+            <a ng-class="{'activetab waves-effect waves-light' : predicate == 'unix',  'disabled': predicate != 'unix'}" ng-click="predicate = 'unix'; reverse=!reverse" class="btn">Submited
+                <i ng-show="predicate == 'unix' && !reverse" class="material-icons right">expand_more</i>
+                <i ng-show="predicate == 'unix' && reverse" class="material-icons right">expand_less</i>
+            </a>
+        </div>
+        
+        <div class="divider"><hr /></div>
+        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"></dir-pagination-controls>   
+
+        <table class="table responsive-table">
+            <thead>
+                <tr>
+                    <th ng-class="{'activetab waves-effect waves-light' : predicate == 'id'}" ng-click="predicate = 'id'; reverse=!reverse">ID
+                        <i ng-show="predicate == 'id' && !reverse" class="material-icons right">expand_more</i>
+                        <i ng-show="predicate == 'id' && reverse" class="material-icons right">expand_less</i>
+                        </th>
+                    <th ng-class="{'activetab waves-effect waves-light' : predicate == 'name'}"  ng-click="predicate = 'name'; reverse=!reverse">Name
+                        <i ng-show="predicate == 'name' && !reverse" class="material-icons right">expand_more</i>
+                        <i ng-show="predicate == 'name' && reverse" class="material-icons right">expand_less</i>
+                        </th>
+                    <th ng-class="{'activetab waves-effect waves-light' : predicate == 'phone'}" ng-click="predicate = 'phone'; reverse=!reverse">Phone
+                        <i ng-show="predicate == 'phone' && !reverse" class="material-icons right">expand_more</i>
+                        <i ng-show="predicate == 'phone' && reverse" class="material-icons right">expand_less</i></th>
+                    <th ng-class="{'activetab waves-effect waves-light' : predicate == 'email'}" ng-click="predicate = 'email'; reverse=!reverse" >Email
+                            <i ng-show="predicate == 'email' && !reverse" class="material-icons right">expand_more</i>
+                        <i ng-show="predicate == 'email' && reverse" class="material-icons right">expand_less</i></th>
+                    <th ng-class="{'activetab waves-effect waves-light' : predicate == 'status'}" ng-click="predicate = 'status'; reverse=!reverse">Status
+                                            <i ng-show="predicate == 'status' && !reverse" class="material-icons right">expand_more</i>
+                        <i ng-show="predicate == 'status' && reverse" class="material-icons right">expand_less</i></th>
+                    <th ng-class="{'activetab waves-effect waves-light' : predicate == 'unix'}" ng-click="predicate = 'unix'; reverse=!reverse">Submitted
+                        <i ng-show="predicate == 'unix' && !reverse" class="material-icons right">expand_more</i>
+                        <i ng-show="predicate == 'unix' && reverse" class="material-icons right">expand_less</i></th>
+                    <th class="text-align-center">Action</th>
+                </tr>
+            </thead>
+        
+            <tbody>
+                <tr dir-paginate="d in names | filter:search | filter:filters | orderBy:predicate:reverse | itemsPerPage: resultlimit ">
+                    <td>{{ d.id }}</td>
+                    <td>{{ d.name }}</td>
+                    <td>{{ d.phone | tel }}</td>
+                    <td >{{ d.email }}</td>
+                    <td>{{ d.status }}</td>
+                    <td>{{ d.unix | date:'MM/dd/yy h:mma' }}</td>
+                    <td>
+                        <a ng-click="readOne(d.id)" class="waves-effect waves-light btn customAction"><i class="material-icons left">edit</i>Edit</a>
+                        <a ng-click="deleteVolunteer($index)" class="waves-effect waves-light btn customAction"><i class="material-icons left">delete</i>Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"></dir-pagination-controls>   
     </div>
 </div>

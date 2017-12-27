@@ -28,7 +28,17 @@ angular.module('AttendanceCtrl', [])
     }
 
     function generateDataForInit(){
-
+        $scope.names = [
+            {
+              "id": "1",
+              "name": "Alexander Hamilton",
+              "email": "ahamil@example.com",
+              "phone": "5555555555",
+              "status": "APPLIED",
+              "created": "2016-07-07 09:16:32",
+              "unix": "1467640600000"
+            },
+        ];
     }
 
     /******************
