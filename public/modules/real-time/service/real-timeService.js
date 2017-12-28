@@ -35,7 +35,7 @@ angular.module('RealTimeService', [])
      
     }
 
-    function getSensorReadings (gw_device, page_size, callback) { 
+    function getSensorReadings (gw_device, start_datetime, end_datetime,  page_size, callback) { 
         $http.get(sensorReadingAPI.url ,
             {
                 headers: {
@@ -43,6 +43,8 @@ angular.module('RealTimeService', [])
                 },
                 params: {
                     gw_device :gw_device,
+                    start_datetime: start_datetime,
+                    end_datetime: end_datetime,
                     page_size: page_size
                 }
             }

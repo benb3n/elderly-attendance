@@ -22,7 +22,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
         .when('/attendance', {
             templateUrl: 'modules/attendance/views/attendance.html',
             controller: 'AttendanceController',
-            controllerAs: 'attendace'
+            controllerAs: 'attendance'
         })
 
         .when('/system-monitoring', {

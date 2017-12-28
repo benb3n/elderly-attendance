@@ -97,6 +97,30 @@ angular.module('HistoricalCtrl', [])
       {name:"6902", value:6902},
       {name:"6903", value:6903}
     ]
+    //COURSE DETAILS
+    vm.display.courses = [
+      {name:"Mon Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:1},
+      {name:"Tue Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:2},
+      {name:"Wed Phyiscal Activites", start_time:"13:30", end_time:"14:30", value:3},
+      {name:"Thu Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:4},
+      {name:"Fri Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:5},
+
+      {name:"Mon Language Lessons", start_time:"10:30", end_time:"12:30", value:6},
+      {name:"Tue Language Lessons", start_time:"10:30", end_time:"12:30", value:7},
+      {name:"Thu Language Lessons", start_time:"14:00", end_time:"15:30", value:8},
+      {name:"Fri Language Lessons", start_time:"109:30", end_time:"12:30", value:9},
+
+      {name:"Wed Art & Music", start_time:"09:30", end_time:"10:30", value:10},
+      {name:"Fri Art & Music", start_time:"15:30", end_time:"16:30", value:11},
+
+      {name:"Mon Bingo", start_time:"14:30", end_time:"16:00", value:12},
+
+      {name:"Tue Karaoke", start_time:"14:30", end_time:"16:00", value:13},
+      {name:"Thu Karaoke", start_time:"13:00", end_time:"16:30", value:14},
+      {name:"Wed TCM", start_time:"14:30", end_time:"17:00", value:15},
+      {name:"Fri Movie", start_time:"14:30", end_time:"15:30", value:16}
+  ]
+
     vm.unique_visitors_data= [
       {
             key:"language lesson",
