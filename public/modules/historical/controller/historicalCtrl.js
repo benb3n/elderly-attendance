@@ -99,26 +99,60 @@ angular.module('HistoricalCtrl', [])
     ]
     //COURSE DETAILS
     vm.display.courses = [
-      {name:"Mon Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:1},
-      {name:"Tue Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:2},
-      {name:"Wed Phyiscal Activites", start_time:"13:30", end_time:"14:30", value:3},
-      {name:"Thu Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:4},
-      {name:"Fri Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:5},
-
-      {name:"Mon Language Lessons", start_time:"10:30", end_time:"12:30", value:6},
-      {name:"Tue Language Lessons", start_time:"10:30", end_time:"12:30", value:7},
-      {name:"Thu Language Lessons", start_time:"14:00", end_time:"15:30", value:8},
-      {name:"Fri Language Lessons", start_time:"109:30", end_time:"12:30", value:9},
-
-      {name:"Wed Art & Music", start_time:"09:30", end_time:"10:30", value:10},
-      {name:"Fri Art & Music", start_time:"15:30", end_time:"16:30", value:11},
-
-      {name:"Mon Bingo", start_time:"14:30", end_time:"16:00", value:12},
-
-      {name:"Tue Karaoke", start_time:"14:30", end_time:"16:00", value:13},
-      {name:"Thu Karaoke", start_time:"13:00", end_time:"16:30", value:14},
-      {name:"Wed TCM", start_time:"14:30", end_time:"17:00", value:15},
-      {name:"Fri Movie", start_time:"14:30", end_time:"15:30", value:16}
+      {date:"2017-11-20", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"1"},
+      {date:"2017-11-20", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"2"},
+      {date:"2017-11-20", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"3"},
+      {date:"2017-11-21", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"4"},
+      {date:"2017-11-21", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"5"},
+      {date:"2017-11-21", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"6"},
+      {date:"2017-11-22", day:"Wednesday",course_type:"Arts & Music", course_name:"jazz", start_time:"9:30am", end_time:"10:30am", value:"7"},
+      {date:"2017-11-22", day:"Wednesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"1:30pm", end_time:"2:30pm", value:"8"},
+      {date:"2017-11-22", day:"Wednesday",course_type:"TCM", course_name:"tcm", start_time:"2:30pm", end_time:"5:00pm", value:"9"},
+      {date:"2017-11-23", day:"Thursday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"10"},
+      {date:"2017-11-23", day:"Thursday",course_type:"Language Lessons", course_name:"english", start_time:"2:00pm", end_time:"3:30pm", value:"11"},
+      {date:"2017-11-23", day:"Thursday",course_type:"Karaoke", course_name:"Karaoke", start_time:"1:00pm", end_time:"4:30pm", value:"12"},
+      {date:"2017-11-24", day:"Friday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"13"},
+      {date:"2017-11-24", day:"Friday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"14"},
+      {date:"2017-11-24", day:"Friday",course_type:"Movie", course_name:"movie", start_time:"2:30pm", end_time:"3:30pm", value:"15"},
+      {date:"2017-11-24", day:"Friday",course_type:"Arts & Music", course_name:"jazz", start_time:"3:30pm", end_time:"4:30pm", value:"16"},
+      {date:"2017-11-27", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"17"},
+      {date:"2017-11-27", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"18"},
+      {date:"2017-11-27", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"19"},
+      {date:"2017-11-28", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"20"},
+      {date:"2017-11-28", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"21"},
+      {date:"2017-11-28", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"22"},
+      {date:"2017-11-29", day:"Wednesday",course_type:"Arts & Music", course_name:"jazz", start_time:"9:30am", end_time:"10:30am", value:"23"},
+      {date:"2017-11-29", day:"Wednesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"1:30pm", end_time:"2:30pm", value:"24"},
+      {date:"2017-11-29", day:"Wednesday",course_type:"TCM", course_name:"tcm", start_time:"2:30pm", end_time:"5:00pm", value:"25"},
+      {date:"2017-11-30", day:"Thursday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"26"},
+      {date:"2017-11-30", day:"Thursday",course_type:"Language Lessons", course_name:"english", start_time:"2:00pm", end_time:"3:30pm", value:"27"},
+      {date:"2017-11-30", day:"Thursday",course_type:"Karaoke", course_name:"Karaoke", start_time:"1:00pm", end_time:"4:30pm", value:"28"},
+      {date:"2017-12-01", day:"Friday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"29"},
+      {date:"2017-12-01", day:"Friday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"30"},
+      {date:"2017-12-01", day:"Friday",course_type:"Movie", course_name:"movie", start_time:"2:30pm", end_time:"3:30pm", value:"31"},
+      {date:"2017-12-01", day:"Friday",course_type:"Arts & Music", course_name:"jazz", start_time:"3:30pm", end_time:"4:30pm", value:"32"},
+      {date:"2017-12-04", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"33"},
+      {date:"2017-12-04", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"34"},
+      {date:"2017-12-04", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"35"},
+      {date:"2017-12-05", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"36"},
+      {date:"2017-12-05", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"37"},
+      {date:"2017-12-05", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"38"},
+      {date:"2017-12-06", day:"Wednesday",course_type:"Arts & Music", course_name:"jazz", start_time:"9:30am", end_time:"10:30am", value:"39"},
+      {date:"2017-12-06", day:"Wednesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"1:30pm", end_time:"2:30pm", value:"40"},
+      {date:"2017-12-06", day:"Wednesday",course_type:"TCM", course_name:"tcm", start_time:"2:30pm", end_time:"5:00pm", value:"41"},
+      {date:"2017-12-07", day:"Thursday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"42"},
+      {date:"2017-12-07", day:"Thursday",course_type:"Language Lessons", course_name:"english", start_time:"2:00pm", end_time:"3:30pm", value:"43"},
+      {date:"2017-12-07", day:"Thursday",course_type:"Karaoke", course_name:"Karaoke", start_time:"1:00pm", end_time:"4:30pm", value:"44"},
+      {date:"2017-12-08", day:"Friday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"45"},
+      {date:"2017-12-08", day:"Friday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"46"},
+      {date:"2017-12-08", day:"Friday",course_type:"Movie", course_name:"movie", start_time:"2:30pm", end_time:"3:30pm", value:"47"},
+      {date:"2017-12-08", day:"Friday",course_type:"Arts & Music", course_name:"jazz", start_time:"3:30pm", end_time:"4:30pm", value:"48"},
+      {date:"2017-12-11", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"49"},
+      {date:"2017-12-11", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"50"},
+      {date:"2017-12-11", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"51"},
+      {date:"2017-12-12", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"52"},
+      {date:"2017-12-12", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"53"},
+      {date:"2017-12-12", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"54"}
   ]
 
     vm.unique_visitors_data= [
@@ -1968,7 +2002,7 @@ activity_array = [
   [
     ["9:30am","10:30am","Arts & Music"],
     ["1:30pm","2:30pm","Physical Exercise"],
-    ["2:20pm","5:00pm","TCM"]
+    ["2:30pm","5:00pm","TCM"]
   ],//wednesday
   [
     ["9:30am","10:30am","Physical Exercise"],
