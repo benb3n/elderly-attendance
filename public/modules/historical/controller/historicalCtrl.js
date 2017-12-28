@@ -43,6 +43,7 @@ angular.module('HistoricalCtrl', [])
   },function(newCenter, oldCenter) {
     if(newCenter != oldCenter) {
       vm.selectedCenter = newCenter;
+      callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     }
   });
 
@@ -1293,7 +1294,6 @@ angular.module('HistoricalCtrl', [])
       }
     ];
 
-
     vm.selectedCenter = 6901;
     vm.selectedEndDate_courses = new Date('30 November 2017');
     vm.selectedStartDate_courses = new Date('1 November 2017');
@@ -1317,7 +1317,7 @@ function callSensorReadings (center, start_date_time, end_date_time){
         return getSensorReadings(center, start_date_time, end_date_time, 500 );
     })
     .then(function(result){
-        //update_heatmap_chart(result)
+        update_heatmap_chart(result)
         //console.log(result);
         //update_most_active_chart(result);
         //update_avg_week_heatmap_chart(result);
@@ -1470,19 +1470,66 @@ function update_heatmap_chart(result){
 }//end func
 
 function update_avg_week_heatmap_chart(result){
+  console.log("hi");
   //todo
   var temp_arr = objArr_to_dateObjArr(result.results);
-  console.log(temp_arr);
   var date_list = temp_arr[0];//array that stores all the unique dates
   var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
 
   //get instances of each day, instance[id,instance_start_date_time,time_spent]
-  var date_instances_array = //array of instances for corresponding date
+  var date_instances_array = []; //array of instances for corresponding date
   date_obj_array.forEach(function(value){
-  date_instances_array.push(objArr_to_instances(value)[1]);
+    if (value.length==0){
+      date_instances_array.push([]);
+    }else {
+      date_instances_array.push(objArr_to_instances(value)[1]);
+    };
   })//end of for each
 
   //for each date from date_list, check which instances activity
+
+  //week_arr[7*hour_arr]
+  //hour_arr[25]
+
+  date_instances_array.forEach(function(value,index) {
+    //check date
+    var day_index;
+    var this_day = moment(date_list[index]).format('dddd');
+    if(this_day=='Monday'){
+      day_index = 0;
+    }else if (this_day=='Tuesday'){
+      day_index = 1;
+    }else if(this_day=='Wednesday'){
+      day_index = 2;
+    }else if (this_day=='Thursday') {
+      day_index = 3;
+    }else if (this_day=='Friday') {
+      day_index = 4;
+    }else if (this_day=='Saturday') {
+      day_index = 5;
+    }else if (this_day=='Sunday') {
+      day_index = 6;
+    };
+
+    value.forEach(function(instance_value){
+      var time_index;
+      var this_start = moment("October 13, 2014 "+ moment(instance_value[1]).format("HH:mm:ss")).toDate();
+      console.log(this_start);
+      var this_end = this_start.setTime(this_start.getTime() + (instance_value[2]*1000));
+
+      console.log(this_start.getTime() + " -- " + this_end.getTime());
+
+      if(this_start <= new Date("October 13, 2014 8:30:00") && new Date("October 13, 2014 8:00:00")<=this_end  ){
+        console.log("occurs during 8-8:30am");
+      }
+      if(this_start <= new Date("October 13, 2014 9:00:00") && new Date("October 13, 2014 8:30:00")<=this_end  ){
+        console.log("occurs during 8:30am-9am");
+      }
+
+    })
+  })//end for each
+
+
 
   //add data TODO
   weekly_activity_data = [];
@@ -1545,7 +1592,7 @@ function update_avg_week_heatmap_chart(result){
   ];
   */
 
-}
+}//end func update_avg_week_heatmap_chart
 
 function update_most_active_chart(result){
   if (result.results.length == 0){
@@ -1684,22 +1731,22 @@ function objArr_to_dateObjArr(object_array){
   var date_obj_array = [];
   var date_list = [];
 
-  var curr_date = moment(result.results[0].gw_timestamp).format("YYYY-MM-DD");
+  var curr_date = moment(object_array.gw_timestamp).format("YYYY-MM-DD");
   date_list.push(curr_date);
   date_obj_array.push([]);
 
   object_array.forEach(function(value){
     var this_date = moment(value.gw_timestamp).format("YYYY-MM-DD");
     //if day of this object is different from curr_date, create new array
-    if(this_date != curr_day){
+    if(this_date != curr_date){
       date_obj_array.push([]);
       date_list.push(this_date);
-      curr_day = this_date;
+      curr_date = this_date;
     }//end if
     date_obj_array[date_obj_array.length -1].push(value);
   })//end forEach loop
 
-  return[day_list,day_obj_array]
+  return[date_list,date_obj_array]
 }//end func objArr_to_dateObjArr
 
 function compare_time_data(a,b){

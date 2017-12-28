@@ -552,8 +552,8 @@ angular.module('HistoricalDirective', [])
                 .style("fill", function(d) { return colorScale(d.value); });
 
             cards.enter().append("text")
-              .attr("y", function(d) { return (d.hour - 1) * gridSize + 23 + hMargin; })
-              .attr("x", function(d) { return (d.day - 1) * gridSize+9 ;})
+              .attr("y", function(d) { return (d.hour - 1) * gridSize + (gridSize/1.5) + hMargin; })
+              .attr("x", function(d) { return (d.day - 1) * gridSize + gridSize/3.1 ;})
               .attr("rx", 4)
               .attr("ry", 4)
               .text(function(d) { return d.value; })
