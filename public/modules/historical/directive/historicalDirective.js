@@ -353,10 +353,7 @@ angular.module('HistoricalDirective', [])
           }
         }
       }
-
-
-
-})
+})//end dir horizontalBarChart
 
 .directive('responsiveHorizontalBarChart',function(){
   return {
@@ -367,11 +364,15 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
+              if(typeof data != 'undefined'){
                 scope.renderChart(data);
-
+              }else{
+                console.log("no data");
+              }
         },true);
 
         scope.renderChart = function(data){
+          d3.select(Element[0]).selectAll("*").remove;
         //Margin conventions
         var margin = {top: 10, right: 50, bottom: 20, left: 50};
 
@@ -391,10 +392,17 @@ angular.module('HistoricalDirective', [])
         var xScale = d3.scale.linear()
         	.range([0,width]);
 
+
+        var yValues  = [];
+        data.forEach(function(value){
+          yValues.push(value.category);
+        });
+
         //Creates the yScale
         var y0 = d3.scale.ordinal()
         	.rangeBands([height, 0], 0.2)
-        	.domain(["Cat5", "Cat4", "Cat3", "Cat2", "Cat1"]);
+        	//.domain(["Cat5", "Cat4", "Cat3", "Cat2", "Cat1"]);
+          .domain(yValues);
 
         //Defines the y axis styles
         var yAxis = d3.svg.axis()
@@ -409,27 +417,11 @@ angular.module('HistoricalDirective', [])
         	.tickSize(height)
           .ticks(numTicks(width));
 
-        /*
-        //Loads the data
-        d3.csv("template.csv", ready);
-        */
-
-        //function ready(err, data) {
-        //function ready(data) {
-
-        	/*
-          if (err) throw "error loading data";
-          */
-        	//FORMAT data
-        	/*data.forEach(function(d) {
-        		d.num = +d.num;
-        	});*/
-
           //Appends chart headline
-        	d3.select(".g-hed").text("Chart headline goes here");
+        	//d3.select(".g-hed").text("Chart headline goes here");
 
           //Appends chart intro text
-          d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
+          //d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
 
         	//Sets the max for the xScale
         	var maxX = d3.max(data, function(d) { return d.num; });
@@ -527,9 +519,7 @@ angular.module('HistoricalDirective', [])
             xAxis
               .scale(xScale)
               .ticks(numTicks(w));
-
           };
-
         }
 
         //Determines number of ticks base on width
@@ -541,11 +531,9 @@ angular.module('HistoricalDirective', [])
             return 10
           }
         }
-
-
     }
   }
-})//end dir
+})//end responsiveHorizontalBarChart
 
 .directive('dayHourHeatmapChart',function(){
   return {
@@ -556,7 +544,9 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-                scope.heatmapChart(data);
+            d3.select(Element[0]).selectAll("*").remove();
+            scope.heatmapChart(data);
+
         },true);
 
 
@@ -569,7 +559,8 @@ angular.module('HistoricalDirective', [])
             buckets = 9,
             colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
             days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-            times = ["8am", "", "9am", "9:30am", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];
+            times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm", "", "7pm", "","8pm"];
+            /*times = ["8am", "", "9am", "", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];*/
           var svg = d3.select(Element[0]).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -667,6 +658,7 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
                 scope.heatmapChart(data);
+                d3.select(Element[0]).selectAll("*").remove();
         },true);
 
 
@@ -676,7 +668,8 @@ angular.module('HistoricalDirective', [])
             buckets = 9,
             colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
             days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-            times = ["8am", "8:30am", "9am", "9:30am", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"],
+            times = ["8am","", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm", "", "7pm", "","8pm"],
+            /*times = ["8am", "8:30am", "9am", "9:30am", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"],*/
             width = screen.width - margin.left - margin.right -72,
             gridSize = Math.floor(width / 7),
             legendElementWidth = gridSize,
@@ -765,12 +758,7 @@ angular.module('HistoricalDirective', [])
               .attr("y", -50 + gridSize);
 
             legend.exit().remove();
-
-          //});
-
         };
-
-
     }
   }
 })//end dayHourHeatmapChart

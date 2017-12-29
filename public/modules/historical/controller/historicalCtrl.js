@@ -67,8 +67,9 @@ angular.module('HistoricalCtrl', [])
       var end_date_courses = $('#end_date_courses').pickadate('picker');
       end_date_courses.set('disable', true);
       end_date_courses.set('enable', true);
-      end_date_courses.set('min', newStartDate)
+      end_date_courses.set('min', newStartDate);
       //end_date_courses.start();
+      console.log("start date changed!");
     }
   });
 
@@ -155,7 +156,7 @@ angular.module('HistoricalCtrl', [])
       {date:"2017-12-12", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"53"},
       {date:"2017-12-12", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"54"}
     ]
-  }
+    }
 
     vm.unique_visitors_data= [
       {
@@ -349,1028 +350,25 @@ angular.module('HistoricalCtrl', [])
                 {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
         }
       ]; //end data
-    vm.dayHourHeatmapData = [
-      {
-        "day": 1,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 1,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 1,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 1,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 1,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 1,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 1,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 1,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 1,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 1,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 1,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 1,
-        "hour": 25,
-        "value": 10
-      }
-    ];
-    vm.dayHourHeatmapData = [
-      {
-        "day": 1,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 1,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 1,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 1,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 1,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 1,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 1,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 1,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 1,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 1,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 1,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 1,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 1,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 1,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 1,
-        "hour": 25,
-        "value": 10
-      },
-      {
-        "day": 2,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 2,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 2,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 2,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 2,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 2,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 2,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 2,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 2,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 2,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 2,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 2,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 2,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 2,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 2,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 2,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 2,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 2,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 2,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 2,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 2,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 2,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 2,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 2,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 2,
-        "hour": 25,
-        "value": 10
-      },
-      {
-        "day": 3,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 3,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 3,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 3,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 3,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 3,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 3,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 3,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 3,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 3,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 3,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 3,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 3,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 3,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 3,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 3,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 3,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 3,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 3,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 3,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 3,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 3,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 3,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 3,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 3,
-        "hour": 25,
-        "value": 10
-      },
-      {
-        "day": 4,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 4,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 4,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 4,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 4,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 4,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 4,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 4,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 4,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 4,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 4,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 4,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 4,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 4,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 4,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 4,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 4,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 4,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 4,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 4,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 4,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 4,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 4,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 4,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 4,
-        "hour": 25,
-        "value": 10
-      },
-      {
-        "day": 5,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 5,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 5,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 5,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 5,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 5,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 5,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 5,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 5,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 5,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 5,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 5,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 5,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 5,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 5,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 5,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 5,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 5,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 5,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 5,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 5,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 5,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 5,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 5,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 5,
-        "hour": 25,
-        "value": 10
-      },
-      {
-        "day": 6,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 6,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 6,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 6,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 6,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 6,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 6,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 6,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 6,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 6,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 6,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 6,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 6,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 6,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 6,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 6,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 6,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 6,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 6,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 6,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 6,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 6,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 6,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 6,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 6,
-        "hour": 25,
-        "value": 10
-      },
-      {
-        "day": 7,
-        "hour":	1,
-        "value": 16
-      },
-      {
-        "day": 7,
-        "hour": 2,
-        "value": 20
-      },
-      {
-        "day": 7,
-        "hour": 3,
-        "value": 0
-      },
-      {
-        "day": 7,
-        "hour": 4,
-        "value": 0
-      },
-      {
-        "day": 7,
-        "hour": 5,
-        "value": 0
-      },
-      {
-        "day": 7,
-        "hour": 6,
-        "value": 2
-      },
-      {
-        "day": 7,
-        "hour": 7,
-        "value": 0
-      },
-      {
-        "day": 7,
-        "hour": 8,
-        "value": 9
-      },
-      {
-        "day": 7,
-        "hour": 9,
-        "value": 25
-      },
-      {
-        "day": 7,
-        "hour": 10,
-        "value": 9
-      },
-      {
-        "day": 7,
-        "hour": 11,
-        "value": 25
-      },
-      {
-        "day": 7,
-        "hour": 12,
-        "value": 25
-      },
-      {
-        "day": 7,
-        "hour": 13,
-        "value": 25
-      },
-      {
-        "day": 7,
-        "hour": 14,
-        "value": 5
-      },
-      {
-        "day": 7,
-        "hour": 15,
-        "value": 2
-      },
-      {
-        "day": 7,
-        "hour": 16,
-        "value": 13
-      },
-      {
-        "day": 7,
-        "hour": 17,
-        "value": 2
-      },
-      {
-        "day": 7,
-        "hour": 18,
-        "value": 2
-      },
-      {
-        "day": 7,
-        "hour": 19,
-        "value": 18
-      },
-      {
-        "day": 7,
-        "hour": 20,
-        "value": 12
-      },
-      {
-        "day": 7,
-        "hour": 21,
-        "value": 2
-      },
-      {
-        "day": 7,
-        "hour": 22,
-        "value": 8
-      },
-      {
-        "day": 7,
-        "hour": 23,
-        "value": 18
-      },
-      {
-        "day": 7,
-        "hour": 24,
-        "value": 18
-      },
-      {
-        "day": 7,
-        "hour": 25,
-        "value": 10
-      }
-    ];
-    vm.responsiveHorizontalBarData = [
-      {
-        "category":"Cat1",
-        "num": 45
-      },{
-        "category":"Cat2",
-        "num": 23
-      },{
-        "category":"Cat3",
-        "num": 19
-      },{
-        "category":"Cat4",
-        "num": 7
-      },{
-        "category":"Cat5",
-        "num": 35
-      }
-    ]
+    /*  vm.responsiveHorizontalBarData = [
+        {
+          "category":"Cadas1",
+          "num": 20
+        },{
+          "category":"Cat2",
+          "num": 23
+        },{
+          "category":"Cat3",
+          "num": 19
+        },{
+          "category":"Cat4",
+          "num": 7
+        },{
+          "category":"Cat5",
+          "num": 35
+        }
+      ]
+*/
 
     vm.selectedCenter = 6901;
     vm.selectedEndDate_courses = new Date('30 November 2017');
@@ -1379,7 +377,6 @@ angular.module('HistoricalCtrl', [])
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
     }//end initController
-
 
 
   /********************
@@ -1396,10 +393,9 @@ function callSensorReadings (center, start_date_time, end_date_time){
     })
     .then(function(result){
         //update_heatmap_chart(result)
-        //console.log(result);
-        //update_most_active_chart(result);
-        update_avg_week_heatmap_chart(result);
-
+        console.log(result);
+        update_most_active_chart(result);
+        //update_avg_week_heatmap_chart(result);
     })//end when.then
 }//end callSensorReadings
 
@@ -1408,32 +404,8 @@ function update_heatmap_chart(result){
     document.getElementById("calendar_error").style.visibility='visible';
   }else{
     document.getElementById("calendar_error").style.visibility='hidden';
-
     var day_obj_array = [];
 
-    //Method 1
-    /*
-      day_list: an array to keep track of the indexes of objects for the day in day_obj_array
-      e.g day_list[0] == 2017-05-31 then day_obj_array[0] contains the array of objects for 31st May 2017
-    */
-    /*
-    var day_list = [];
-    result.results.forEach(function(value){
-      var day = moment(value.gw_timestamp).format("YYYY-MM-DD");
-      //check if day already has an array in day_obj_array by checking if day exist in day_list
-      //if not, then add day into day_list AND create the array for that day in day_obj_array
-      if(day_list.indexOf(day)== -1){ //does not exist in day_list
-        //add into day_list
-        day_list.push(day);
-        //create array for that day in day_obj_array
-        day_obj_array.push([]);
-      }//end if
-      //add object into the array
-      day_obj_array[day_list.indexOf(day)].push(value);
-    })//end of forEach loop of result
-    // end Method 1
-    */
-    //Method 2
     var curr_day = moment(result.results[0].gw_timestamp).format("YYYY-MM-DD");
     var day_list = [curr_day];
     day_obj_array.push([]);
@@ -1483,7 +455,8 @@ function update_heatmap_chart(result){
     day_mac_obj_array.forEach(function(day_value){
 
       var day_instances_array = [];
-      var min_time_spent_seconds = 600 //minimum 10 mins to count that instance
+      var min_time_spent_seconds = 600; //minimum 10 mins to count that instance
+      var buffer_time = 600;
       var day_total_time = 0;
 
       day_value.forEach(function(id_value){
@@ -1496,9 +469,11 @@ function update_heatmap_chart(result){
               //do nothing
             }else if( time_diff > min_time_spent_seconds){
               //new instance
-              time_spent = time_spent + (10*60);//add 10mins after last scan
-              day_instances_array.push([value.device_id.substring(value.device_id.indexOf("-")+1),next_date_time,time_spent]);
-              day_total_time = day_total_time + time_spent;
+              if(time_spent>0){
+                time_spent = time_spent + buffer_time;
+                day_instances_array.push([value.device_id.substring(value.device_id.indexOf("-")+1),next_date_time,time_spent]);
+                day_total_time = day_total_time + time_spent;
+              }
               //move on to next instance, reset time_spent etc
               time_spent = 0;
               start_date_time = this_datetime;
@@ -1508,10 +483,13 @@ function update_heatmap_chart(result){
             }//end if else statement
             next_date_time = this_datetime;
           })//end of forEach loop of id_value
+
           //add last entry
-          time_spent = time_spent + (10*60);//add 10mins after last scan
-          day_instances_array.push([id_value[0].device_id.substring(id_value[0].device_id.indexOf("-")+1),next_date_time,time_spent]);
-          day_total_time = day_total_time + time_spent;
+            if(time_spent>0){
+              time_spent = time_spent + buffer_time;
+              day_instances_array.push([id_value[0].device_id.substring(id_value[0].device_id.indexOf("-")+1),next_date_time,time_spent]);
+              day_total_time = day_total_time + time_spent;
+            }
 
       })//end of forEach loop of day_value
 
@@ -1567,7 +545,7 @@ function update_avg_week_heatmap_chart(result){
   //hour_arr[25], counts number of unique mac_ids during in that slot
   var week_arr = [];
   for(i=0; i<7; i++){
-    var hour_arr  = new Array(24);
+    var hour_arr  = new Array(25);
     hour_arr.fill(0);
     week_arr.push(hour_arr);
   }
@@ -1576,11 +554,15 @@ function update_avg_week_heatmap_chart(result){
   //ask if can use vm.selectedEndDate_courses etc
   var week_instances_count = new Array(7); //counts number of weeks the chosen dataset has of each day
   week_instances_count.fill(0);
+  //vm.selectedStartDate_courses
+  //console.log(vm.selectedEndDate_courses);
+
 
   date_instances_array.forEach(function(value,index) {
     //check date
-    var day_index;
     var this_date = moment(date_list[index]);
+
+    var day_index;
     var this_day = this_date.format('dddd');
     if(this_day=='Monday'){
       day_index = 0;
@@ -1625,87 +607,37 @@ function update_avg_week_heatmap_chart(result){
     time_arr.push(this_date.clone().hour(19).minute(0).second(0));
     time_arr.push(this_date.clone().hour(19).minute(30).second(0));
     time_arr.push(this_date.clone().hour(20).minute(0).second(0));
+    time_arr.push(this_date.clone().hour(20).minute(30).second(0));
 
     value.forEach(function(instance_value){
       //instance = [mac_id,instance_start_date_time,time_spent]
       var time_index;
       var this_start = moment(instance_value[1]);
       var this_end = this_start.clone().add(instance_value[2], 'seconds');
-      console.log(instance_value);
-      console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
-      for (i = 0; i < (time_arr.length -1); i++) {
+      //console.log(instance_value);
+      //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
+      for (i = 0; i < time_arr.length-1; i++) {
         if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
-          console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
+          //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
           week_arr[day_index][i] += 1;
         };
       };
     })//end forEach instance
   })//end for each day
 
-console.log(week_arr);
-//continue / TODO
-
-  //add data TODO
+  //add data
   weekly_activity_data = [];
-  weekly_activity_data.push({
-    "day": 1,
-    "hour":	1,
-    "value":1
-  })
+  week_arr.forEach(function(day_value,day_index){
+    day_value.forEach(function(value,index){
+      weekly_activity_data.push({
+        "day": day_index+1,
+        "hour":	index+1,
+        "value": value // /week_instances_count[day_index] //TODO
+      })
+    })//end for each hour
+  })//end for each day
 
-  console.log(weekly_activity_data);
-  vm.weekly_activity_data=angular.copy(weekly_activity_data);
-
-  /*
-  vm.dayHourHeatmapData = [
-    {
-      "day": 1,
-      "hour":	1,
-      "value": 16
-    },
-    {
-      "day": 1,
-      "hour": 2,
-      "value": 20
-    },
-    {
-      "day": 1,
-      "hour": 3,
-      "value": 0
-    },
-    {
-      "day": 1,
-      "hour": 4,
-      "value": 0
-    },
-    {
-      "day": 1,
-      "hour": 5,
-      "value": 0
-    },
-    {
-      "day": 1,
-      "hour": 6,
-      "value": 2
-    },
-    {
-      "day": 1,
-      "hour": 7,
-      "value": 0
-    },
-    {
-      "day": 1,
-      "hour": 8,
-      "value": 9
-    },
-    {
-      "day": 1,
-      "hour": 9,
-      "value": 25
-    }
-  ];
-  */
-
+  vm.dayHourHeatmapData=angular.copy(weekly_activity_data);
 }//end func update_avg_week_heatmap_chart
 
 function update_most_active_chart(result){
@@ -1722,127 +654,40 @@ function update_most_active_chart(result){
 
     //var mac_time_list = [];//array that stores total time per corresponding mac id
     var time_data = [];
-    /*
-    time_data.push({
-      "key": "Time Spent (Hrs)",
-      "color": "#d67777",
-      "values": []
-    });
-    */
 
     //get timings of each mac_id and store in object
     mac_obj_array.forEach(function(value,index){
       var id_time = objArr_to_instances(value)[0] /(60*60);
       time_data.push({
-        "key": ""+ mac_id_list[index],
-        "color": "#d67777",
-        "values": [{
-          "label": ""+ mac_id_list[index],
-          "value": id_time
-        }]
+          "category": ""+ mac_id_list[index],
+          "num": id_time
       });
-      /*
-        time_data[index].values.push({
-          "label": ""+ mac_id_list[index],
-          "value": id_time
-        });
-        */
-        //mac_time_list.push(objArr_to_instances(value));
     });
     //sort objects by timing
-    //time_data[0].values.sort(compare_time_data);
+    time_data.sort(compare_time_data);
 
-
-    vm.active_time_Data = angular.copy(time_data);
-
-    /*vm.active_time_Data = [
-        {
-          "key": "Series 1",
-          "color": "#d67777",
-          "values": [
-            {
-              "label" : "Group A" ,
-              "value" : -1.8746444827653
-            } ,
-            {
-              "label" : "Group B" ,
-              "value" : -8.0961543492239
-            } ,
-            {
-              "label" : "Group C" ,
-              "value" : -0.57072943117674
-            } ,
-            {
-              "label" : "Group D" ,
-              "value" : -2.4174010336624
-            } ,
-            {
-              "label" : "Group E" ,
-              "value" : -0.72009071426284
-            } ,
-            {
-              "label" : "Group F" ,
-              "value" : -0.77154485523777
-            } ,
-            {
-              "label" : "Group G" ,
-              "value" : -0.90152097798131
-            } ,
-            {
-              "label" : "Group H" ,
-              "value" : -0.91445417330854
-            } ,
-            {
-              "label" : "Group I" ,
-              "value" : -0.055746319141851
-            }
-          ]
-        },
-        {
-          "key": "Series 2",
-          "color": "#4f99b4",
-          "values": [
-            {
-              "label" : "Group A" ,
-              "value" : 25.307646510375
-            } ,
-            {
-              "label" : "Group B" ,
-              "value" : 16.756779544553
-            } ,
-            {
-              "label" : "Group C" ,
-              "value" : 18.451534877007
-            } ,
-            {
-              "label" : "Group D" ,
-              "value" : 8.6142352811805
-            } ,
-            {
-              "label" : "Group E" ,
-              "value" : 7.8082472075876
-            } ,
-            {
-              "label" : "Group F" ,
-              "value" : 5.259101026956
-            } ,
-            {
-              "label" : "Group G" ,
-              "value" : 0.30947953487127
-            } ,
-            {
-              "label" : "Group H" ,
-              "value" : 0
-            } ,
-            {
-              "label" : "Group I" ,
-              "value" : 0
-            }
-          ]
-        }
-      ]
-      */
-
+    vm.mostActiveData = angular.copy(time_data);
+    vm.responsiveHorizontalBarData = angular.copy(time_data);
+    /*
+    vm.responsiveHorizontalBarData = [
+      {
+        "category":"Cadas1",
+        "num": 20
+      },{
+        "category":"Cat2",
+        "num": 23
+      },{
+        "category":"Cat3",
+        "num": 19
+      },{
+        "category":"Cat4",
+        "num": 7
+      },{
+        "category":"Cat5",
+        "num": 35
+      }
+    ]
+*/
 
 }//end update_most_active_chart function
     /********************
@@ -1875,14 +720,14 @@ function objArr_to_dateObjArr(object_array){
 
 function compare_time_data(a,b){
   //helps sorting by decending order
-  aTime = a.value;
-  bTime = b.value;
+  aTime = a.num;
+  bTime = b.num;
 
   let comparison = 0;
   if (aTime > bTime) {
-    comparison = -1;
-  } else if (aTime < bTime) {
     comparison = 1;
+  } else if (aTime < bTime) {
+    comparison = -1;
   }
   return comparison;
 }
@@ -1971,8 +816,9 @@ function objArr_to_instances(object_array){
 
   function generateDataPerson(){
     console.log(vm.selectedCenter +"\n"+ vm.selectedStartDate_person +"\n"+ vm.selectedEndDate_person);
-    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
-    console.log("disabled for now");
+    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
+    console.log("updating person data");
+    //console.log("disabled for now");
   }
   function generateDataCourses(){
     console.log("updating courses data");
@@ -2090,3 +936,970 @@ activity_array = [
 ]
 */
 //seperate data by day
+
+/*
+vm.dayHourHeatmapData = [
+{
+  "day": 1,
+  "hour":	1,
+  "value": 16
+},
+{
+  "day": 1,
+  "hour": 2,
+  "value": 20
+},
+{
+  "day": 1,
+  "hour": 3,
+  "value": 0
+},
+{
+  "day": 1,
+  "hour": 4,
+  "value": 0
+},
+{
+  "day": 1,
+  "hour": 5,
+  "value": 0
+},
+{
+  "day": 1,
+  "hour": 6,
+  "value": 2
+},
+{
+  "day": 1,
+  "hour": 7,
+  "value": 0
+},
+{
+  "day": 1,
+  "hour": 8,
+  "value": 9
+},
+{
+  "day": 1,
+  "hour": 9,
+  "value": 25
+},
+{
+  "day": 1,
+  "hour": 10,
+  "value": 9
+},
+{
+  "day": 1,
+  "hour": 11,
+  "value": 25
+},
+{
+  "day": 1,
+  "hour": 12,
+  "value": 25
+},
+{
+  "day": 1,
+  "hour": 13,
+  "value": 25
+},
+{
+  "day": 1,
+  "hour": 14,
+  "value": 5
+},
+{
+  "day": 1,
+  "hour": 15,
+  "value": 2
+},
+{
+  "day": 1,
+  "hour": 16,
+  "value": 13
+},
+{
+  "day": 1,
+  "hour": 17,
+  "value": 2
+},
+{
+  "day": 1,
+  "hour": 18,
+  "value": 2
+},
+{
+  "day": 1,
+  "hour": 19,
+  "value": 18
+},
+{
+  "day": 1,
+  "hour": 20,
+  "value": 12
+},
+{
+  "day": 1,
+  "hour": 21,
+  "value": 2
+},
+{
+  "day": 1,
+  "hour": 22,
+  "value": 8
+},
+{
+  "day": 1,
+  "hour": 23,
+  "value": 18
+},
+{
+  "day": 1,
+  "hour": 24,
+  "value": 18
+},
+{
+  "day": 1,
+  "hour": 25,
+  "value": 10
+},
+{
+  "day": 2,
+  "hour":	1,
+  "value": 16
+},
+{
+  "day": 2,
+  "hour": 2,
+  "value": 20
+},
+{
+  "day": 2,
+  "hour": 3,
+  "value": 0
+},
+{
+  "day": 2,
+  "hour": 4,
+  "value": 0
+},
+{
+  "day": 2,
+  "hour": 5,
+  "value": 0
+},
+{
+  "day": 2,
+  "hour": 6,
+  "value": 2
+},
+{
+  "day": 2,
+  "hour": 7,
+  "value": 0
+},
+{
+  "day": 2,
+  "hour": 8,
+  "value": 9
+},
+{
+  "day": 2,
+  "hour": 9,
+  "value": 25
+},
+{
+  "day": 2,
+  "hour": 10,
+  "value": 9
+},
+{
+  "day": 2,
+  "hour": 11,
+  "value": 25
+},
+{
+  "day": 2,
+  "hour": 12,
+  "value": 25
+},
+{
+  "day": 2,
+  "hour": 13,
+  "value": 25
+},
+{
+  "day": 2,
+  "hour": 14,
+  "value": 5
+},
+{
+  "day": 2,
+  "hour": 15,
+  "value": 2
+},
+{
+  "day": 2,
+  "hour": 16,
+  "value": 13
+},
+{
+  "day": 2,
+  "hour": 17,
+  "value": 2
+},
+{
+  "day": 2,
+  "hour": 18,
+  "value": 2
+},
+{
+  "day": 2,
+  "hour": 19,
+  "value": 18
+},
+{
+  "day": 2,
+  "hour": 20,
+  "value": 12
+},
+{
+  "day": 2,
+  "hour": 21,
+  "value": 2
+},
+{
+  "day": 2,
+  "hour": 22,
+  "value": 8
+},
+{
+  "day": 2,
+  "hour": 23,
+  "value": 18
+},
+{
+  "day": 2,
+  "hour": 24,
+  "value": 18
+},
+{
+  "day": 2,
+  "hour": 25,
+  "value": 10
+},
+{
+  "day": 3,
+  "hour":	1,
+  "value": 16
+},
+{
+  "day": 3,
+  "hour": 2,
+  "value": 20
+},
+{
+  "day": 3,
+  "hour": 3,
+  "value": 0
+},
+{
+  "day": 3,
+  "hour": 4,
+  "value": 0
+},
+{
+  "day": 3,
+  "hour": 5,
+  "value": 0
+},
+{
+  "day": 3,
+  "hour": 6,
+  "value": 2
+},
+{
+  "day": 3,
+  "hour": 7,
+  "value": 0
+},
+{
+  "day": 3,
+  "hour": 8,
+  "value": 9
+},
+{
+  "day": 3,
+  "hour": 9,
+  "value": 25
+},
+{
+  "day": 3,
+  "hour": 10,
+  "value": 9
+},
+{
+  "day": 3,
+  "hour": 11,
+  "value": 25
+},
+{
+  "day": 3,
+  "hour": 12,
+  "value": 25
+},
+{
+  "day": 3,
+  "hour": 13,
+  "value": 25
+},
+{
+  "day": 3,
+  "hour": 14,
+  "value": 5
+},
+{
+  "day": 3,
+  "hour": 15,
+  "value": 2
+},
+{
+  "day": 3,
+  "hour": 16,
+  "value": 13
+},
+{
+  "day": 3,
+  "hour": 17,
+  "value": 2
+},
+{
+  "day": 3,
+  "hour": 18,
+  "value": 2
+},
+{
+  "day": 3,
+  "hour": 19,
+  "value": 18
+},
+{
+  "day": 3,
+  "hour": 20,
+  "value": 12
+},
+{
+  "day": 3,
+  "hour": 21,
+  "value": 2
+},
+{
+  "day": 3,
+  "hour": 22,
+  "value": 8
+},
+{
+  "day": 3,
+  "hour": 23,
+  "value": 18
+},
+{
+  "day": 3,
+  "hour": 24,
+  "value": 18
+},
+{
+  "day": 3,
+  "hour": 25,
+  "value": 10
+},
+{
+  "day": 4,
+  "hour":	1,
+  "value": 16
+},
+{
+  "day": 4,
+  "hour": 2,
+  "value": 20
+},
+{
+  "day": 4,
+  "hour": 3,
+  "value": 0
+},
+{
+  "day": 4,
+  "hour": 4,
+  "value": 0
+},
+{
+  "day": 4,
+  "hour": 5,
+  "value": 0
+},
+{
+  "day": 4,
+  "hour": 6,
+  "value": 2
+},
+{
+  "day": 4,
+  "hour": 7,
+  "value": 0
+},
+{
+  "day": 4,
+  "hour": 8,
+  "value": 9
+},
+{
+  "day": 4,
+  "hour": 9,
+  "value": 25
+},
+{
+  "day": 4,
+  "hour": 10,
+  "value": 9
+},
+{
+  "day": 4,
+  "hour": 11,
+  "value": 25
+},
+{
+  "day": 4,
+  "hour": 12,
+  "value": 25
+},
+{
+  "day": 4,
+  "hour": 13,
+  "value": 25
+},
+{
+  "day": 4,
+  "hour": 14,
+  "value": 5
+},
+{
+  "day": 4,
+  "hour": 15,
+  "value": 2
+},
+{
+  "day": 4,
+  "hour": 16,
+  "value": 13
+},
+{
+  "day": 4,
+  "hour": 17,
+  "value": 2
+},
+{
+  "day": 4,
+  "hour": 18,
+  "value": 2
+},
+{
+  "day": 4,
+  "hour": 19,
+  "value": 18
+},
+{
+  "day": 4,
+  "hour": 20,
+  "value": 12
+},
+{
+  "day": 4,
+  "hour": 21,
+  "value": 2
+},
+{
+  "day": 4,
+  "hour": 22,
+  "value": 8
+},
+{
+  "day": 4,
+  "hour": 23,
+  "value": 18
+},
+{
+  "day": 4,
+  "hour": 24,
+  "value": 18
+},
+{
+  "day": 4,
+  "hour": 25,
+  "value": 10
+},
+{
+  "day": 5,
+  "hour":	1,
+  "value": 16
+},
+{
+  "day": 5,
+  "hour": 2,
+  "value": 20
+},
+{
+  "day": 5,
+  "hour": 3,
+  "value": 0
+},
+{
+  "day": 5,
+  "hour": 4,
+  "value": 0
+},
+{
+  "day": 5,
+  "hour": 5,
+  "value": 0
+},
+{
+  "day": 5,
+  "hour": 6,
+  "value": 2
+},
+{
+  "day": 5,
+  "hour": 7,
+  "value": 0
+},
+{
+  "day": 5,
+  "hour": 8,
+  "value": 9
+},
+{
+  "day": 5,
+  "hour": 9,
+  "value": 25
+},
+{
+  "day": 5,
+  "hour": 10,
+  "value": 9
+},
+{
+  "day": 5,
+  "hour": 11,
+  "value": 25
+},
+{
+  "day": 5,
+  "hour": 12,
+  "value": 25
+},
+{
+  "day": 5,
+  "hour": 13,
+  "value": 25
+},
+{
+  "day": 5,
+  "hour": 14,
+  "value": 5
+},
+{
+  "day": 5,
+  "hour": 15,
+  "value": 2
+},
+{
+  "day": 5,
+  "hour": 16,
+  "value": 13
+},
+{
+  "day": 5,
+  "hour": 17,
+  "value": 2
+},
+{
+  "day": 5,
+  "hour": 18,
+  "value": 2
+},
+{
+  "day": 5,
+  "hour": 19,
+  "value": 18
+},
+{
+  "day": 5,
+  "hour": 20,
+  "value": 12
+},
+{
+  "day": 5,
+  "hour": 21,
+  "value": 2
+},
+{
+  "day": 5,
+  "hour": 22,
+  "value": 8
+},
+{
+  "day": 5,
+  "hour": 23,
+  "value": 18
+},
+{
+  "day": 5,
+  "hour": 24,
+  "value": 18
+},
+{
+  "day": 5,
+  "hour": 25,
+  "value": 10
+},
+{
+  "day": 6,
+  "hour":	1,
+  "value": 16
+},
+{
+  "day": 6,
+  "hour": 2,
+  "value": 20
+},
+{
+  "day": 6,
+  "hour": 3,
+  "value": 0
+},
+{
+  "day": 6,
+  "hour": 4,
+  "value": 0
+},
+{
+  "day": 6,
+  "hour": 5,
+  "value": 0
+},
+{
+  "day": 6,
+  "hour": 6,
+  "value": 2
+},
+{
+  "day": 6,
+  "hour": 7,
+  "value": 0
+},
+{
+  "day": 6,
+  "hour": 8,
+  "value": 9
+},
+{
+  "day": 6,
+  "hour": 9,
+  "value": 25
+},
+{
+  "day": 6,
+  "hour": 10,
+  "value": 9
+},
+{
+  "day": 6,
+  "hour": 11,
+  "value": 25
+},
+{
+  "day": 6,
+  "hour": 12,
+  "value": 25
+},
+{
+  "day": 6,
+  "hour": 13,
+  "value": 25
+},
+{
+  "day": 6,
+  "hour": 14,
+  "value": 5
+},
+{
+  "day": 6,
+  "hour": 15,
+  "value": 2
+},
+{
+  "day": 6,
+  "hour": 16,
+  "value": 13
+},
+{
+  "day": 6,
+  "hour": 17,
+  "value": 2
+},
+{
+  "day": 6,
+  "hour": 18,
+  "value": 2
+},
+{
+  "day": 6,
+  "hour": 19,
+  "value": 18
+},
+{
+  "day": 6,
+  "hour": 20,
+  "value": 12
+},
+{
+  "day": 6,
+  "hour": 21,
+  "value": 2
+},
+{
+  "day": 6,
+  "hour": 22,
+  "value": 8
+},
+{
+  "day": 6,
+  "hour": 23,
+  "value": 18
+},
+{
+  "day": 6,
+  "hour": 24,
+  "value": 18
+},
+{
+  "day": 6,
+  "hour": 25,
+  "value": 10
+},
+{
+  "day": 7,
+  "hour":	1,
+  "value": 16
+},
+{
+  "day": 7,
+  "hour": 2,
+  "value": 20
+},
+{
+  "day": 7,
+  "hour": 3,
+  "value": 0
+},
+{
+  "day": 7,
+  "hour": 4,
+  "value": 0
+},
+{
+  "day": 7,
+  "hour": 5,
+  "value": 0
+},
+{
+  "day": 7,
+  "hour": 6,
+  "value": 2
+},
+{
+  "day": 7,
+  "hour": 7,
+  "value": 0
+},
+{
+  "day": 7,
+  "hour": 8,
+  "value": 9
+},
+{
+  "day": 7,
+  "hour": 9,
+  "value": 25
+},
+{
+  "day": 7,
+  "hour": 10,
+  "value": 9
+},
+{
+  "day": 7,
+  "hour": 11,
+  "value": 25
+},
+{
+  "day": 7,
+  "hour": 12,
+  "value": 25
+},
+{
+  "day": 7,
+  "hour": 13,
+  "value": 25
+},
+{
+  "day": 7,
+  "hour": 14,
+  "value": 5
+},
+{
+  "day": 7,
+  "hour": 15,
+  "value": 2
+},
+{
+  "day": 7,
+  "hour": 16,
+  "value": 13
+},
+{
+  "day": 7,
+  "hour": 17,
+  "value": 2
+},
+{
+  "day": 7,
+  "hour": 18,
+  "value": 2
+},
+{
+  "day": 7,
+  "hour": 19,
+  "value": 18
+},
+{
+  "day": 7,
+  "hour": 20,
+  "value": 12
+},
+{
+  "day": 7,
+  "hour": 21,
+  "value": 2
+},
+{
+  "day": 7,
+  "hour": 22,
+  "value": 8
+},
+{
+  "day": 7,
+  "hour": 23,
+  "value": 18
+},
+{
+  "day": 7,
+  "hour": 24,
+  "value": 18
+},
+{
+  "day": 7,
+  "hour": 25,
+  "value": 10
+}
+];
+/*
+/*vm.active_time_Data = [
+    {
+      "key": "Series 1",
+      "color": "#d67777",
+      "values": [
+        {
+          "label" : "Group A" ,
+          "value" : -1.8746444827653
+        } ,
+        {
+          "label" : "Group B" ,
+          "value" : -8.0961543492239
+        } ,
+        {
+          "label" : "Group C" ,
+          "value" : -0.57072943117674
+        } ,
+        {
+          "label" : "Group D" ,
+          "value" : -2.4174010336624
+        } ,
+        {
+          "label" : "Group E" ,
+          "value" : -0.72009071426284
+        } ,
+        {
+          "label" : "Group F" ,
+          "value" : -0.77154485523777
+        } ,
+        {
+          "label" : "Group G" ,
+          "value" : -0.90152097798131
+        } ,
+        {
+          "label" : "Group H" ,
+          "value" : -0.91445417330854
+        } ,
+        {
+          "label" : "Group I" ,
+          "value" : -0.055746319141851
+        }
+      ]
+    },
+    {
+      "key": "Series 2",
+      "color": "#4f99b4",
+      "values": [
+        {
+          "label" : "Group A" ,
+          "value" : 25.307646510375
+        } ,
+        {
+          "label" : "Group B" ,
+          "value" : 16.756779544553
+        } ,
+        {
+          "label" : "Group C" ,
+          "value" : 18.451534877007
+        } ,
+        {
+          "label" : "Group D" ,
+          "value" : 8.6142352811805
+        } ,
+        {
+          "label" : "Group E" ,
+          "value" : 7.8082472075876
+        } ,
+        {
+          "label" : "Group F" ,
+          "value" : 5.259101026956
+        } ,
+        {
+          "label" : "Group G" ,
+          "value" : 0.30947953487127
+        } ,
+        {
+          "label" : "Group H" ,
+          "value" : 0
+        } ,
+        {
+          "label" : "Group I" ,
+          "value" : 0
+        }
+      ]
+    }
+  ]
+  */
