@@ -55,11 +55,13 @@
           </div>
         </div>
         <div class="col s12 m6 l4">
-          <div class="card">
+          <div class="card" >
             <span class="card-title">Comparison between centers(TODO)</span>
-            <div class="card-content">
-              <cumulative-Line-Chart data="historical.center_attendance_data" color=""></cumulative-Line-Chart>
+            <div class="card-content" id="top_active_content" >
+              <div class="g-chart">
+              <responsive-Horizontal-Bar-Chart id="top_active"  data="historical.responsiveHorizontalBarData" color=""></responsive-Horizontal-Bar-Chart>
             </div>
+          </div>
           </div>
         </div>
         <div class="col s12 m6 l4">
