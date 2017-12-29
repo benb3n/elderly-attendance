@@ -10,6 +10,7 @@ angular.module('SystemMonitoringCtrl', [])
     }
 
     $(document).ready(function() {
+        
         $('.tooltipped').tooltip({delay: 50});
         $('.button-collapse').sideNav({
             menuWidth: 300, // Default is 240
@@ -120,7 +121,6 @@ angular.module('SystemMonitoringCtrl', [])
         obj.name = $('#update_name').val();
         obj.device_id = $('#update_device_id').val();
         
-        
     }
 
     //https://dev-starlight.icitylab.com/api/v1/readings/sysmonreading/?gw_device=6902&reading_type=battery_voltage&start_datetime=2017-12-20T00:00:00
@@ -137,7 +137,6 @@ angular.module('SystemMonitoringCtrl', [])
                 _defer.reject();
             }
         });
-        
         return _defer.promise;
     }
     function getSystemMonitoringDevice(reading_type, start_datetime, page_size){
