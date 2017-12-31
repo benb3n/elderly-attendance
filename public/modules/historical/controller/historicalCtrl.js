@@ -372,7 +372,7 @@ function callSensorReadings (center, start_date_time, end_date_time){
         return getSensorReadings(center, start_date_time, end_date_time, 500 );
     })
     .then(function(result){
-        update_heatmap_chart(result)
+        //update_heatmap_chart(result)
         console.log(result);
         //update_most_active_chart(result);
         //update_avg_week_heatmap_chart(result);
@@ -409,7 +409,7 @@ function update_heatmap_chart(result){
       date_value.forEach(function(id_value){
         temp_arr = objArr_to_instances(id_value); //[total_time,instances_array]
         total_time += temp_arr[0]; //adding hours from that mac_id to total hours for that date
-        instances_array.concat(temp_arr[1]); //adding array of instances for that mac_id into instances_array
+        instances_array = instances_array.concat(temp_arr[1]); //adding array of instances for that mac_id into instances_array
       })//end for each id
       date_time_array.push(total_time);
       date_instances_array.push(instances_array);
@@ -439,7 +439,6 @@ function update_heatmap_chart(result){
 }//end func update_heatmap_chart
 
 function update_avg_week_heatmap_chart(result){
-  //todo
   var temp_arr = objArr_to_dateObjArr(result.results);
   var date_list = temp_arr[0];//array that stores all the unique dates
   var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
@@ -453,8 +452,6 @@ function update_avg_week_heatmap_chart(result){
       date_instances_array.push(objArr_to_instances(value)[1]);
     };
   })//end of for each
-
-  //for each date from date_list, check which instances activity
 
   //week_arr[7*hour_arr], contains hour_arr for that day of the week
   //hour_arr[25], counts number of unique mac_ids during in that slot
@@ -472,58 +469,14 @@ function update_avg_week_heatmap_chart(result){
   //vm.selectedStartDate_courses
   //console.log(vm.selectedEndDate_courses);
 
+  //TODO:
   var time_comparison_arr = []; //to compare the number of people attending classes that start at specific times
 
   date_instances_array.forEach(function(value,index) {
     //check date
     var this_date = moment(date_list[index]);
-
-    var day_index;
-    var this_day = this_date.format('dddd');
-    if(this_day=='Monday'){
-      day_index = 0;
-    }else if (this_day=='Tuesday'){
-      day_index = 1;
-    }else if(this_day=='Wednesday'){
-      day_index = 2;
-    }else if (this_day=='Thursday') {
-      day_index = 3;
-    }else if (this_day=='Friday') {
-      day_index = 4;
-    }else if (this_day=='Saturday') {
-      day_index = 5;
-    }else if (this_day=='Sunday') {
-      day_index = 6;
-    };
-
-    //time list
-    var time_arr = [];
-    time_arr.push(this_date.clone().hour(8).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(8).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(9).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(9).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(10).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(10).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(11).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(11).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(12).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(12).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(13).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(13).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(14).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(14).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(15).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(15).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(16).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(16).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(17).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(17).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(18).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(18).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(19).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(19).minute(30).second(0));
-    time_arr.push(this_date.clone().hour(20).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(20).minute(30).second(0));
+    var day_index = get_day_index(this_date);
+    var time_arr = generate_time_array(this_date,8,20);
 
     value.forEach(function(instance_value){
       //instance = [mac_id,instance_start_date_time,time_spent]
@@ -536,10 +489,10 @@ function update_avg_week_heatmap_chart(result){
         if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
           //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
           week_arr[day_index][i] += 1;
-
-        };
-      };
+        };//end if
+      };//end for loop
     })//end forEach instance
+
   })//end for each day
 
   //add data
@@ -616,6 +569,37 @@ function update_most_active_chart(result){
     /********************
       REUSEABLE FUNCTIONS
     *********************/
+function get_day_index(date){
+  var this_day = moment(date).format('dddd');
+  if(this_day=='Monday'){
+    return 0;
+  }else if (this_day=='Tuesday'){
+    return  1;
+  }else if(this_day=='Wednesday'){
+    return  2;
+  }else if (this_day=='Thursday') {
+    return  3;
+  }else if (this_day=='Friday') {
+    return  4;
+  }else if (this_day=='Saturday') {
+    return  5;
+  }else if (this_day=='Sunday') {
+    return  6;
+  };
+}//end function get day_index
+
+function generate_time_array(date,start_hour,end_hour){
+  //create array of time with 30 min intervals for specific date
+  var time_arr = [];
+  var current = start_hour;
+  var this_date = moment(date);
+  while(current <= end_hour){
+    time_arr.push(this_date.clone().hour(current).minute(0).second(0));
+    time_arr.push(this_date.clone().hour(current).minute(30).second(0));
+  }//end while loop
+  return time_arr
+}//end func generate_time_array
+
 function objArr_to_dateObjArr(object_array){
   //takes an array of result objects and returns array[day_list,day_obj_array];
   //date_list is an array where each index is a specific date
