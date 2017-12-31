@@ -155,8 +155,7 @@ angular.module('HistoricalCtrl', [])
       {date:"2017-12-12", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"52"},
       {date:"2017-12-12", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"53"},
       {date:"2017-12-12", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"54"}
-    ]
-    }
+    ]}
 
     vm.unique_visitors_data= [
       {
@@ -350,19 +349,48 @@ angular.module('HistoricalCtrl', [])
                 {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
         }
       ]; //end data
+    vm.responsiveLineChartData = [
+      {"date": '2008-11', "num" : 7.8},
+{"date": '2008-12', "num" : 8.3},
+{"date": '2009-01', "num" : 8.7},
+{"date": '2009-02', "num" : 8.9},
+{"date": '2009-03', "num" : 9.4},
+{"date": '2009-04', "num" : 9.5},
+{"date": '2009-05', "num" : 9.5},
+{"date": '2009-06', "num" : 9.6},
+{"date": '2009-07', "num" : 9.8},
+{"date": '2009-08', "num" : 10},
+{"date": '2009-09', "num" : 9.9},
+{"date": '2009-10', "num" : 9.9},
+{"date": '2009-11', "num" : 9.7},
+{"date": '2009-12', "num" : 9.8},
+{"date": '2010-01', "num" : 9.8},
+{"date": '2010-02', "num" : 9.9},
+{"date": '2010-03', "num" : 9.6},
+{"date": '2010-04', "num" : 9.4},
+{"date": '2010-05', "num" : 9.5},
+{"date": '2010-06', "num" : 9.6},
+{"date": '2010-07', "num" : 9.5},
+{"date": '2010-08', "num" : 9.5},
+{"date": '2010-09', "num" : 9.8},
+{"date": '2010-10', "num" : 9.4},
+{"date": '2010-11', "num" : 9.1},
+{"date": '2010-12', "num" : 9},
+{"date": '2011-01', "num" : 8.9},
+{"date": '2011-02', "num" : 9},
+{"date": '2011-03', "num" : 9}
+
+    ];
+
     vm.selectedCenter = 6901;
     vm.selectedEndDate_courses = new Date('30 November 2017');
     vm.selectedStartDate_courses = new Date('1 November 2017');
 
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
-    }//end initController
+  }//end initController
 
-
-  /********************
-    Calendar Heatmap
-  *********************/
-function callSensorReadings (center, start_date_time, end_date_time){
+  function callSensorReadings (center, start_date_time, end_date_time){
   start_date_time =moment(start_date_time).format('YYYY-MM-DD') + 'T00:00:00'
   end_date_time =moment(end_date_time).format('YYYY-MM-DD') + 'T00:00:00'
 
@@ -374,350 +402,370 @@ function callSensorReadings (center, start_date_time, end_date_time){
     .then(function(result){
         //update_heatmap_chart(result)
         console.log(result);
-        //update_most_active_chart(result);
+        update_most_active_chart(result);
         //update_avg_week_heatmap_chart(result);
     })//end when.then
 }//end callSensorReadings
 
-function update_heatmap_chart(result){
-  if (result.results.length == 0){
-    document.getElementById("calendar_error").style.visibility='visible';
-  }else{
-    document.getElementById("calendar_error").style.visibility='hidden';
+  /********************
+        CHARTS
+  *********************/
+  function update_heatmap_chart(result){
+    if (result.results.length == 0){
+      document.getElementById("calendar_error").style.visibility='visible';
+    }else{
+      document.getElementById("calendar_error").style.visibility='hidden';
+
+      var temp_arr = objArr_to_dateObjArr(result.results);
+      var date_list = temp_arr[0];//array that stores all the unique dates
+      var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
+
+      //split date obj by mac_id
+      var date_mac_obj_array = []; //array of mac_id[obj,obj..] for corresponding date
+      date_obj_array.forEach(function(value){
+        if (value.length==0){
+          date_mac_obj_array.push([]);
+        }else {
+          date_mac_obj_array.push(objArr_to_macObjArr(value)[1]);
+        };
+      })//end of for each
+
+      //get instances for each date
+      var date_time_array = []; //[date_total_time, date_total_time...]
+      var date_instances_array = []; // [date[instance,instance,instance],date[instance,instance]...]
+
+      date_mac_obj_array.forEach(function(date_value,date_index){
+        var instances_array = [];//instances for that date
+        var total_time = 0; //total time for that date
+        date_value.forEach(function(id_value){
+          temp_arr = objArr_to_instances(id_value); //[total_time,instances_array]
+          total_time += temp_arr[0]; //adding hours from that mac_id to total hours for that date
+          instances_array = instances_array.concat(temp_arr[1]); //adding array of instances for that mac_id into instances_array
+        })//end for each id
+        date_time_array.push(total_time);
+        date_instances_array.push(instances_array);
+      })//end for each date
+
+      //pushing into data
+      var calendar_data = [];
+      for(var i = 0 ; i<date_instances_array.length ; i++){
+        calendar_data.push({
+          "date": ""+ date_list[i],
+          "total": date_time_array[i],
+          "details": []//end details
+        })//end push to calendar_data
+      }//end for loop
+
+      date_instances_array.forEach(function(date_value,date_index){
+        date_value.forEach(function(value,index){
+          calendar_data[date_index].details.push({
+            "name": ""+ value[0],
+            "date": ""+ value[1],
+            "value": parseInt(value[2])
+          })//end calendar_data push
+        })//end forEach
+      })//end forEach day_value
+      vm.calendarheatmapdata=angular.copy(calendar_data);
+    }//end else
+  }//end func update_heatmap_chart
+
+  function update_avg_week_heatmap_chart(result){
 
     var temp_arr = objArr_to_dateObjArr(result.results);
     var date_list = temp_arr[0];//array that stores all the unique dates
     var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
 
-    //split date obj by mac_id
-    var date_mac_obj_array = []; //array of mac_id[obj,obj..] for corresponding date
+    //get instances of each day, instance[id,instance_start_date_time,time_spent]
+    var date_instances_array = []; //array of instances for corresponding date
     date_obj_array.forEach(function(value){
       if (value.length==0){
-        date_mac_obj_array.push([]);
+        date_instances_array.push([]);
       }else {
-        date_mac_obj_array.push(objArr_to_macObjArr(value)[1]);
+        date_instances_array.push(objArr_to_instances(value)[1]);
       };
     })//end of for each
 
-    //get instances for each date
-    var date_time_array = []; //[date_total_time, date_total_time...]
-    var date_instances_array = []; // [date[instance,instance,instance],date[instance,instance]...]
+    //week_arr[7*hour_arr], contains hour_arr for that day of the week
+    //hour_arr[25], counts number of unique mac_ids during in that slot
+    var week_arr = [];
+    for(i=0; i<7; i++){
+      var hour_arr  = new Array(25);
+      hour_arr.fill(0);
+      week_arr.push(hour_arr);
+    }
 
-    date_mac_obj_array.forEach(function(date_value,date_index){
-      var instances_array = [];//instances for that date
-      var total_time = 0; //total time for that date
-      date_value.forEach(function(id_value){
-        temp_arr = objArr_to_instances(id_value); //[total_time,instances_array]
-        total_time += temp_arr[0]; //adding hours from that mac_id to total hours for that date
-        instances_array = instances_array.concat(temp_arr[1]); //adding array of instances for that mac_id into instances_array
-      })//end for each id
-      date_time_array.push(total_time);
-      date_instances_array.push(instances_array);
+    //TODO: count number of each day of the week for chosen date range
+    //ask if can use vm.selectedEndDate_courses etc
+    var week_instances_count = new Array(7); //counts number of weeks the chosen dataset has of each day
+    week_instances_count.fill(0);
+    //vm.selectedStartDate_courses
+    //console.log(vm.selectedEndDate_courses);
+
+    //TODO:
+    var time_comparison_arr = []; //to compare the number of people attending classes that start at specific times
+
+    date_instances_array.forEach(function(value,index) {
+      //check date
+      var this_date = moment(date_list[index]);
+      var day_index = get_day_index(this_date);
+      var time_arr = generate_time_array(this_date,8,20);
+
+      value.forEach(function(instance_value){
+        //instance = [mac_id,instance_start_date_time,time_spent]
+        var time_index;
+        var this_start = moment(instance_value[1]);
+        var this_end = this_start.clone().add(instance_value[2], 'seconds');
+        //console.log(instance_value);
+        //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
+        for (i = 0; i < time_arr.length-1; i++) {
+          if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
+            //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
+            week_arr[day_index][i] += 1;
+          };//end if
+        };//end for loop
+      })//end forEach instance
+
     })//end for each date
 
-    //pushing into data
-    var calendar_data = [];
-    for(var i = 0 ; i<date_instances_array.length ; i++){
-      calendar_data.push({
-        "date": ""+ date_list[i],
-        "total": date_time_array[i],
-        "details": []//end details
-      })//end push to calendar_data
-    }//end for loop
+    //add data
+    weekly_activity_data = [];
+    week_arr.forEach(function(day_value,day_index){
+      day_value.forEach(function(value,index){
+        weekly_activity_data.push({
+          "day": day_index+1,
+          "hour":	index+1,
+          "value": value // /week_instances_count[day_index] //TODO
+        })
+      })//end for each hour
+    })//end for each day
 
-    date_instances_array.forEach(function(date_value,date_index){
-      date_value.forEach(function(value,index){
-        calendar_data[date_index].details.push({
-          "name": ""+ value[0],
-          "date": ""+ value[1],
-          "value": parseInt(value[2])
-        })//end calendar_data push
-      })//end forEach
-    })//end forEach day_value
-    vm.calendarheatmapdata=angular.copy(calendar_data);
-  }//end else
-}//end func update_heatmap_chart
+    vm.dayHourHeatmapData=angular.copy(weekly_activity_data);
+    /*
+    {
+        key: "not averaged yet",
+        values: [
+            {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
+    }*/
+  }//end func update_avg_week_heatmap_chart
 
-function update_avg_week_heatmap_chart(result){
-  var temp_arr = objArr_to_dateObjArr(result.results);
-  var date_list = temp_arr[0];//array that stores all the unique dates
-  var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
+  function update_most_active_chart(result){
+    if (result.results.length == 0){
+      document.getElementById("active_error").style.visibility='visible';
+    }else{
+      document.getElementById("active_error").style.visibility='hidden';
+    }
 
-  //get instances of each day, instance[id,instance_start_date_time,time_spent]
-  var date_instances_array = []; //array of instances for corresponding date
-  date_obj_array.forEach(function(value){
-    if (value.length==0){
-      date_instances_array.push([]);
-    }else {
-      date_instances_array.push(objArr_to_instances(value)[1]);
+      //sort the data by mac ID
+      var temp_arr = objArr_to_macObjArr(result.results);
+      var mac_id_list = temp_arr[0];//array that stores all the unique ID
+      var mac_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular mac id
+
+      //var mac_time_list = [];//array that stores total time per corresponding mac id
+      var time_data = [];
+
+      //get timings of each mac_id and store in object
+      mac_obj_array.forEach(function(value,index){
+        var id_time = objArr_to_instances(value)[0] /(60*60);
+        time_data.push({
+            "category": ""+ mac_id_list[index],
+            "num": id_time
+        });
+      });
+      //sort objects by timing
+      time_data.sort(compare_time_data);
+
+      vm.mostActiveData = angular.copy(time_data);
+      vm.responsiveHorizontalBarData = angular.copy(time_data);
+  }//end update_most_active_chart function
+
+  function update_course_month_chart(result){
+    //TODO:
+
+
+    //get data related to course
+
+
+    //
+  }// end func update_course_month_chart
+
+  function update_course_time_chart(result){
+    //TODO:
+  }// end func update_course_time_chart
+
+  /********************
+    REUSEABLE FUNCTIONS
+  *********************/
+  function get_day_index(date){
+    var this_day = moment(date).format('dddd');
+    if(this_day=='Monday'){
+      return 0;
+    }else if (this_day=='Tuesday'){
+      return  1;
+    }else if(this_day=='Wednesday'){
+      return  2;
+    }else if (this_day=='Thursday') {
+      return  3;
+    }else if (this_day=='Friday') {
+      return  4;
+    }else if (this_day=='Saturday') {
+      return  5;
+    }else if (this_day=='Sunday') {
+      return  6;
     };
-  })//end of for each
+  }//end function get day_index
 
-  //week_arr[7*hour_arr], contains hour_arr for that day of the week
-  //hour_arr[25], counts number of unique mac_ids during in that slot
-  var week_arr = [];
-  for(i=0; i<7; i++){
-    var hour_arr  = new Array(25);
-    hour_arr.fill(0);
-    week_arr.push(hour_arr);
+  function generate_time_array(date,start_hour,end_hour){
+    //create array of time with 30 min intervals for specific date
+    var time_arr = [];
+    var current = start_hour;
+    var this_date = moment(date);
+    while(current <= end_hour){
+      time_arr.push(this_date.clone().hour(current).minute(0).second(0));
+      time_arr.push(this_date.clone().hour(current).minute(30).second(0));
+    }//end while loop
+    return time_arr
+  }//end func generate_time_array
+
+  function compare_time_data(a,b){
+    //helps sorting by decending order
+    aTime = a.num;
+    bTime = b.num;
+
+    let comparison = 0;
+    if (aTime > bTime) {
+      comparison = 1;
+    } else if (aTime < bTime) {
+      comparison = -1;
+    }
+    return comparison;
   }
 
-  //TODO: count number of each day of the week for chosen date range
-  //ask if can use vm.selectedEndDate_courses etc
-  var week_instances_count = new Array(7); //counts number of weeks the chosen dataset has of each day
-  week_instances_count.fill(0);
-  //vm.selectedStartDate_courses
-  //console.log(vm.selectedEndDate_courses);
+  function objArr_to_dateObjArr(object_array){
+    //takes an array of result objects and returns array[day_list,day_obj_array];
+    //date_list is an array where each index is a specific date
+    //date_obj_array an array where each index stores an array of all objects for the corresponding date
+    var date_obj_array = [];
+    var date_list = [];
 
-  //TODO:
-  var time_comparison_arr = []; //to compare the number of people attending classes that start at specific times
+    var curr_date = moment(object_array.gw_timestamp).format("YYYY-MM-DD");
+    date_list.push(curr_date);
+    date_obj_array.push([]);
 
-  date_instances_array.forEach(function(value,index) {
-    //check date
-    var this_date = moment(date_list[index]);
-    var day_index = get_day_index(this_date);
-    var time_arr = generate_time_array(this_date,8,20);
+    object_array.forEach(function(value){
+      var this_date = moment(value.gw_timestamp).format("YYYY-MM-DD");
+      //if day of this object is different from curr_date, create new array
+      if(this_date != curr_date){
+        date_obj_array.push([]);
+        date_list.push(this_date);
+        curr_date = this_date;
+      }//end if
+      date_obj_array[date_obj_array.length -1].push(value);
+    })//end forEach loop
 
-    value.forEach(function(instance_value){
+    return[date_list,date_obj_array]
+  }//end func objArr_to_dateObjArr
+
+  function objArr_to_macObjArr(object_array){
+    //takes an array of result objects and returns array of 2 arrays [mac_id_list,mac_obj_array]
+    //mac_id_list, each index contains one mac id(String)
+    //mac_obj_array, each index contains all objects of the corresponding mac id
+
+    mac_id_list = [];
+    mac_obj_array = [];
+    object_array.forEach(function(value){
+      //var id = value.device_id.substring(5);//assumes the center id is always 4 chars long followed by a "-"
+      var id = value.device_id.substring(value.device_id.indexOf("-")+1); //assumes there will only be one "-" in device_id, and it seperates center ID from mac ID
+
+      //check if that mac ID already has an array in mac_obj_array by checking if ID exist in mac_id_list
+      //if not, then add ID into mac_id_list AND create the array for that day in mac_obj_array
+      if(mac_id_list.indexOf(id) == -1){ //does not exist in mac_id_list
+        //add into mac_id_list
+        mac_id_list.push(id);
+        //create array for that ID in mac_obj_array
+        mac_obj_array.push([]);
+      }//end if
+      //add object into the corresponding array
+      mac_obj_array[mac_id_list.indexOf(id)].push(value);
+    })//end of forEach loop
+
+    return [mac_id_list,mac_obj_array];
+  }
+
+  function objArr_to_instances(object_array){
+    //takes an array of result objects and returns array of 2 arrays [array_total_time,instances_array];
+    //array_total_time is the accumulated time of all valid instances captured by objects
+    //instances_array an array of instances that stores mac_id,start time of instance and time spent for that instance
+    //method assumes that if there is only one data point, the beacon was merely passing by the area
+
+    var instances_array = []; //array of instances
+    //instance = [mac_id,instance_start_date_time,time_spent]
+    var min_time_spent_seconds = 600 //minimum 10 mins to count that instance
+    var buffer_time = 600 //time added to end of one instance
+    var array_total_time = 0;
+
+    var time_spent = 0;
+    var next_date_time = moment(object_array[0].gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
+
+    object_array.forEach(function(value){
+      var this_datetime = moment(value.gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
+      var time_diff = moment(next_date_time).diff(moment(this_datetime),"seconds");
+      if ( time_diff == 0){
+        //do nothing
+      }else if( time_diff > min_time_spent_seconds){//new instance
+        //check if current instance has more than one pointer-events, if not, considered invalid
+        if(time_spent>0){
+          time_spent = time_spent + buffer_time;
+          instances_array.push([value.device_id.substring(value.device_id.indexOf("-")+1),next_date_time,time_spent]); //[mac_id,instance_start_date_time,time_spent]
+          array_total_time = array_total_time + time_spent;
+        }
+        //move on to next instance, reset time_spent etc
+        time_spent = 0;
+        start_date_time = this_datetime;
+      }else{
+        //current instance, add to time and update next_date_time
+        time_spent = time_spent + time_diff;
+      }//end if else statement
+      next_date_time = this_datetime;
+    })//end of forEach loop
+
+    //add last entry
+    if(time_spent>0){
+      time_spent = time_spent + buffer_time;
+      var last_obj = object_array[object_array.length -1];
+      var last_mac_id = last_obj.device_id;
+      instances_array.push([last_mac_id.substring(last_mac_id.indexOf("-")+1),next_date_time,time_spent]);
+      array_total_time = array_total_time + time_spent;
+    }
+
+    return[array_total_time,instances_array];
+  }//end func objArr_to_instances
+
+  function instancesArray_to_coursesInstancesArr(instances_array,courses_array){
+    /*
+    //course[course_id, name, start_time, end_time, start_date, end_date, course_description]
+    var course_instance_array = [courses_array.length]; // array of course_instances[instance,instance...]
+    course_instance_array.fill([]);
+
+    instances_array.forEach(function(value,index) {
       //instance = [mac_id,instance_start_date_time,time_spent]
       var time_index;
-      var this_start = moment(instance_value[1]);
-      var this_end = this_start.clone().add(instance_value[2], 'seconds');
-      //console.log(instance_value);
-      //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
-      for (i = 0; i < time_arr.length-1; i++) {
-        if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
-          //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
-          week_arr[day_index][i] += 1;
-        };//end if
-      };//end for loop
+      var this_start = moment(value[1]);
+      var this_end = this_start.clone().add(value[2], 'seconds');
+
+      courses_array.forEach(function(course,course_index){
+        var course_start_date = moment(courses_array[i][4]).hour(moment(courses_array[i][2]).get('hour')).minute(moment(courses_array[i][2]).get('minute')).second('0'));
+        var course_start = moment(courses_array[i][5]).hour(moment(courses_array[i][2]).get('hour')).minute(moment(courses_array[i][2]).get('minute')).second('0'));
+        if(!(course_end.isBefore(this_start) || this_end.isBefore(course_start))){
+          course_instance_array[course_index].push(value);
+        }//end if
+      })//end for each course
     })//end forEach instance
-
-  })//end for each day
-
-  //add data
-  weekly_activity_data = [];
-  week_arr.forEach(function(day_value,day_index){
-    day_value.forEach(function(value,index){
-      weekly_activity_data.push({
-        "day": day_index+1,
-        "hour":	index+1,
-        "value": value // /week_instances_count[day_index] //TODO
-      })
-    })//end for each hour
-  })//end for each day
-
-  vm.dayHourHeatmapData=angular.copy(weekly_activity_data);
-  /*
-  {
-      key: "not averaged yet",
-      values: [
-          {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
-  }*/
-}//end func update_avg_week_heatmap_chart
-
-function update_most_active_chart(result){
-  if (result.results.length == 0){
-    document.getElementById("active_error").style.visibility='visible';
-  }else{
-    document.getElementById("active_error").style.visibility='hidden';
-  }
-
-    //sort the data by mac ID
-    var temp_arr = objArr_to_macObjArr(result.results);
-    var mac_id_list = temp_arr[0];//array that stores all the unique ID
-    var mac_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular mac id
-
-    //var mac_time_list = [];//array that stores total time per corresponding mac id
-    var time_data = [];
-
-    //get timings of each mac_id and store in object
-    mac_obj_array.forEach(function(value,index){
-      var id_time = objArr_to_instances(value)[0] /(60*60);
-      time_data.push({
-          "category": ""+ mac_id_list[index],
-          "num": id_time
-      });
-    });
-    //sort objects by timing
-    time_data.sort(compare_time_data);
-
-    vm.mostActiveData = angular.copy(time_data);
-    vm.responsiveHorizontalBarData = angular.copy(time_data);
-    /*
-    vm.responsiveHorizontalBarData = [
-      {
-        "category":"Cadas1",
-        "num": 20
-      },{
-        "category":"Cat2",
-        "num": 23
-      },{
-        "category":"Cat3",
-        "num": 19
-      },{
-        "category":"Cat4",
-        "num": 7
-      },{
-        "category":"Cat5",
-        "num": 35
-      }
-    ]
-*/
-
-}//end update_most_active_chart function
-    /********************
-      REUSEABLE FUNCTIONS
-    *********************/
-function get_day_index(date){
-  var this_day = moment(date).format('dddd');
-  if(this_day=='Monday'){
-    return 0;
-  }else if (this_day=='Tuesday'){
-    return  1;
-  }else if(this_day=='Wednesday'){
-    return  2;
-  }else if (this_day=='Thursday') {
-    return  3;
-  }else if (this_day=='Friday') {
-    return  4;
-  }else if (this_day=='Saturday') {
-    return  5;
-  }else if (this_day=='Sunday') {
-    return  6;
-  };
-}//end function get day_index
-
-function generate_time_array(date,start_hour,end_hour){
-  //create array of time with 30 min intervals for specific date
-  var time_arr = [];
-  var current = start_hour;
-  var this_date = moment(date);
-  while(current <= end_hour){
-    time_arr.push(this_date.clone().hour(current).minute(0).second(0));
-    time_arr.push(this_date.clone().hour(current).minute(30).second(0));
-  }//end while loop
-  return time_arr
-}//end func generate_time_array
-
-function objArr_to_dateObjArr(object_array){
-  //takes an array of result objects and returns array[day_list,day_obj_array];
-  //date_list is an array where each index is a specific date
-  //date_obj_array an array where each index stores an array of all objects for the corresponding date
-  var date_obj_array = [];
-  var date_list = [];
-
-  var curr_date = moment(object_array.gw_timestamp).format("YYYY-MM-DD");
-  date_list.push(curr_date);
-  date_obj_array.push([]);
-
-  object_array.forEach(function(value){
-    var this_date = moment(value.gw_timestamp).format("YYYY-MM-DD");
-    //if day of this object is different from curr_date, create new array
-    if(this_date != curr_date){
-      date_obj_array.push([]);
-      date_list.push(this_date);
-      curr_date = this_date;
-    }//end if
-    date_obj_array[date_obj_array.length -1].push(value);
-  })//end forEach loop
-
-  return[date_list,date_obj_array]
-}//end func objArr_to_dateObjArr
-
-function compare_time_data(a,b){
-  //helps sorting by decending order
-  aTime = a.num;
-  bTime = b.num;
-
-  let comparison = 0;
-  if (aTime > bTime) {
-    comparison = 1;
-  } else if (aTime < bTime) {
-    comparison = -1;
-  }
-  return comparison;
-}
-
-function objArr_to_macObjArr(object_array){
-  //takes an array of result objects and returns array of 2 arrays [mac_id_list,mac_obj_array]
-  //mac_id_list, each index contains one mac id(String)
-  //mac_obj_array, each index contains all objects of the corresponding mac id
-
-  mac_id_list = [];
-  mac_obj_array = [];
-  object_array.forEach(function(value){
-    //var id = value.device_id.substring(5);//assumes the center id is always 4 chars long followed by a "-"
-    var id = value.device_id.substring(value.device_id.indexOf("-")+1); //assumes there will only be one "-" in device_id, and it seperates center ID from mac ID
-
-    //check if that mac ID already has an array in mac_obj_array by checking if ID exist in mac_id_list
-    //if not, then add ID into mac_id_list AND create the array for that day in mac_obj_array
-    if(mac_id_list.indexOf(id) == -1){ //does not exist in mac_id_list
-      //add into mac_id_list
-      mac_id_list.push(id);
-      //create array for that ID in mac_obj_array
-      mac_obj_array.push([]);
-    }//end if
-    //add object into the corresponding array
-    mac_obj_array[mac_id_list.indexOf(id)].push(value);
-  })//end of forEach loop
-
-  return [mac_id_list,mac_obj_array];
-}
-
-function objArr_to_instances(object_array){
-  //takes an array of result objects and returns array of 2 arrays [array_total_time,instances_array];
-  //array_total_time is the accumulated time of all valid instances captured by objects
-  //instances_array an array of instances that stores mac_id,start time of instance and time spent for that instance
-  //method assumes that if there is only one data point, the beacon was merely passing by the area
-
-  var instances_array = []; //array of instances
-  //instance = [mac_id,instance_start_date_time,time_spent]
-  var min_time_spent_seconds = 600 //minimum 10 mins to count that instance
-  var buffer_time = 600 //time added to end of one instance
-  var array_total_time = 0;
-
-  var time_spent = 0;
-  var next_date_time = moment(object_array[0].gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
-
-  object_array.forEach(function(value){
-    var this_datetime = moment(value.gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
-    var time_diff = moment(next_date_time).diff(moment(this_datetime),"seconds");
-    if ( time_diff == 0){
-      //do nothing
-    }else if( time_diff > min_time_spent_seconds){//new instance
-      //check if current instance has more than one pointer-events, if not, considered invalid
-      if(time_spent>0){
-        time_spent = time_spent + buffer_time;
-        instances_array.push([value.device_id.substring(value.device_id.indexOf("-")+1),next_date_time,time_spent]); //[mac_id,instance_start_date_time,time_spent]
-        array_total_time = array_total_time + time_spent;
-      }
-      //move on to next instance, reset time_spent etc
-      time_spent = 0;
-      start_date_time = this_datetime;
-    }else{
-      //current instance, add to time and update next_date_time
-      time_spent = time_spent + time_diff;
-    }//end if else statement
-    next_date_time = this_datetime;
-  })//end of forEach loop
-
-  //add last entry
-  if(time_spent>0){
-    time_spent = time_spent + buffer_time;
-    var last_obj = object_array[object_array.length -1];
-    var last_mac_id = last_obj.device_id;
-    instances_array.push([last_mac_id.substring(last_mac_id.indexOf("-")+1),next_date_time,time_spent]);
-    array_total_time = array_total_time + time_spent;
-  }
-
-  return[array_total_time,instances_array];
-}//end func objArr_to_instances
+    */
+  }//end func instancesArray_to_coursesInstancesArr
 
   /********************
     BUTTON FUNCTIONS
   *********************/
-
   vm.generateDataPerson = generateDataPerson;
   vm.generateDataCourses = generateDataCourses;
 
@@ -727,6 +775,7 @@ function objArr_to_instances(object_array){
     console.log("updating person data");
     //console.log("disabled for now");
   }
+
   function generateDataCourses(){
     console.log("updating courses data");
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
@@ -747,8 +796,13 @@ function objArr_to_instances(object_array){
     return _defer.promise;
   }
 
-    /*
-    vm.calendarheatmapdata = [
+})//end controller
+
+
+/********************
+    data formats
+*********************/
+  /*vm.calendarheatmapdata = [
       {
         "date": "2016-01-01",
         "total": 17164,
@@ -789,12 +843,7 @@ function objArr_to_instances(object_array){
     ]//end heatmapdata
 */
 
-})
-
-
-
-/*
-activity_array = [
+  /*activity_array = [
   ["Monday","9:30am","10:30am","Physical Exercise"],
   ["Monday","10:30am","12:30pm","Language Lessons"],
   ["Monday","2:30pm","4:00pm","Bingo"],
@@ -844,8 +893,7 @@ activity_array = [
 */
 //seperate data by day
 
-/*
-vm.dayHourHeatmapData = [
+  /*vm.dayHourHeatmapData = [
 {
   "day": 1,
   "hour":	1,
@@ -1810,3 +1858,23 @@ vm.dayHourHeatmapData = [
     }
   ]
   */
+
+  /*vm.responsiveHorizontalBarData = [
+    {
+      "category":"Cadas1",
+      "num": 20
+    },{
+      "category":"Cat2",
+      "num": 23
+    },{
+      "category":"Cat3",
+      "num": 19
+    },{
+      "category":"Cat4",
+      "num": 7
+    },{
+      "category":"Cat5",
+      "num": 35
+    }
+  ]
+*/
