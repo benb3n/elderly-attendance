@@ -343,39 +343,19 @@ angular.module('HistoricalCtrl', [])
           {x: 5,y: 8}
         ]
     }];
-    vm.data = [
+    vm.barData = [
         {
             key: "Cumulative Return",
             values: [
                 {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
         }
       ]; //end data
-    /*  vm.responsiveHorizontalBarData = [
-        {
-          "category":"Cadas1",
-          "num": 20
-        },{
-          "category":"Cat2",
-          "num": 23
-        },{
-          "category":"Cat3",
-          "num": 19
-        },{
-          "category":"Cat4",
-          "num": 7
-        },{
-          "category":"Cat5",
-          "num": 35
-        }
-      ]
-*/
-
     vm.selectedCenter = 6901;
     vm.selectedEndDate_courses = new Date('30 November 2017');
     vm.selectedStartDate_courses = new Date('1 November 2017');
 
-    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
+    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
+    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
     }//end initController
 
 
@@ -392,9 +372,9 @@ function callSensorReadings (center, start_date_time, end_date_time){
         return getSensorReadings(center, start_date_time, end_date_time, 500 );
     })
     .then(function(result){
-        //update_heatmap_chart(result)
+        update_heatmap_chart(result)
         console.log(result);
-        update_most_active_chart(result);
+        //update_most_active_chart(result);
         //update_avg_week_heatmap_chart(result);
     })//end when.then
 }//end callSensorReadings
@@ -404,115 +384,50 @@ function update_heatmap_chart(result){
     document.getElementById("calendar_error").style.visibility='visible';
   }else{
     document.getElementById("calendar_error").style.visibility='hidden';
-    var day_obj_array = [];
 
-    var curr_day = moment(result.results[0].gw_timestamp).format("YYYY-MM-DD");
-    var day_list = [curr_day];
-    day_obj_array.push([]);
-    result.results.forEach(function(value){
-      this_day = moment(value.gw_timestamp).format("YYYY-MM-DD");
-      //if day of this object is different from curr_day, create new array
-      if(this_day != curr_day){
-        day_obj_array.push([]);
-        day_list.push(this_day);
-        curr_day = this_day;
-      }//end if
-      day_obj_array[day_obj_array.length -1].push(value);
-    })//end forEach loop
-    //end Method 2
-    //day_obj_array[day[],day[],day[]...]
-    //day[obj,obj,obj...]
+    var temp_arr = objArr_to_dateObjArr(result.results);
+    var date_list = temp_arr[0];//array that stores all the unique dates
+    var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
 
-    var day_mac_obj_array =  [];
-    //sorting the objects in day array by mac id
-    day_obj_array.forEach(function(day_value){
-      var mac_id_list = [];//array that stores all the unique ID's for a day
-      var mac_obj_array = [];//array that stores arrays of obj, each array contains all objects of a particular mac id for that day
-      day_value.forEach(function(value){
-        //var id = value.device_id.substring(5);//assumes the center id is always 4 chars long followed by a "-"
-        var id = value.device_id.substring(value.device_id.indexOf("-")+1); //assumes there will only be one "-" in device_id, and it seperates center ID from mac ID
+    //split date obj by mac_id
+    var date_mac_obj_array = []; //array of mac_id[obj,obj..] for corresponding date
+    date_obj_array.forEach(function(value){
+      if (value.length==0){
+        date_mac_obj_array.push([]);
+      }else {
+        date_mac_obj_array.push(objArr_to_macObjArr(value)[1]);
+      };
+    })//end of for each
 
-        //check if that mac ID already has an array in mac_obj_array by checking if ID exist in mac_id_list
-        //if not, then add ID into mac_id_list AND create the array for that day in mac_obj_array
-        if(mac_id_list.indexOf(id) == -1){ //does not exist in mac_id_list
-          //add into mac_id_list
-          mac_id_list.push(id);
-          //create array for that ID in mac_obj_array
-          mac_obj_array.push([]);
-        }//end if
-        //add object into the corresponding array
-        mac_obj_array[mac_id_list.indexOf(id)].push(value);
-      })//end of forEach loop of day_value
-      day_mac_obj_array.push(mac_obj_array);
-    })//end of forEach loop of day_obj_array
-    //day_obj_array[day[],day[],day[]...]
-    //day[mac_id[],mac_id[]...]
-    //mac_id[obj,obj...]
+    //get instances for each date
+    var date_time_array = []; //[date_total_time, date_total_time...]
+    var date_instances_array = []; // [date[instance,instance,instance],date[instance,instance]...]
 
-    var day_ins_array = [];
-    day_time_array = [];
-    //prepping data for chart
-    day_mac_obj_array.forEach(function(day_value){
-
-      var day_instances_array = [];
-      var min_time_spent_seconds = 600; //minimum 10 mins to count that instance
-      var buffer_time = 600;
-      var day_total_time = 0;
-
-      day_value.forEach(function(id_value){
-        var time_spent = 0;
-        var next_date_time = moment(id_value[0].gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
-        id_value.forEach(function(value){
-            var this_datetime = moment(value.gw_timestamp).format("YYYY-MM-DD HH:mm:ss");
-            var time_diff = moment(next_date_time).diff(moment(this_datetime),"seconds");
-            if ( time_diff == 0){
-              //do nothing
-            }else if( time_diff > min_time_spent_seconds){
-              //new instance
-              if(time_spent>0){
-                time_spent = time_spent + buffer_time;
-                day_instances_array.push([value.device_id.substring(value.device_id.indexOf("-")+1),next_date_time,time_spent]);
-                day_total_time = day_total_time + time_spent;
-              }
-              //move on to next instance, reset time_spent etc
-              time_spent = 0;
-              start_date_time = this_datetime;
-            }else{
-              //current instance, add to time and update next_date_time
-              time_spent = time_spent + time_diff;
-            }//end if else statement
-            next_date_time = this_datetime;
-          })//end of forEach loop of id_value
-
-          //add last entry
-            if(time_spent>0){
-              time_spent = time_spent + buffer_time;
-              day_instances_array.push([id_value[0].device_id.substring(id_value[0].device_id.indexOf("-")+1),next_date_time,time_spent]);
-              day_total_time = day_total_time + time_spent;
-            }
-
-      })//end of forEach loop of day_value
-
-      day_time_array.push(day_total_time);
-      day_ins_array.push(day_instances_array);
-    })//end of forEach loop of day_obj_array
-    //day_obj_array[day[],day[],day[]...]
-    //day[instance[],instance[],instance[]...]
-    //instance[mac_id,start_date_time,time_spent]
+    date_mac_obj_array.forEach(function(date_value,date_index){
+      var instances_array = [];//instances for that date
+      var total_time = 0; //total time for that date
+      date_value.forEach(function(id_value){
+        temp_arr = objArr_to_instances(id_value); //[total_time,instances_array]
+        total_time += temp_arr[0]; //adding hours from that mac_id to total hours for that date
+        instances_array.concat(temp_arr[1]); //adding array of instances for that mac_id into instances_array
+      })//end for each id
+      date_time_array.push(total_time);
+      date_instances_array.push(instances_array);
+    })//end for each date
 
     //pushing into data
     var calendar_data = [];
-    for(var i = 0 ; i<day_ins_array.length ; i++){
+    for(var i = 0 ; i<date_instances_array.length ; i++){
       calendar_data.push({
-        "date": ""+ day_list[i],
-        "total": day_time_array[i],
+        "date": ""+ date_list[i],
+        "total": date_time_array[i],
         "details": []//end details
       })//end push to calendar_data
     }//end for loop
 
-    day_ins_array.forEach(function(day_value,day_index){
-      day_value.forEach(function(value,index){
-        calendar_data[day_index].details.push({
+    date_instances_array.forEach(function(date_value,date_index){
+      date_value.forEach(function(value,index){
+        calendar_data[date_index].details.push({
           "name": ""+ value[0],
           "date": ""+ value[1],
           "value": parseInt(value[2])
@@ -521,7 +436,7 @@ function update_heatmap_chart(result){
     })//end forEach day_value
     vm.calendarheatmapdata=angular.copy(calendar_data);
   }//end else
-}//end func
+}//end func update_heatmap_chart
 
 function update_avg_week_heatmap_chart(result){
   //todo
@@ -557,6 +472,7 @@ function update_avg_week_heatmap_chart(result){
   //vm.selectedStartDate_courses
   //console.log(vm.selectedEndDate_courses);
 
+  var time_comparison_arr = []; //to compare the number of people attending classes that start at specific times
 
   date_instances_array.forEach(function(value,index) {
     //check date
@@ -620,6 +536,7 @@ function update_avg_week_heatmap_chart(result){
         if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
           //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
           week_arr[day_index][i] += 1;
+
         };
       };
     })//end forEach instance
@@ -638,6 +555,12 @@ function update_avg_week_heatmap_chart(result){
   })//end for each day
 
   vm.dayHourHeatmapData=angular.copy(weekly_activity_data);
+  /*
+  {
+      key: "not averaged yet",
+      values: [
+          {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
+  }*/
 }//end func update_avg_week_heatmap_chart
 
 function update_most_active_chart(result){
@@ -815,7 +738,7 @@ function objArr_to_instances(object_array){
   vm.generateDataCourses = generateDataCourses;
 
   function generateDataPerson(){
-    console.log(vm.selectedCenter +"\n"+ vm.selectedStartDate_person +"\n"+ vm.selectedEndDate_person);
+    //console.log(vm.selectedCenter +"\n"+ vm.selectedStartDate_person +"\n"+ vm.selectedEndDate_person);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     console.log("updating person data");
     //console.log("disabled for now");
