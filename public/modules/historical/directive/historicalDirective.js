@@ -1,5 +1,25 @@
 angular.module('HistoricalDirective', [])
 
+.directive('numberDisplay', function() {
+  return {
+    restrict: 'EA',
+    scope: {
+      data: "=",
+      color: "="
+    },
+    link: function(scope, Element, Attrs) {
+      scope.$watch('data', function(data) {
+        scope.renderChart(data, "")
+      },true);
+    
+      scope.renderChart = function(data, color){
+
+      }
+
+    }
+  }
+})
+
 .directive('barChart', function() {
     return {
         restrict: 'EA',
@@ -596,7 +616,6 @@ angular.module('HistoricalDirective', [])
 
             var colorScale = d3.scale.quantile()
                 .domain([0, buckets - 1, d3.max(data, function (d) { 
-                  console.log(d.value)
                   return d.value; })])
                 .range(colors);
             
