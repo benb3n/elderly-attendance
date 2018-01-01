@@ -395,7 +395,7 @@ function callSensorReadings (center, start_date_time, end_date_time){
         //update_heatmap_chart(result)
         console.log(result);
         update_most_active_chart(result);
-        //update_avg_week_heatmap_chart(result);
+        update_avg_week_heatmap_chart(result);
     })//end when.then
 }//end callSensorReadings
 

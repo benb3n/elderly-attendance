@@ -37,8 +37,8 @@ body{
 .card-green {
     background: #5cb860;
 }
-.card .card-title {
-    font-size: 15px;
+.card .card-profile-title {
+    font-size: 15px !important;
 }
 
 .login{

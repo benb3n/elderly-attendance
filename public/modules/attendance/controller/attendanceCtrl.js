@@ -24,6 +24,7 @@ angular.module('AttendanceCtrl', [])
     function initController(){
         vm.data = {};
         vm.update = {};
+        vm.delete = {};
         vm.alertLoading = false;
         vm.loading = true;
         generateDataForInit();
@@ -49,14 +50,10 @@ angular.module('AttendanceCtrl', [])
             })
             
             $('#attendance_table').DataTable({
-                responsive: true,
+                "destroy": true,
+                "responsive": true,
                 "data": vm.data.all_devices,
                 "columns": [
-                    /*{ title: "ID" },
-                    { title: "Resident Name" },
-                    { title: "Resident Index" },
-                    { title: "Device ID" },
-                    { title: "Edit / Delete" },*/
                     { title: "ID" ,data: "id" },
                     { title: "Resident Name", data: "resident_list" },
                     { title: "Resident Index", data: "resident_index_list" },
@@ -85,12 +82,16 @@ angular.module('AttendanceCtrl', [])
 
             // Edit record
             $('#edit_btn').on('click', function (e) {
+                Materialize.updateTextFields();
                 e.preventDefault();
+                
+                
+                $('select').material_select();
+                
                 $('#updateModal').modal();
                 $('#updateModal').modal('open');
-                $('select').material_select();
-                Materialize.updateTextFields();
-
+                
+                
             });
             // Delete record
             $('#delete_btn').on('click', function (e) {
