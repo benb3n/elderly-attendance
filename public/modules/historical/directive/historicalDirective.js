@@ -432,18 +432,19 @@ angular.module('HistoricalDirective', [])
             console.log("hello");
             */
           	//FORMAT data
-          	/*data.forEach(function(d) {
+          	data.forEach(function(d) {
           		d.num = +d.num;
               d.date = parseDate(d.date);
           	});
-            */
+
           //Appends chart headline
         	//d3.select(".g-hed").text("Chart headline goes here");
 
           //Appends chart intro text
           //d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
 
-          //data.sort(function(a,b) { return a.date - b.date; });
+          data.sort(function(a,b) { return a.date - b.date; });
+
 
           //Defines the xScale max
           xScale.domain(d3.extent(data, function(d) { return d.date; }));
@@ -466,7 +467,7 @@ angular.module('HistoricalDirective', [])
             .datum(data)
             .attr("class", "line")
             .attr("d", line);
-          /*
+
           //Tooltips
           var focus = svg.append("g")
               .attr("class", "focus")
@@ -500,7 +501,7 @@ angular.module('HistoricalDirective', [])
             focus.attr("transform", "translate(" + xScale(d.date) + "," + yScale(d.num) + ")");
             focus.select("text").text(d.num);
           }//end mouseover
-          */
+
           /*
           //Appends chart source
         	d3.select(".g-source-bold")
@@ -582,7 +583,7 @@ angular.module('HistoricalDirective', [])
               if(typeof data != 'undefined' && data.length!=0){
                 scope.renderChart(data);
               }else{
-                console.log("no data");
+                console.log("responsiveHorizontalBarChart no data");
               }
         },true);
 
@@ -750,8 +751,6 @@ angular.module('HistoricalDirective', [])
   }
 })//end responsiveHorizontalBarChart
 
-
-
 .directive('dayHourHeatmapChart',function(){
   return {
     restrict: 'EA',
@@ -761,13 +760,16 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-            d3.select(Element[0]).selectAll("*").remove();
-            scope.heatmapChart(data);
-
+            if(typeof data != 'undefined' && data.length!=0){
+              scope.heatmapChart(data);
+            }else{
+              console.log("dayHourHeatmapChart no data");
+            }
         },true);
 
 
         scope.heatmapChart =  function(data) {
+          d3.select(Element[0]).selectAll("*").remove();
           var margin = { top: 40, right: 0, bottom: 50, left: 30 },
             width = screen.width - margin.left - margin.right,
             gridSize = Math.floor(width / 29),
@@ -874,12 +876,16 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-                scope.heatmapChart(data);
-                d3.select(Element[0]).selectAll("*").remove();
+                if(typeof data != 'undefined' && data.length!=0){
+                  scope.heatmapChart(data);
+                }else{
+                  console.log("flipDayHourHeatmapChart no data");
+                }
         },true);
 
 
         scope.heatmapChart =  function(data) {
+          d3.select(Element[0]).selectAll("*").remove();
           var margin = { top: 50, right: 40, bottom: 24, left: 50 },
             hMargin = 15,
             buckets = 9,

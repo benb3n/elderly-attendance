@@ -401,9 +401,10 @@ angular.module('HistoricalCtrl', [])
     })
     .then(function(result){
         //update_heatmap_chart(result)
-        console.log(result);
-        update_most_active_chart(result);
+        //console.log(result);
+        //update_most_active_chart(result);
         //update_avg_week_heatmap_chart(result);
+        //update_course_month_chart();
     })//end when.then
 }//end callSensorReadings
 
@@ -507,7 +508,7 @@ angular.module('HistoricalCtrl', [])
     date_instances_array.forEach(function(value,index) {
       //check date
       var this_date = moment(date_list[index]);
-      var day_index = get_day_index(this_date);
+      var day_index = moment(this_date).weekday(); //weekday returns 0-6 where 0 is Monday
       var time_arr = generate_time_array(this_date,8,20);
 
       value.forEach(function(instance_value){
@@ -578,16 +579,89 @@ angular.module('HistoricalCtrl', [])
       vm.responsiveHorizontalBarData = angular.copy(time_data);
   }//end update_most_active_chart function
 
-  function update_course_month_chart(result){
+/*
+  function update_course_month_chart(){
     //TODO:
 
 
     //get data related to course
+    var result = {
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 15,
+            "project_prefix": "MP",
+            "project_desc": "Marine Parade",
+            "center_id": 2,
+            "center_code_name": "gl52",
+            "activity_desc": "activity desc",
+            "activity_type_list": "music; sports",
+            "start_date": "2017-11-01",
+            "end_date": "2017-11-01",
+            "start_time": "10:00:00",
+            "end_time": "11:00:00",
+            "repeat_params": {
+                "days_of_week": [1, 2, 3]
+              }
+        },{
+            "id": 20,
+            "project_prefix": "MP",
+            "project_desc": "Marine Parade",
+            "center_id": 2,
+            "center_code_name": "gl52",
+            "activity_desc": "activity desc",
+            "activity_type_list": "music; sports",
+            "start_date": "2017-11-01",
+            "end_date": "2017-11-03",
+            "start_time": "10:00:00",
+            "end_time": "11:00:00",
+            "repeat_params": {
+                "days_of_week": [1, 2, 3]
+              }
+        }
+    ]
+    }//end obj
+    console.log(result);
+    //get array of date time
 
+    var courses_array = [];
+    //courses_array[course[],course[]]
+    //activity[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
+
+    result.results.forEach(function(value){
+
+      [sHours, sMinutes,sSeconds] = value.start_time.split(':');
+      [eHours, eMinutes,eSeconds] = value.end_time.split(':');
+
+      var start_date_time = moment(value.start_date).hour(sHours).minute(sMinutes).second(sSeconds);
+      var end_date_time = moment(value.end_date).hour(eHours).minute(eMinutes).second(eSeconds);
+      var duration_seconds = moment(start_date_time).diff(end_date_time)/1000 // since .diff() returns in milliseconds
+      var activity_type_list =  value.activity_type_list;
+
+      var days_of_week = value.repeat_params.days_of_week;
+
+      //console.log(moment(start_date_time).format('DD/MM/YY HH:mm:ss') + "--" + moment(end_date_time).format('DD/MM/YY HH:mm:ss') + " | " + days_of_week);
+
+      var curr_date = value.start_date;
+      while(moment(curr_date).isSameOrBefore(value.end_date)){
+        //check if date is in days_of_week
+        if (days_of_week.includes(moment(curr_date).isoWeekday())) {
+          var curr_start_datetime = moment(curr_date).hour(sHours).minute(sMinutes).second(sSeconds);
+          var curr_end_datetime = moment(curr_date).hour(eHours).minute(eMinutes).second(eSeconds);
+
+          courses_array.push([curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]);
+        curr_date = moment(curr_date).add(1, 'days');
+      }//end if
+      }//end while
+
+    })//end for each object
+    console.log(courses_array);
 
     //
   }// end func update_course_month_chart
-
+*/
   function update_course_time_chart(result){
     //TODO:
   }// end func update_course_time_chart
@@ -595,24 +669,6 @@ angular.module('HistoricalCtrl', [])
   /********************
     REUSEABLE FUNCTIONS
   *********************/
-  function get_day_index(date){
-    var this_day = moment(date).format('dddd');
-    if(this_day=='Monday'){
-      return 0;
-    }else if (this_day=='Tuesday'){
-      return  1;
-    }else if(this_day=='Wednesday'){
-      return  2;
-    }else if (this_day=='Thursday') {
-      return  3;
-    }else if (this_day=='Friday') {
-      return  4;
-    }else if (this_day=='Saturday') {
-      return  5;
-    }else if (this_day=='Sunday') {
-      return  6;
-    };
-  }//end function get day_index
 
   function generate_time_array(date,start_hour,end_hour){
     //create array of time with 30 min intervals for specific date
