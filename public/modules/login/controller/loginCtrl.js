@@ -12,7 +12,7 @@ angular.module('LoginCtrl', [])
     vm.login = login;
 
     function login() {
-        console.log("TESTTING")
+        console.log("LOGIN")
         vm.loading = true;
         document.getElementById("body_content").setAttribute('class', '');
         document.getElementById("navbar").style.visibility = "visible";

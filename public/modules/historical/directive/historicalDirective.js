@@ -13,7 +13,9 @@ angular.module('HistoricalDirective', [])
       },true);
     
       scope.renderChart = function(data, color){
-
+        var numberDisplay = dc.numberDisplay(Element[0]);
+        
+        
       }
 
     }

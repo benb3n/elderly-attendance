@@ -376,7 +376,9 @@ angular.module('HistoricalCtrl', [])
 
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
-    }//end initController
+
+   
+  }//end initController
 
 
   /********************
@@ -392,8 +394,9 @@ function callSensorReadings (center, start_date_time, end_date_time){
         return getSensorReadings(center, start_date_time, end_date_time, 500 );
     })
     .then(function(result){
-        //update_heatmap_chart(result)
+        update_heatmap_chart(result)
         console.log(result);
+        generateDataForOverview(result)
         update_most_active_chart(result);
         update_avg_week_heatmap_chart(result);
     })//end when.then
@@ -499,6 +502,7 @@ function update_heatmap_chart(result){
     //day_obj_array[day[],day[],day[]...]
     //day[instance[],instance[],instance[]...]
     //instance[mac_id,start_date_time,time_spent]
+    console.log(day_ins_array)
 
     //pushing into data
     var calendar_data = [];
@@ -636,6 +640,7 @@ function update_avg_week_heatmap_chart(result){
       })
     })//end for each hour
   })//end for each day
+
 
   vm.dayHourHeatmapData=angular.copy(weekly_activity_data);
 }//end func update_avg_week_heatmap_chart
@@ -881,6 +886,70 @@ function objArr_to_instances(object_array){
 
     ]//end heatmapdata
 */
+
+  vm.time_treshold = 600;
+
+  function generateDataForOverview (json_result){
+    console.log(vm.display.courses)
+    if(json_result.results.length > 0){
+      json_result.results.forEach(function(value, index){
+        var index = value.device_id.indexOf("-") + 1
+        value.resident_device = value.device_id.substring(index);
+        value.gw_date = moment(value.gw_timestamp).format("YYYY-MM-DD")
+        value.gw_time = moment(value.gw_timestamp).format("HH-mm-ss")
+        value.timestamp = new Date(value.gw_timestamp);
+        return value;
+      })
+
+      var group_by_result = groupBy(json_result.results, function(item){ return [item.resident_device, item.gw_date] }); 
+      console.log(group_by_result)
+
+      var groups = [], g=[], d=0;
+      group_by_result.forEach(function(arr, index){
+        arr.sort(compareDates);
+        console.log(arr)
+        for(var current_threshold = moment(arr[0].timestamp).add(10, 'minutes'), arr_length = arr.length, i = 0; i < arr_length; i++){
+          var current_timestamp = moment(arr[i].timestamp);
+
+          
+          console.log(current_timestamp.isAfter(current_threshold))
+          if(current_timestamp.isAfter(current_threshold)){
+            var total_time = 0;
+            if(g.length == 1){
+              total_time = vm.time_treshold;
+            }else{
+              total_time = moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold; 
+            }
+            console.log(total_time)
+            g[0].duration = total_time;
+            groups.push(g[0]);
+            g = [];
+          }
+          g.push(arr[i]);
+          current_threshold = moment(arr[i].timestamp).add(10, 'minutes')
+        }
+        groups.push(g[0]);  // include last group otherwise unpushed
+
+        console.log(groups)
+
+      });
+    }
+  }
+
+  function compareDates(a,b){ return (+a.timestamp)-(+b.timestamp); }
+  function groupBy( array , f ){
+    var groups = {};
+    array.forEach( function( o ){
+      var group = JSON.stringify( f(o) );
+      groups[group] = groups[group] || [];
+      groups[group].push( o );  
+    });
+    return Object.keys(groups).map( function( group ){
+      return groups[group]; 
+    })
+  }
+
+  
 
 })
 
@@ -1903,3 +1972,5 @@ vm.dayHourHeatmapData = [
     }
   ]
   */
+
+  
