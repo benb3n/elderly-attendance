@@ -387,7 +387,7 @@ angular.module('HistoricalCtrl', [])
     vm.selectedStartDate_courses = new Date('1 November 2017');
 
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
-    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
+    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
   }//end initController
 
   function callSensorReadings (center, start_date_time, end_date_time){
@@ -400,7 +400,6 @@ angular.module('HistoricalCtrl', [])
           return getSensorReadings(center, start_date_time, end_date_time, 500 );
       })
       .then(function(result){
-        console.log("here");
           //update_heatmap_chart(result)
           //console.log(result);
           //update_most_active_chart(result);
@@ -581,9 +580,6 @@ angular.module('HistoricalCtrl', [])
   }//end update_most_active_chart function
 
   function update_course_month_chart(){
-    //TODO:
-
-
     //get data related to course
     var result = {
     "count": 3,
@@ -612,55 +608,24 @@ angular.module('HistoricalCtrl', [])
             "center_id": 2,
             "center_code_name": "gl52",
             "activity_desc": "activity desc",
-            "activity_type_list": "music; sports",
+            "activity_type_list": "language",
             "start_date": "2017-11-01",
             "end_date": "2017-11-03",
             "start_time": "10:00:00",
             "end_time": "11:00:00",
             "repeat_params": {
-                "days_of_week": [1, 2, 3]
+                "days_of_week": [ 2,3,4]
               }
         }
     ]
     }//end obj
-    console.log(result);
-    //get array of date time
 
-    var courses_array = [];
-    //courses_array[course[],course[]]
-    //activity[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
-    console.log("bef loop");
-    result.results.forEach(function(value){
-      console.log("loop");
-      [sHours, sMinutes,sSeconds] = value.start_time.split(':');
-      [eHours, eMinutes,eSeconds] = value.end_time.split(':');
-
-      var start_date_time = moment(value.start_date).hour(sHours).minute(sMinutes).second(sSeconds);
-      var end_date_time = moment(value.end_date).hour(eHours).minute(eMinutes).second(eSeconds);
-      var duration_seconds = moment(start_date_time).diff(end_date_time)/1000 // since .diff() returns in milliseconds
-      var activity_type_list =  value.activity_type_list;
-
-      var days_of_week = value.repeat_params.days_of_week;
-
-      //console.log(moment(start_date_time).format('DD/MM/YY HH:mm:ss') + "--" + moment(end_date_time).format('DD/MM/YY HH:mm:ss') + " | " + days_of_week);
-      console.log("hi");
-      var curr_date = value.start_date;
-      while(moment(curr_date).isSameOrBefore(value.end_date)){
-        //check if date is in days_of_week
-        if (days_of_week.includes(moment(curr_date).isoWeekday())) {
-          var curr_start_datetime = moment(curr_date).hour(sHours).minute(sMinutes).second(sSeconds);
-          var curr_end_datetime = moment(curr_date).hour(eHours).minute(eMinutes).second(eSeconds);
-
-          courses_array.push([curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]);
-        curr_date = moment(curr_date).add(1, 'days');
-      }//end if
-      }//end while
-
-    })//end for each object
-    console.log("HIHI");
+    var courses_array = courseObj_to_courseArr(result.results);
     console.log(courses_array);
 
-    //
+    //courses_array[course[],course[]]
+    //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
+
   }// end func update_course_month_chart
 
   function update_course_time_chart(result){
@@ -796,6 +761,41 @@ angular.module('HistoricalCtrl', [])
 
     return[array_total_time,instances_array];
   }//end func objArr_to_instances
+
+  function courseObj_to_courseArr(courseList_obj){
+    //to format courselistobject to array of courses
+    //courses_array[course[],course[]]
+    //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
+    var courses_array = [];
+
+    courseList_obj.forEach(function(value){
+      [sHours, sMinutes,sSeconds] = value.start_time.split(':');
+      [eHours, eMinutes,eSeconds] = value.end_time.split(':');
+
+      var start_date_time = moment(value.start_date).hour(sHours).minute(sMinutes).second(sSeconds);
+      var end_date_time = moment(value.end_date).hour(eHours).minute(eMinutes).second(eSeconds);
+      var duration_seconds = moment(start_date_time).diff(end_date_time)/1000 // since .diff() returns in milliseconds
+      var activity_type_list =  value.activity_type_list;
+
+      var days_of_week = value.repeat_params.days_of_week;
+
+      //console.log(moment(start_date_time).format('DD/MM/YY HH:mm:ss') + "--" + moment(end_date_time).format('DD/MM/YY HH:mm:ss') + " | " + days_of_week);
+
+      var curr_date = value.start_date;
+      while(moment(curr_date).isSameOrBefore(value.end_date)){
+        //check if date is in days_of_week
+        if (days_of_week.includes(moment(curr_date).isoWeekday())) {
+          var curr_start_datetime = moment(curr_date).hour(sHours).minute(sMinutes).second(sSeconds).format("YY/MM/DD hh:mm:ss");
+          var curr_end_datetime = moment(curr_date).hour(eHours).minute(eMinutes).second(eSeconds).format("YY/MM/DD hh:mm:ss");
+
+          courses_array.push([curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]);
+        }//end if
+          curr_date = moment(curr_date).add(1, 'days');
+      }//end while
+    })//end for each object
+
+    return courses_array
+  }//end courseObj_to_courseArr
 
   function instancesArray_to_coursesInstancesArr(instances_array,courses_array){
     //notUsed
