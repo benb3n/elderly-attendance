@@ -401,10 +401,10 @@ angular.module('HistoricalCtrl', [])
       })
       .then(function(result){
           //update_heatmap_chart(result)
-          //console.log(result);
+          console.log(result);
           //update_most_active_chart(result);
           //update_avg_week_heatmap_chart(result);
-          update_course_month_chart();
+          update_course_month_chart(result,"language");
       })//end when.then
   }//end callSensorReadings
 
@@ -579,13 +579,13 @@ angular.module('HistoricalCtrl', [])
       vm.responsiveHorizontalBarData = angular.copy(time_data);
   }//end update_most_active_chart function
 
-  function update_course_month_chart(){
+  function update_course_month_chart(result,course_type){
     //get data related to course
-    var result = {
-    "count": 3,
-    "next": null,
-    "previous": null,
-    "results": [
+    var course_result = {
+      "count": 3,
+      "next": null,
+      "previous": null,
+      "results": [
         {
             "id": 15,
             "project_prefix": "MP",
@@ -609,23 +609,80 @@ angular.module('HistoricalCtrl', [])
             "center_code_name": "gl52",
             "activity_desc": "activity desc",
             "activity_type_list": "language",
-            "start_date": "2017-11-01",
+            "start_date": "2017-10-30",
             "end_date": "2017-11-03",
             "start_time": "10:00:00",
             "end_time": "11:00:00",
             "repeat_params": {
-                "days_of_week": [ 2,3,4]
+                "days_of_week": [2,3,4]
               }
         }
-    ]
+      ]
     }//end obj
 
-    var courses_array = courseObj_to_courseArr(result.results);
-    console.log(courses_array);
+    var temp_arr = courseObj_to_courseArr(course_result.results,course_type);
+    var courses_date_array = temp_arr[1]; // arr[date[course,course],date[course]..]
+    var courses_date_list = temp_arr[0];
+    /*courses_array.sort(function(a,b){
+      a_date = moment(a[0]);
+      b_date = moment(b[0]);
+      if(a_date.isBefore(b_date)){
+        return -1;
+      } else{
+        return 1;
+      }
+    });
+    */
+    var courses_date_instances = Array(courses_date_list.length);
+    //arr[date[course[ins]],date[course[ins,ins]]...]
 
-    //courses_array[course[],course[]]
-    //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
+    temp_arr = objArr_to_dateObjArr(result.results);
+    var date_obj_array = temp_arr[1];
+    var date_list = temp_arr[0];
+    console.log(result.results);
+    console.log(courses_date_instances);
+    console.log(date_obj_array);
 
+    date_obj_array.forEach(function(date_value,date_index){
+      var course_date_index = courses_date_list.indexOf(date_list[date_index]);
+      if(course_date_index==-1) return; //no courses that date
+      var focus_courses = courses_array[course_date_index];//courses in a specific date
+      var instances_array = objArr_to_instances(date_value);//get instances for that date
+      //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
+
+      courses_date_instances[course_date_index] = instancesArray_to_coursesInstancesArr(instances_array,focus_courses);
+      console.log(courses_date_instances);
+
+    })//end for each day
+  /*
+  todo: average out the activity?
+  */
+    var month_list = [];
+
+    var curr_month = moment(courses_date_list[0]);
+    var end_month = moment(courses_date_list[courses_date_list.length-1]);
+    while(curr_month.isSameOrBefore(end_month)){
+      month_list.push(moment(curr_month).format('YYYY-MM'));
+      curr_month = moment(curr_month).add(1, 'month');
+    }//end while
+
+
+    var month_count = [month_list.length];
+    month_count.fill(0);
+    console.log(month_list);
+    console.log(month_count);
+
+    courses_date_instances.forEach(function(date_value,date_index){
+      var this_month = moment(courses_date_list[date_index]).format('YYYY-MM');
+      if (month_list.indexOf(this_month) == -1){
+        console.log("error in update_course_month_chart");
+      };//end if
+      date_value.forEach(function(course_value){
+        month_count[month_list.indexOf(this_month)] += uniqueId_from_instanceArr(course_value).length;
+      })//for each course
+    })//for each date
+
+    //{"date": '2011-03', "num" : 9}
   }// end func update_course_month_chart
 
   function update_course_time_chart(result){
@@ -635,7 +692,6 @@ angular.module('HistoricalCtrl', [])
   /********************
     REUSEABLE FUNCTIONS
   *********************/
-
   function generate_time_array(date,start_hour,end_hour){
     //create array of time with 30 min intervals for specific date
     var time_arr = [];
@@ -663,7 +719,7 @@ angular.module('HistoricalCtrl', [])
   }
 
   function objArr_to_dateObjArr(object_array){
-    //takes an array of result objects and returns array[day_list,day_obj_array];
+    //takes an array of result objects and returns array[date_list,day_obj_array];
     //date_list is an array where each index is a specific date
     //date_obj_array an array where each index stores an array of all objects for the corresponding date
     var date_obj_array = [];
@@ -762,46 +818,59 @@ angular.module('HistoricalCtrl', [])
     return[array_total_time,instances_array];
   }//end func objArr_to_instances
 
-  function courseObj_to_courseArr(courseList_obj){
+  function courseObj_to_courseArr(courseList_obj,course_type){
+    //returns [courses_date_list,courses_array]
     //to format courselistobject to array of courses
-    //courses_array[course[],course[]]
     //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
+    //courses_array[date[course[],course[]],date[course[],course[]]...]
+    //if course_type, courses_array only contains courses[] of that course type
+
+    var courses_date_list = [];
     var courses_array = [];
 
     courseList_obj.forEach(function(value){
+
+      var activity_type_list =  value.activity_type_list.split(";");
+      if (typeof course_type != "undefined"){
+        if(!activity_type_list.includes(course_type)){
+          return;
+        }//end if
+      }
+
       [sHours, sMinutes,sSeconds] = value.start_time.split(':');
       [eHours, eMinutes,eSeconds] = value.end_time.split(':');
 
       var start_date_time = moment(value.start_date).hour(sHours).minute(sMinutes).second(sSeconds);
       var end_date_time = moment(value.end_date).hour(eHours).minute(eMinutes).second(eSeconds);
       var duration_seconds = moment(start_date_time).diff(end_date_time)/1000 // since .diff() returns in milliseconds
-      var activity_type_list =  value.activity_type_list;
 
       var days_of_week = value.repeat_params.days_of_week;
-
       //console.log(moment(start_date_time).format('DD/MM/YY HH:mm:ss') + "--" + moment(end_date_time).format('DD/MM/YY HH:mm:ss') + " | " + days_of_week);
 
       var curr_date = value.start_date;
       while(moment(curr_date).isSameOrBefore(value.end_date)){
         //check if date is in days_of_week
         if (days_of_week.includes(moment(curr_date).isoWeekday())) {
-          var curr_start_datetime = moment(curr_date).hour(sHours).minute(sMinutes).second(sSeconds).format("YY/MM/DD hh:mm:ss");
-          var curr_end_datetime = moment(curr_date).hour(eHours).minute(eMinutes).second(eSeconds).format("YY/MM/DD hh:mm:ss");
+          var curr_start_datetime = moment(curr_date).hour(sHours).minute(sMinutes).second(sSeconds).format("YYYY-MM-DDThh:mm:ss");
+          var curr_end_datetime = moment(curr_date).hour(eHours).minute(eMinutes).second(eSeconds).format("YYYY-MM-DDThh:mm:ss");
 
-          courses_array.push([curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]);
+          var date_index  = courses_date_list.indexOf(moment(curr_date).format("YYYY-MM-DD"));
+          if (date_index == -1){
+            courses_date_list.push(moment(curr_date).format("YYYY-MM-DD"));
+            courses_array.push([]);
+            date_index = courses_date_list.length -1;
+          }
+          courses_array[date_index].push([curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]);
         }//end if
           curr_date = moment(curr_date).add(1, 'days');
       }//end while
     })//end for each object
 
-    return courses_array
+    return [courses_date_list,courses_array];
   }//end courseObj_to_courseArr
 
   function instancesArray_to_coursesInstancesArr(instances_array,courses_array){
-    //notUsed
-    /*
-    //course[course_id, name, start_time, end_time, start_date, end_date, course_description]
-    var course_instance_array = [courses_array.length]; // array of course_instances[instance,instance...]
+    var course_instance_array = Array(courses_array.length); // arr[course_instances[ins,ins],course_instances[ins]...]
     course_instance_array.fill([]);
 
     instances_array.forEach(function(value,index) {
@@ -811,16 +880,30 @@ angular.module('HistoricalCtrl', [])
       var this_end = this_start.clone().add(value[2], 'seconds');
 
       courses_array.forEach(function(course,course_index){
-        var course_start_date = moment(courses_array[i][4]).hour(moment(courses_array[i][2]).get('hour')).minute(moment(courses_array[i][2]).get('minute')).second('0'));
-        var course_start = moment(courses_array[i][5]).hour(moment(courses_array[i][2]).get('hour')).minute(moment(courses_array[i][2]).get('minute')).second('0'));
+        //course[start_datetime,end_datetime,duration_seconds,activity_type_arr,days_of_week]
+
+        var course_start = course[0];
+        var course_end = course[1];
         if(!(course_end.isBefore(this_start) || this_end.isBefore(course_start))){
           course_instance_array[course_index].push(value);
         }//end if
       })//end for each course
     })//end forEach instance
-    */
+    return course_instance_array;
   }//end func instancesArray_to_coursesInstancesArr
 
+  function uniqueId_from_instanceArr(instances_array){
+    var unique_id_list = [];
+    //instance = [mac_id,instance_start_date_time,time_spent]
+
+    instances_array.forEach(function(value){
+      var curr_id =  value[0];
+      if(unique_id_list.indexOf(curr_id)==-1){
+        unique_id_list.push(curr_id);
+      }//end if
+    })//for each instance
+    return unique_id_list;
+  }//end func uniqueId_from_instanceArr
   /********************
     BUTTON FUNCTIONS
   *********************/
