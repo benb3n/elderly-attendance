@@ -3,6 +3,7 @@ angular.module('iCityLab', [
     'appRoutes',
     'appConfigurations',
     'LoginCtrl',
+    'LoginService',
     'RealTimeCtrl',
     'RealTimeService',
     'HistoricalCtrl',

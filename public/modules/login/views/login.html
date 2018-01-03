@@ -20,7 +20,7 @@
                     <input id="password" name="password" type="password" class="validate" ng-model="signin.password" required>
                     <label for="username" data-error="Password is required" data-success="">Password</label>
                 </div>
-                <p></p>
+                <p id="error" style="text-align:center; color:red; margin:0px !important"></p>
                 <button type="submit" class="btn waves-effect waves-light" style="width:80% !important; " ng-disabled="form.$invalid || signin.dataLoading" >Login</button>
 
                 <p></p>

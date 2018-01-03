@@ -16,8 +16,8 @@ angular.module('appConfigurations', [])
     'url': 'https://dev-starlight.icitylab.com/api/v1/manifest_center/center/'
 })
 
-.value('loginAPI', {
-    'url': 'http://dev-starlight.icitylab.com/api/v1/manifest_user/resident/'
+.value('starlightAPI', {
+    'url': 'https://dev-starlight.icitylab.com'
 })
 
 .value('APIToken', {

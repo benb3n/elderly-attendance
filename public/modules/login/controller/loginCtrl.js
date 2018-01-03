@@ -1,5 +1,5 @@
 angular.module('LoginCtrl', [])
-.controller('LoginController', ['$scope', '$location', function ($scope, $location) {
+.controller('LoginController', function ($scope, $location, $q, $http, LService) {
     document.getElementById("navbar").style.visibility = "hidden";
     document.getElementById("body_content").setAttribute('class', 'login');
 
@@ -8,23 +8,49 @@ angular.module('LoginCtrl', [])
     });
 
     var vm = this;
-    vm.test = "HELLO WORLD"
+
     vm.login = login;
+    
+    //Director
+    //vm.username = "benedict"
+    //vm.password = "qwerty123456"
+    //CM
+    vm.username = "hxtest1"
+    vm.password = "qwerty123456"
 
     function login() {
-        console.log("LOGIN")
         vm.loading = true;
-        document.getElementById("body_content").setAttribute('class', '');
-        document.getElementById("navbar").style.visibility = "visible";
-        $location.path("/home");
-        /*loginService.Login(loginSelf.username, loginSelf.password, function (result) {
-            if (result === true) {
-                $location.path('/campaigns-report');
+        
+        //$location.path("/home");
+        var params = {
+            username: vm.username,
+            password: vm.password
+        }
+        console.log(params)
+        LService.login(params, function (result) {
+            console.log(result)
+            if (result.token) {
+                console.log("SUCCESS")
+                $http.defaults.headers.common.Authorization = 'Token ' + result.token;
+                LService.getUserRole(function (role) {
+                    document.getElementById("body_content").setAttribute('class', '');
+                    document.getElementById("navbar").style.visibility = "visible";
+                    localStorage.setItem("role", role)
+                    localStorage.setItem("username", vm.username)
+                    localStorage.setItem("token", result.token)
+                    Materialize.toast('Login Successful', 3000, 'rounded green');
+                    $location.path('/home');
+                })
             } else {
-                vm.error = 'Username or password is incorrect';
-                loginSelf.loading = false;
+                console.log("ERROR")
+                document.getElementById('error').textContent = 'Invalid User Credentials';
+                Materialize.toast('Invalid User Credentials', 3000, 'rounded red');
+                vm.loading = false;
             }
-        });*/
+        });
     }
 
-}])
+
+
+    
+})

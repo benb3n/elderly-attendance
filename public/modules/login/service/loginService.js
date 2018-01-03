@@ -1,23 +1,25 @@
 angular.module('LoginService', [])
 
-.factory('LService', function($http, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('LService', function($http, starlightAPI, APIToken) {
     var service = {};
-    service.getSensorReadings = getSensorReadings;
-    service.getAllDevices = getAllDevices;
+    service.login = login;
+    service.getUserRole = getUserRole;
+
 
     return service;
     
-    function getAllDevices(project_prefix){
-        $http.get(deviceAPI.url ,
-            {
-                headers: {
-                    "Authorization": APIToken.token
-                },
-                params: {
-                    project_prefix : project_prefix
-                }
-            }
+    function login(params, callback){
+        $http.post(starlightAPI.url + "/api-token-auth/", params)
+        .then(
+            function(result){ 
+                callback(result.data) },
+            function(){ callback(false) }
         )
+        
+    }
+
+    function getUserRole( callback){
+        $http.get(starlightAPI.url + "/api/v1/manifest_user/user_role/", )
         .then(
             function(result){ 
                 callback(result.data) },
@@ -25,4 +27,7 @@ angular.module('LoginService', [])
         );
     }
 
+    
+
+})
   
