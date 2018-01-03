@@ -1,15 +1,29 @@
 
 <!-- Alert Container-->
-<div class="row s12">
+<div class="row">
+  <div class="row" style="margin-top:10px !important">
+    <div class="col s10">
+      <h5>Battery Replacement Needed For:</h5>
+    </div>
+    <div  class="col s2">
+      <a class="btn-floating btn-large waves-effect waves-light red darken-4 modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Add/Pair a new device"   data-target="addModal" >
+        <i class="material-icons">add</i>
+      </a>
+    </div>
+  </div>
+    
+    
+  
 
-    <h5>Battery Replacement Needed For:</h5>
-
-  <div class="row s12" style="margin-top:50px !important">
+  <div class="row" style="margin-top:50px !important">
     <div ng-repeat="person in sm.display.elderly_sys_mon">
       <div class="col s6 m3 l2 animated fadeIn">
         <div class="card card-profile ">
           <div class="card-profile-avatar pulse">
-            <img src={{person.image}}>
+            <a class="modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Update device"  data-target="updateModal" style="margin-right  :10px !important">
+              <img src={{person.image}} style="cursor: pointer">
+            </a>
+            
           </div>
           <div class="card-profile-content" style="font-weight: 300">
             <h4 class="card-profile-title">{{person.name}}</h4>
@@ -35,31 +49,6 @@
 
   </div>
 </div>
-
-
-
-
-<!--Search Container-->
-<div class="row">
-    <div class ="card">
-        <div class="input-field col s7 m2">
-            <select>
-              <option value = "" disabled selected>Select Person</option>
-              <option value={{device.value}} ng-repeat="device in sm.display.all_devices">{{device.name}}</option>
-            </select>
-            <label>Person</label>
-        </div>
-        <div class="col s5">
-          <a class="btn-floating btn-large waves-effect waves-light red darken-4 modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Update device"  data-target="updateModal" style="margin-right  :10px !important">
-            <i class="material-icons">edit</i>
-          </a>
-          <a class="btn-floating btn-large waves-effect waves-light red darken-4 modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Add/Pair a new device"   data-target="addModal" >
-            <i class="material-icons">add</i>
-          </a>
-        </div>
-    </div>
-    
-    
 
       <!-- Modal Structure -->
       <div id="addModal" class="modal modal-fixed-footer">
@@ -105,22 +94,5 @@
       </div>
     </div>
 
-<!-- individual display -->
-<div class="row">
-    <div class="col s12 m3">
-      <div class="card">
-        <span class="card-title">Battery Status</span>
-        <div class="card-content">
-          <p>percentage</p>
-        </div>
-      </div>
-    </div>
-    <div class="col s12 m3">
-      <div class="card">
-        <span class="card-title">Days Since last changed</span>
-        <div class="card-content">
-          <p>number</p>
-        </div>
-      </div>
-    </div>
+
 </div>
