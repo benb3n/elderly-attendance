@@ -15,7 +15,7 @@ angular.module('LoginCtrl', [])
     //vm.username = "benedict"
     //vm.password = "qwerty123456"
     //CM
-    vm.username = "hxtest1"
+    vm.username = "hxtest"
     vm.password = "qwerty123456"
 
     function login() {
@@ -30,7 +30,6 @@ angular.module('LoginCtrl', [])
         LService.login(params, function (result) {
             console.log(result)
             if (result.token) {
-                console.log("SUCCESS")
                 $http.defaults.headers.common.Authorization = 'Token ' + result.token;
                 LService.getUserRole(function (role) {
                     document.getElementById("body_content").setAttribute('class', '');

@@ -1,6 +1,6 @@
 angular.module('SystemMonitoringService', [])
 
-.factory('SMService', function($http, $q, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('SMService', function($http, $q, starlightAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
 
     var service = {};
     service.getSystemMonitoringDevice = getSystemMonitoringDevice;
@@ -14,9 +14,6 @@ angular.module('SystemMonitoringService', [])
     function getAllDevices(project_prefix, page_size, callback){
         $http.get(deviceAPI.url  ,
             {
-                headers: {
-                    "Authorization": APIToken.token
-                },
                 params: {
                     project_prefix : project_prefix,
                     page_size: page_size
@@ -31,15 +28,12 @@ angular.module('SystemMonitoringService', [])
      
     }
 
-    function getSystemMonitoringDevice (reading_type, start_datetime, page_size, callback) { 
-        $http.get(systemMonitoringAPI.url ,
+    function getSystemMonitoringDevice (project_prefix, center_code_name, page_size, callback) { 
+        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerbatteryreading/',
             {
-                headers: {
-                    "Authorization": APIToken.token
-                },
                 params: {
-                    reading_type: reading_type,
-                    start_datetime: start_datetime,
+                    project_prefix: project_prefix,
+                    center_code_name: center_code_name,
                     page_size: page_size
                 }
             }
@@ -50,24 +44,6 @@ angular.module('SystemMonitoringService', [])
         );
     }
 
-    function getSystemMonitoringDevicesByGwDevice (gw_device, reading_type, page_size, callback) { 
-        $http.get(systemMonitoringAPI.url ,
-            {
-                headers: {
-                    "Authorization": APIToken.token
-                },
-                params: {
-                    gw_device :gw_device,
-                    reading_type: reading_type,
-                    page_size: page_size
-                }
-            }
-        )
-        .then(
-            function(result){ callback(result.data) },
-            function(){ callback(false) }
-        );
-    }
 
     function addDevice (params, callback) { 
         $http.post(systemMonitoringAPI.url ,
