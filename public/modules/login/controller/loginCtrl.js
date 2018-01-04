@@ -34,9 +34,14 @@ angular.module('LoginCtrl', [])
                 LService.getUserRole(function (role) {
                     document.getElementById("body_content").setAttribute('class', '');
                     document.getElementById("navbar").style.visibility = "visible";
-                    localStorage.setItem("role", role)
-                    localStorage.setItem("username", vm.username)
-                    localStorage.setItem("token", result.token)
+
+                    localStorage.setItem("user", {
+                        user: vm.username,
+                        token: result.token,
+                        center_code_name: "gl15",
+                        role: role
+                    });
+
                     Materialize.toast('Login Successful', 3000, 'rounded green');
                     $location.path('/home');
                 })

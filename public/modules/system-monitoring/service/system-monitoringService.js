@@ -4,7 +4,6 @@ angular.module('SystemMonitoringService', [])
 
     var service = {};
     service.getSystemMonitoringDevice = getSystemMonitoringDevice;
-    service.getSystemMonitoringDevicesByGwDevice = getSystemMonitoringDevicesByGwDevice;
     service.getAllDevices = getAllDevices;
     service.addDevice = addDevice;
     service.updateDevice = updateDevice;
@@ -28,16 +27,9 @@ angular.module('SystemMonitoringService', [])
      
     }
 
-    function getSystemMonitoringDevice (project_prefix, center_code_name, page_size, callback) { 
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerbatteryreading/',
-            {
-                params: {
-                    project_prefix: project_prefix,
-                    center_code_name: center_code_name,
-                    page_size: page_size
-                }
-            }
-        )
+    function getSystemMonitoringDevice (params, callback) { 
+        console.log(starlightAPI.url + '/api/v1/manifest_center/centerbatteryreading/')
+        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerbatteryreading/', params)
         .then(
             function(result){ callback(result.data) },
             function(){ callback(false) }

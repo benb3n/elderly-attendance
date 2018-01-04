@@ -386,27 +386,27 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-          if(typeof data != 'undefined' && data.length!=0){
-            
-          }//else{
-            //console.log("no data");
-          //}
-          scope.renderChart(data);
+          if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
+            scope.renderChart(data);
+          }
+          
         },true);
 
         scope.renderChart = function(data){
           d3.select(Element[0]).selectAll("*").remove;
           if(data && data.length > 0){
+           
             //Margin conventions
             var margin = {top: 20, right: 70, bottom: 40, left: 35};
 
             var widther = window.outerWidth;
-
+            console.log(widther);
+            
             var width = widther - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
 
             //Parses date for correct time format
-            var parseDate = d3.time.format("%Y-%m").parse;
+            var parseDate = d3.time.format("%Y-%m-%d");
 
             //Divides date for tooltip placement
             var bisectDate = d3.bisector(function(d) { return d.date; }).left;
@@ -458,9 +458,9 @@ angular.module('HistoricalDirective', [])
               //FORMAT data
               data.forEach(function(d) {
                 d.num = +d.num;
-                d.date = parseDate(d.date);
+                d.date = new Date(d.date);
               });
-
+            
             //Appends chart headline
             //d3.select(".g-hed").text("Chart headline goes here");
 
@@ -468,7 +468,7 @@ angular.module('HistoricalDirective', [])
             //d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
 
             data.sort(function(a,b) { return a.date - b.date; });
-
+            console.log(data)
 
             //Defines the xScale max
             xScale.domain(d3.extent(data, function(d) { return d.date; }));
@@ -514,7 +514,7 @@ angular.module('HistoricalDirective', [])
                 .on("mouseover", function() { focus.style("display", null); })
                 .on("mouseout", function() { focus.style("display", "none"); })
                 .on("mousemove", mousemove);
-
+              
             //Tooltip mouseovers
             function mousemove() {
               var x0 = xScale.invert(d3.mouse(this)[0]),

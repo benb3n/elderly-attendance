@@ -16,4 +16,10 @@ angular.module('iCityLab', [
     'nvd3',
     'g1b.calendar-heatmap'
 
-]);
+]).run(function($rootScope, $http, $location) {
+    console.log(localStorage.getItem("user"))
+    if (localStorage.getItem("user")) {
+        $http.defaults.headers.common.Authorization = 'Token token=' + localStorage.getItem("user").token;
+        //$http.defaults.headers.common['X-Store-Cookies'] = localStorage.getItem("user");
+    }
+});

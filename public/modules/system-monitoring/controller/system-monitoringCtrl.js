@@ -3,9 +3,10 @@ angular.module('SystemMonitoringCtrl', [])
     var vm = this;
     vm.api = {
         project: 'mp',
+        system_monitoring_device_type: "battery_voltage",
+        center: 'gl15',//localStorage.getItem('center_code_name'),
         all_device_count: 1000,
         system_monitoring_device_count: 1000,
-        system_monitoring_device_type: "battery_voltage",
         latest_sensor_reading_count: 1000
     }
 
@@ -44,7 +45,8 @@ angular.module('SystemMonitoringCtrl', [])
     function initController(){
         vm.data = {};
         vm.display = {
-            all_devices: []
+            all_devices: [],
+            system_monitoring_device: []
         }
 
         vm.loading = true;
@@ -54,42 +56,19 @@ angular.module('SystemMonitoringCtrl', [])
     function generateDataForInit(){
         $q.when()
         .then(function(){
-            return getAllDevices(vm.api.project, vm.api.all_device_count)
-            
+            return getAllDevices(vm.api.project, vm.api.center, vm.api.system_monitoring_device_count)
         })
         .then(function(result){
             console.log(result)
-            vm.data.all_devices = result;
-            vm.data.all_devices_pairs = {};
-            result.results.forEach(function(value, index){
-                if(value.device_id.indexOf("-") != -1 && value.device_type == "Beacon"){
-                    var index = value.device_id.indexOf("-") + 1;
-                    var id = value.device_id.substring(index)
-
-                    vm.display.all_devices.push({
-                        id: id,
-                        name: value.resident_list
-                    })
-                    vm.data.all_devices_pairs[id] = value;
-                }
-            })
-
-            var today = moment(new Date()).format("YYYY-MM-DD") + "T00:00:00"
-            return getSystemMonitoringDevice(vm.api.system_monitoring_device_type, today, vm.api.system_monitoring_device_count)
-        })
-        .then(function(result){
-            console.log(result)
-            vm.data.system_monitoring = result;
+            vm.data.system_monitoring = result.results;
+        
             vm.data.system_monitoring_by_device = {};
             result.results.forEach(function(value, index){
-
+                value.image = "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg";
+                vm.display.system_monitoring_device.push(value);
             })
 
-            vm.update_selectedPerson = vm.display.all_devices[0].name
-            vm.display.elderly_sys_mon = [
-                {name: "P1", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg"},
-                {name: "P2", image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg"}
-            ]
+          
 
         }).then(function(result){
             vm.loading = false;
@@ -128,9 +107,14 @@ angular.module('SystemMonitoringCtrl', [])
     /******************
         WEB SERVICE 
     ******************/
-    function getAllDevices (project_prefix, page_size) { //url, _defer, overall
+    function getAllDevices (project_prefix, center_code_name) {
+        console.log(center_code_name + "  , " + project_prefix)
         var _defer = $q.defer();
-        SMService.getAllDevices(project_prefix, page_size, function (result) {
+        var params = {
+            project_prefix: project_prefix,
+            center_code_name: center_code_name
+        }
+        SMService.getSystemMonitoringDevice(params, function (result) {
             if (result) {
                 _defer.resolve(result)
             } else {
@@ -139,28 +123,7 @@ angular.module('SystemMonitoringCtrl', [])
         });
         return _defer.promise;
     }
-    function getSystemMonitoringDevice(reading_type, start_datetime, page_size){
-        var _defer = $q.defer();
-        SMService.getSystemMonitoringDevice(reading_type, start_datetime, page_size, function (result) {
-            if (result) {
-                _defer.resolve(result);
-            } else {
-                _defer.reject();
-            }
-        });
-        return _defer.promise;
-    }
-    function getSystemMonitoringDevicesByGwDevice(gw_device, reading_type, page_size){
-        var _defer = $q.defer();
-        SMService.getSystemMonitoringDevicesByGwDevice(gw_device, page_size, function (result) {
-            if (result) {
-                _defer.resolve(result);
-            } else {
-                _defer.reject();
-            }
-        });
-        return _defer.promise;
-    }
+
     function addDevice(params){
         var _defer = $q.defer();
         SMService.addDevice(parmas, function (result) {

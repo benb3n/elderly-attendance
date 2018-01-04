@@ -189,3 +189,48 @@ svg.nvd3-svg{
    stroke-width: 1px;
    stroke-dasharray:none;
  }
+
+
+ .axis line {
+    fill: none;
+    stroke: #ccc;
+    stroke-dasharray: 2px 3px;
+    shape-rendering: crispEdges;
+    stroke-width: 1px;
+  }
+
+  .axis text {
+    font-family: 'Proxima-Nova', sans-serif;
+    font-size: 13px;
+    pointer-events: none;
+    fill: #7e7e7e;
+  }
+
+  .y.axis text {
+    text-anchor: end !important;
+    font-size:14px;
+    fill: #7e7e7e;
+  }
+
+  .domain {
+    display: none;
+  }
+
+  .line {
+    stroke: #2f5491;
+    stroke-width: 3px;
+    fill: none;
+  }
+
+  .overlay {
+    fill: none;
+    pointer-events: all;
+  }
+
+  .focus {
+    font-size: 14px;
+  }
+
+  .focus circle {
+    fill: #5e8dc9;
+  }
