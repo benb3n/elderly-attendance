@@ -10,9 +10,11 @@ angular.module('SystemMonitoringService', [])
     
     return service;
     
+
     function getAllDevices(project_prefix, page_size, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
         $http.get(deviceAPI.url  ,
-            {
+            {   
                 params: {
                     project_prefix : project_prefix,
                     page_size: page_size
@@ -28,7 +30,7 @@ angular.module('SystemMonitoringService', [])
     }
 
     function getSystemMonitoringDevice (params, callback) { 
-        console.log(starlightAPI.url + '/api/v1/manifest_center/centerbatteryreading/')
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
         $http.get(starlightAPI.url + '/api/v1/manifest_center/centerbatteryreading/', params)
         .then(
             function(result){ callback(result.data) },

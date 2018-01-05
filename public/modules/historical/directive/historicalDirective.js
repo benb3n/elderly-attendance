@@ -394,6 +394,7 @@ angular.module('HistoricalDirective', [])
 
         scope.renderChart = function(data){
           d3.select(Element[0]).selectAll("*").remove;
+          
           if(data && data.length > 0){
            
             //Margin conventions
