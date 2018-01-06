@@ -115,7 +115,7 @@ angular.module('SystemMonitoringCtrl', [])
                 value.status = (value.value > 2.7) ? "Green" : "Red"
                 vm.display.system_monitoring_device.push(value);
             })
-
+            console.log(vm.display.system_monitoring_device)
             vm.display.system_monitoring_device.sort(compareCount)
             vm.display.system_monitoring_device_backup = angular.copy(vm.display.system_monitoring_device)            
 

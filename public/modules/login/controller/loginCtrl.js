@@ -17,7 +17,7 @@ angular.module('LoginCtrl', [])
     initController();
     function initController(){
         LService.logout();
-
+        Materialize.updateTextFields();
         
     }
 
