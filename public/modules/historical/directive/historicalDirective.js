@@ -443,6 +443,9 @@ angular.module('HistoricalDirective', [])
               .tickSize(-width)
               .tickPadding(8)
               .orient("left");
+              //help: maybe the data is stored as a doube instead of the integers i pass in,resulting in .5 values
+              //https://github.com/danielgindi/Charts/issues/315
+              //.tickFormat(d3.format(".0f"));
 
             //Defines the x axis styles
             var xAxis = d3.svg.axis()
@@ -452,6 +455,8 @@ angular.module('HistoricalDirective', [])
               .tickSize(height)
               .ticks(numTicks(width))
               .tickFormat(d3.time.format("%m/%Y"));
+              //help: prevent duplicate ticks
+              //.tickFormat(d3.time.format("%d %b"));
 
             //line function convention (feeds an array)
             var line = d3.svg.line()
