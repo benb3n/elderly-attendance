@@ -1,5 +1,5 @@
  <div>
-  <div class="row">
+  <!-- <div class="row">
     <div class="card">
       <div class="input-field col s12 m2">
         <i class="material-icons prefix">store</i>
@@ -31,56 +31,123 @@
         <label for="search">Search Name</label>
         <i class="material-icons">close</i>
       </div>
-      <div class="col s12 m2">
 
-      </div>
-    
+
     </div>
+  </div>-->
+
+  <div class="row">
+    <div class="col s12">
+      <ul class="tabs tabs-fixed-width">
+        <li class="tab col s3"><a class="active" href="#realtime">Real Time</a></li>
+        <li class="tab col s3"><a class="active" href="#attendance">Attendance</a></li>
+      </ul>
+    </div>
+
+    <!-- REAL TIME TAB -->
+    <div id="realtime" class="col s12"> 
+      <div class="row">
+        <div class="col s12">
+          <!-- FILTER -->
+          <div class="row">
+            <div class="card">
+              <div class="input-field col s12 m2">
+                <i class="material-icons prefix">store</i>
+                <select ng-model="rt.selectedCenter">
+                  <option value= "" disabled selected>Select Center</option>
+                  <option value={{center.value}} ng-repeat="center in rt.display.centers">{{center.name}}</option>
+                </select>
+                <label>Center</label>
+              </div>
+              <div class="input-field col s12 m2">
+                <i class="material-icons prefix">description</i>
+                <select ng-model="rt.selectedCourse">
+                  <option value = "" disabled selected>Select Course</option>
+                  <option value={{course.value}} ng-repeat="course in rt.display.courses">{{course.name}}</option>
+                </select>
+                <label>Course</label>
+              </div>
+              <div class="input-field col s12 m2">
+                <i class="material-icons prefix">person</i>
+                <select multiple ng-model="rt.selectedStatus">
+                  <option value = "" disabled selected>Select Elderly Status</option>
+                  <option value={{status.value}} ng-repeat="status in rt.display.status">{{status.name}}</option>
+                </select>
+                <label>Status</label>
+              </div>
+              <div class="input-field col s12 m2">
+                <i class="material-icons prefix">search</i>
+                <input id="search" type="search" ng-model="rt.searchname" ng-keyup="getkeys($event)" required>
+                <label for="search">Search Name</label>
+                <i class="material-icons">close</i>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENT -->
+          <div ng-if="rt.status.no_data" class="row">
+            <div class="col s12" style="color:#b71c1c; font-size:20px; text-align:center">
+              No Data Avaliable In The Last 10 Min</div>
+            </div>
+          </div>
+          <div class="row">
+
+            <div class="col s12 m12">
+              <div ng-repeat="person in rt.display.elderly_attendance">
+                <div class="col s6 m3 l2 animated fadeIn">
+                  <div ng-class="{'card card-profile card-red': person.status == 'NA', 'card card-profile card-green': person.status == 'Present'}">
+                    <div class="card-profile-avatar">
+                      <img src={{person.image}}>
+                    </div>
+                    <div class="card-profile-content" style="font-weight: 300">
+                      <h4 class="card-profile-title">{{person.name}}</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+              
+            <!-- LOADING -->
+            <div ng-if="rt.loading" class="col s12">
+              <div class="col s6"></div>
+                <div class="preloader-wrapper big active" style="text-align: center">
+                  <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                      <div class="circle"></div>
+                    </div><div class="gap-patch">
+                      <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                      <div class="circle"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END OF LOADING -->
+
+          </div>
+
+        </div>
+      </div>  
+    </div>
+    <!-- END OF REAL TIME TAB -->
+
+
+    <!-- ATTENDANCE TAB -->
+    <div id="attendance" class="col s12"> 
+      <div class="row">
+        <div class="col s12">
+          <!-- CONTENT -->
+          <table id="attendance_table" class="table responsive-table display responsive nowrap" width:"100%" cellspacing="0"></table>
+          
+        </div>
+      </div>  
+    </div>
+    <!-- END OF ATTENDANCE TAB -->
   </div>
+
+
 
   
-  <div ng-if="rt.status.no_data" class="row">
-    <div class="col s12" style="color:#b71c1c; font-size:20px; text-align:center">
-        No Data Avaliable In The Last 10 Min</div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col s12 m12">
-      <div ng-repeat="person in rt.display.elderly_attendance">
-        <div class="col s6 m3 l2 animated fadeIn">
-
-          <div ng-class="{'card card-profile card-red': person.status == 'NA', 'card card-profile card-green': person.status == 'Present'}">
-            <div class="card-profile-avatar">
-              <img src={{person.image}}>
-            </div>
-            <div class="card-profile-content" style="font-weight: 300">
-              <h4 class="card-profile-title">{{person.name}}</h4>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-
-    
-
-    <div ng-if="rt.loading" class="col s12">
-      <div class="col s6"></div>
-        <div class="preloader-wrapper big active" style="text-align: center">
-          <div class="spinner-layer spinner-blue-only">
-            <div class="circle-clipper left">
-              <div class="circle"></div>
-            </div><div class="gap-patch">
-              <div class="circle"></div>
-            </div><div class="circle-clipper right">
-              <div class="circle"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
 
   
 </div>
