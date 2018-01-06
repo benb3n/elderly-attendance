@@ -11,11 +11,11 @@ angular.module('HistoricalDirective', [])
       scope.$watch('data', function(data) {
         scope.renderChart(data, "")
       },true);
-    
+
       scope.renderChart = function(data, color){
         var numberDisplay = dc.numberDisplay(Element[0]);
-        
-        
+
+
       }
 
     }
@@ -389,19 +389,19 @@ angular.module('HistoricalDirective', [])
           if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
             scope.renderChart(data);
           }
-          
+
         },true);
 
         scope.renderChart = function(data){
           d3.select(Element[0]).selectAll("*").remove;
           if(data && data.length > 0){
-           
+
             //Margin conventions
             var margin = {top: 20, right: 70, bottom: 40, left: 35};
 
             var widther = window.outerWidth;
-            console.log(widther);
-            
+            //console.log(widther);
+
             var width = widther - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
 
@@ -460,7 +460,7 @@ angular.module('HistoricalDirective', [])
                 d.num = +d.num;
                 d.date = new Date(d.date);
               });
-            
+
             //Appends chart headline
             //d3.select(".g-hed").text("Chart headline goes here");
 
@@ -468,7 +468,7 @@ angular.module('HistoricalDirective', [])
             //d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
 
             data.sort(function(a,b) { return a.date - b.date; });
-            console.log(data)
+            //console.log(data)
 
             //Defines the xScale max
             xScale.domain(d3.extent(data, function(d) { return d.date; }));
@@ -514,7 +514,7 @@ angular.module('HistoricalDirective', [])
                 .on("mouseover", function() { focus.style("display", null); })
                 .on("mouseout", function() { focus.style("display", "none"); })
                 .on("mousemove", mousemove);
-              
+
             //Tooltip mouseovers
             function mousemove() {
               var x0 = xScale.invert(d3.mouse(this)[0]),
@@ -536,7 +536,7 @@ angular.module('HistoricalDirective', [])
               .text("Chart source info goes here")
               .attr("class", "g-source-reg");
               */
-            
+
             //RESPONSIVENESS
             d3.select(window).on("resize", resized);
             resized();
@@ -609,7 +609,7 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
               if(typeof data != 'undefined' && data.length!=0){
-                
+
               }
               scope.renderChart(data);
         },true);
@@ -801,7 +801,7 @@ angular.module('HistoricalDirective', [])
                 .text("Chart source info goes here")
                 .attr("class", "g-source-reg");
 
-              
+
               //RESPONSIVENESS
               d3.select(window).on("resize", resized);
               resized();
@@ -836,9 +836,9 @@ angular.module('HistoricalDirective', [])
             return 10
           }
         }//end numticks
-        
+
       }
-    
+
   }
 })//end responsiveHorizontalBarChart
 
@@ -852,7 +852,7 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
             if(typeof data != 'undefined' && data.length!=0){
-              
+
             }
             scope.heatmapChart(data);
         },true);
@@ -899,11 +899,11 @@ angular.module('HistoricalDirective', [])
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
               var colorScale = d3.scale.quantile()
-                  .domain([0, buckets - 1, d3.max(data, function (d) { 
+                  .domain([0, buckets - 1, d3.max(data, function (d) {
                     return d.value; })])
                   .range(colors);
-              
-            
+
+
 
               var cards = svg.selectAll(".hour")
                   .data(data, function(d) {return d.day+':'+d.hour;});
@@ -974,7 +974,7 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
           if(typeof data != 'undefined' && data.length!=0){
-                  
+
           }
           scope.heatmapChart(data);
         },true);

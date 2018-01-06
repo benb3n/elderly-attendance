@@ -383,8 +383,8 @@ angular.module('HistoricalCtrl', [])
     ];
 
     vm.selectedCenter = 6901;
-    vm.selectedEndDate_courses = new Date('30 November 2017');
-    vm.selectedStartDate_courses = new Date('1 November 2017');
+    //vm.selectedEndDate_courses = new Date('29 October 2017');
+    //vm.selectedStartDate_courses = new Date('5 November 2017');
 
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
@@ -396,7 +396,7 @@ angular.module('HistoricalCtrl', [])
 
     $q.when()
       .then(function(){
-        //console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
+        console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
           return getSensorReadings(center, start_date_time, end_date_time, 500 );
       })
       .then(function(result){
@@ -404,7 +404,7 @@ angular.module('HistoricalCtrl', [])
           //console.log(result);
           //update_most_active_chart(result);
           //update_avg_week_heatmap_chart(result);
-          update_course_month_chart(result,"language");
+          update_activity_month_chart(result,"language");
           generateDataForOverview(result)
       })//end when.then
   }//end callSensorReadings
@@ -580,7 +580,7 @@ angular.module('HistoricalCtrl', [])
       vm.responsiveHorizontalBarData = angular.copy(time_data);
   }//end update_most_active_chart function
 
-  function update_course_month_chart(result,course_type){
+  function update_activity_month_chart(result,course_type){
     //get data related to course
     var course_result = {
       "count": 3,
@@ -640,19 +640,14 @@ angular.module('HistoricalCtrl', [])
     temp_arr = objArr_to_dateObjArr(result.results);
     var date_obj_array = temp_arr[1];
     var date_list = temp_arr[0];
-    //console.log(result.results);
-    //console.log(courses_date_instances);
-    //console.log(date_obj_array);
-
     date_obj_array.forEach(function(date_value,date_index){
       var course_date_index = courses_date_list.indexOf(date_list[date_index]);
       if(course_date_index==-1) return; //no courses that date
-      var focus_courses = courses_array[course_date_index];//courses in a specific date
+      var focus_courses = courses_date_array[course_date_index];//courses in a specific date
       var instances_array = objArr_to_instances(date_value);//get instances for that date
       //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
 
       courses_date_instances[course_date_index] = instancesArray_to_coursesInstancesArr(instances_array,focus_courses);
-      //console.log(courses_date_instances);
 
     })//end for each day
   /*
@@ -660,31 +655,40 @@ angular.module('HistoricalCtrl', [])
   */
     var month_list = [];
 
-    var curr_month = moment(courses_date_list[0]);
-    var end_month = moment(courses_date_list[courses_date_list.length-1]);
+    var curr_month = moment(courses_date_list[0]).set('date', 1);
+    var end_month = moment(courses_date_list[courses_date_list.length-1]).set('date', 1);
     while(curr_month.isSameOrBefore(end_month)){
       month_list.push(moment(curr_month).format('YYYY-MM'));
       curr_month = moment(curr_month).add(1, 'month');
     }//end while
 
-
-    var month_count = [month_list.length];
+    var month_count = Array(month_list.length);
     month_count.fill(0);
-    //console.log(month_list);
-    //console.log(month_count);
-
     courses_date_instances.forEach(function(date_value,date_index){
       var this_month = moment(courses_date_list[date_index]).format('YYYY-MM');
       if (month_list.indexOf(this_month) == -1){
-        console.log("error in update_course_month_chart");
+        console.log("error in update_activity_month_chart");
       };//end if
       date_value.forEach(function(course_value){
         month_count[month_list.indexOf(this_month)] += uniqueId_from_instanceArr(course_value).length;
       })//for each course
     })//for each date
 
+    var activity_month_data = [];
+    month_list.forEach(function(value,index){
+      activity_month_data.push({
+        "date": '' + value,
+        "num": month_count[index]
+      })//end obj
+    })//end for each month in month list
+
+    console.log(activity_month_data);
+    vm.activityMonthData=angular.copy(activity_month_data);
+    console.log(vm.activityMonthData);
+    //help: "date" string value becomes a date object in activityMonthData
+
     //{"date": '2011-03', "num" : 9}
-  }// end func update_course_month_chart
+  }// end func update_activity_month_chart
 
   function update_course_time_chart(result){
     //TODO:
@@ -883,13 +887,14 @@ angular.module('HistoricalCtrl', [])
       courses_array.forEach(function(course,course_index){
         //course[start_datetime,end_datetime,duration_seconds,activity_type_arr,days_of_week]
 
-        var course_start = course[0];
-        var course_end = course[1];
+        var course_start = moment(course[0]);
+        var course_end = moment(course[1]);
         if(!(course_end.isBefore(this_start) || this_end.isBefore(course_start))){
           course_instance_array[course_index].push(value);
         }//end if
       })//end for each course
     })//end forEach instance
+    console.log(course_instance_array);
     return course_instance_array;
   }//end func instancesArray_to_coursesInstancesArr
 
@@ -939,7 +944,7 @@ angular.module('HistoricalCtrl', [])
   }
 
   /***********************
-        OVERVIEW PAGE      
+        OVERVIEW PAGE
   ***********************/
 
   vm.time_treshold = 600;
@@ -956,7 +961,7 @@ angular.module('HistoricalCtrl', [])
         return value;
       })
 
-      var group_by_result = groupBy(json_result.results, function(item){ return [item.resident_device, item.gw_date] }); 
+      var group_by_result = groupBy(json_result.results, function(item){ return [item.resident_device, item.gw_date] });
       //console.log(group_by_result)
 
       var results = [], g=[], d=0;
@@ -967,7 +972,7 @@ angular.module('HistoricalCtrl', [])
         for(arr_length = arr.length, i = 0; i < arr_length; i++){
           var current_timestamp = moment(arr[i].timestamp);
           if(current_timestamp.isAfter(current_threshold)){
-            g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold; 
+            g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold;
             g[0].counts = g.length;
             results.push(g[0]);
             g = [];
@@ -976,13 +981,13 @@ angular.module('HistoricalCtrl', [])
           current_threshold = moment(arr[i].timestamp).add(10, 'minutes')
         }
 
-        g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold; 
+        g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold;
         g[0].counts = g.length;
         results.push(g[0]);  // include last group otherwise unpushed
         g = [];
       });
 
-      console.log(results)
+      //console.log(results)
       var ndx = crossfilter(results)
 
     }
@@ -994,15 +999,15 @@ angular.module('HistoricalCtrl', [])
     array.forEach( function( o ){
       var group = JSON.stringify( f(o) );
       groups[group] = groups[group] || [];
-      groups[group].push( o );  
+      groups[group].push( o );
     });
     return Object.keys(groups).map( function( group ){
-      return groups[group]; 
+      return groups[group];
     })
   }
 
   /********************************
-       END OF  OVERVIEW PAGE      
+       END OF  OVERVIEW PAGE
   ********************************/
 
 })//end controller
