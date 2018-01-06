@@ -2,14 +2,20 @@
 <!-- Alert Container-->
 <div class="row">
   <div class="row" style="margin-top:10px !important">
-    <div class="col s10">
-      <h5>Battery Replacement Needed For:</h5>
+    <div class="col s12 m2">
+      <h5 style="font-weight: 250;">Beacon Battery Status</h5>
     </div>
-    <div  class="col s2">
+
+      <div class="input-field col s9 m2">
+        <i class="material-icons prefix">search</i>
+        <input id="search" type="search" ng-model="sm.searchname" ng-keyup="getkeys($event)" required>
+        <label for="search">Search</label>
+        <i class="material-icons">close</i>
+      </div>
       <a class="btn-floating btn-large waves-effect waves-light red darken-4 modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Add/Pair a new device"   data-target="addModal" >
         <i class="material-icons">add</i>
       </a>
-    </div>
+
   </div>
     
     
@@ -18,15 +24,16 @@
   <div class="row" style="margin-top:50px !important">
     <div ng-repeat="person in sm.display.system_monitoring_device">
       <div class="col s6 m3 l2 animated fadeIn">
-        <div class="card card-profile ">
+        <div ng-class="{'card card-profile card-red': person.status == 'Red', 'card card-profile card-green': person.status == 'Green'}">
           <div class="card-profile-avatar pulse">
             <a class="modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Update device"  data-target="updateModal" style="margin-right  :10px !important">
               <img src={{person.image}} style="cursor: pointer">
             </a>
-            
           </div>
-          <div class="card-profile-content" style="font-weight: 300">
-            <h4 class="card-profile-title">{{person.name}}</h4>
+          <div class="card-profile-content" style="font-weight: 300;">
+            <h4 class="card-profile-title">{{person.resident_list}}</h4>
+            <p style="margin:0px !important">Voltage:  <b>{{person.value}}</b></p>
+            <p style="margin-top:0px !important">last seen at <b>{{person.last_seen}}</b></p>
           </div>
         </div>
       </div>

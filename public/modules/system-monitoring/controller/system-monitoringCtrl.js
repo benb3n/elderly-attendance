@@ -39,15 +39,61 @@ angular.module('SystemMonitoringCtrl', [])
         );
 
     });
-    
+
+    /*************** 
+        WATCHERS
+    ****************/
+    $scope.getkeys = function(event){
+        applyFilters();    
+    }
+
+    /********************* 
+        SEARCH FILTERS
+    **********************/
+    function applyFilters(){
+        result = applySearchFilter();
+        console.log(result.length)
+        vm.display.system_monitoring_device = angular.copy(result)
+    }   
+
+    function applySearchFilter(data){
+        if(typeof vm.searchname == 'undefined' || vm.searchname == "" ){
+            return vm.display.system_monitoring_device_backup;
+        }else{
+            console.log(vm.searchname);
+            console.log(vm.display.system_monitoring_device_backup)
+            if(isNaN(vm.searchname)){
+                console.log("STR")
+                return filterByAttr("resident_list", vm.searchname, vm.display.system_monitoring_device_backup);
+            }else{
+                console.log("NUM")
+                return filterByAttrNum("value", vm.searchname, vm.display.system_monitoring_device_backup);
+            }
+        }
+    }
+
+    function filterByAttrNum(attr, value, data) {
+        return $.grep(data, function(n, i) {
+            return n[attr] < value;
+        });
+    }
+
+    function filterByAttr(attr, value, data) {
+        var value = value.toLowerCase();
+        return $.grep(data, function(n, i) {
+            return n[attr].toLowerCase().indexOf(value) != -1;
+        });
+    }
 
     initController();
     function initController(){
         vm.data = {};
         vm.display = {
             all_devices: [],
-            system_monitoring_device: []
+            system_monitoring_device: [],
+            system_monitoring_device_backup: []
         }
+        vm.searchname = "";
 
         vm.loading = true;
         generateDataForInit();
@@ -65,10 +111,13 @@ angular.module('SystemMonitoringCtrl', [])
             vm.data.system_monitoring_by_device = {};
             result.results.forEach(function(value, index){
                 value.image = "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg";
+                value.last_seen = moment(value.gw_timestamp).format("YYYY-MM-DD HH:mm:ss")
+                value.status = (value.value > 2.7) ? "Green" : "Red"
                 vm.display.system_monitoring_device.push(value);
             })
 
-          
+            vm.display.system_monitoring_device.sort(compareCount)
+            vm.display.system_monitoring_device_backup = angular.copy(vm.display.system_monitoring_device)            
 
         }).then(function(result){
             vm.loading = false;
@@ -78,6 +127,17 @@ angular.module('SystemMonitoringCtrl', [])
             });
         });
 
+    }
+
+    
+    /************************
+        HELPER FUNCTIONS 
+    ************************/
+    function compareCount (a, b) {
+        // DESCENDING ORDER
+        if (a.value > b.value) return 1;
+        if (a.value < b.value) return -1;
+        return 0;
     }
 
     /***********************

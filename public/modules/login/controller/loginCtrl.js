@@ -3,10 +3,6 @@ angular.module('LoginCtrl', [])
     document.getElementById("navbar").style.visibility = "hidden";
     document.getElementById("body_content").setAttribute('class', 'login');
 
-    $(document).ready(function() {
-           
-    });
-
     var vm = this;
 
     vm.login = login;
@@ -17,6 +13,13 @@ angular.module('LoginCtrl', [])
     //CM
     vm.username = "hxtest"
     vm.password = "qwerty123456"
+
+    initController();
+    function initController(){
+        LService.logout();
+
+        
+    }
 
     function login() {
         vm.loading = true;
@@ -34,14 +37,15 @@ angular.module('LoginCtrl', [])
                 LService.getUserRole(function (role) {
                     document.getElementById("body_content").setAttribute('class', '');
                     document.getElementById("navbar").style.visibility = "visible";
-
-                    localStorage.setItem("user", {
-                        user: vm.username,
-                        token: result.token,
-                        center_code_name: "gl15",
-                        role: role
-                    });
-
+                    
+                    localStorage.currentUserToken = 'Token ' + result.token;
+                    localStorage.currentUser =  vm.username,
+                    localStorage.currentCenterCode = 'gl15',
+                    localStorage.currentRole = role;
+       
+                    //console.log(localStorage.currentUser + " , " + localStorage.currentUserToken + " , " + 
+                    //localStorage.currentCenterCode + " , " + localStorage.currentRole)
+                    
                     Materialize.toast('Login Successful', 3000, 'rounded green');
                     $location.path('/home');
                 })

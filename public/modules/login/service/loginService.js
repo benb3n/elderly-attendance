@@ -3,11 +3,14 @@ angular.module('LoginService', [])
 .factory('LService', function($http, starlightAPI, APIToken) {
     var service = {};
     service.login = login;
+    service.logout = logout;
     service.getUserRole = getUserRole;
 
 
     return service;
     
+    
+
     function login(params, callback){
         $http.post(starlightAPI.url + "/api-token-auth/", params)
         .then(
@@ -15,7 +18,10 @@ angular.module('LoginService', [])
                 callback(result.data) },
             function(){ callback(false) }
         )
-        
+    }
+
+    function logout(){
+        localStorage.clear();
     }
 
     function getUserRole( callback){

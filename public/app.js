@@ -17,9 +17,12 @@ angular.module('iCityLab', [
     'g1b.calendar-heatmap'
 
 ]).run(function($rootScope, $http, $location) {
-    console.log(localStorage.getItem("user"))
-    if (localStorage.getItem("user")) {
-        $http.defaults.headers.common.Authorization = 'Token token=' + localStorage.getItem("user").token;
-        //$http.defaults.headers.common['X-Store-Cookies'] = localStorage.getItem("user");
-    }
-});
+    // redirect to login page if not logged in and trying to access a restricted page
+    $rootScope.$on('$locationChangeStart', function (event, next, current) {
+        var publicPages = ['/login'];
+        var restrictedPage = publicPages.indexOf($location.path()) === -1;
+        if(restrictedPage && !localStorage.currentUser) {
+            $location.path('/login');
+        }    
+    });
+})
