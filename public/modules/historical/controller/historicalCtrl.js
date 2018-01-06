@@ -701,7 +701,7 @@ angular.module('HistoricalCtrl', [])
       })//end obj
     });
 
-    vm.activityMonthData=angular.copy(activity_month_data);
+    vm.activityMonthData=angular.copy(activityMonthData);
 
     //{"date": '2011-03', "num" : 9}
   }// end func update_activity_month_chart

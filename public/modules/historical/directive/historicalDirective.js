@@ -423,12 +423,18 @@ angular.module('HistoricalDirective', [])
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            var padding = 50;
+
             //Creates the xScale
+            //help: how come dont set domain first but set later
             var xScale = d3.time.scale()
-              .range([0, width]);
+              //.domain([d3.min(data, function(d) { return d.date; }) , d3.max(data, function(d) { return d.date; })])
+              //.range([0, width]);
+              .range([padding, width - padding]);
 
             //Creates the yScale
             var yScale = d3.scale.linear()
+              //.domain([d3.max(data, function(d) { return d.num; }), 0 ])
               .range([height, 0]);
 
             //Defines the y axis styles
@@ -438,7 +444,7 @@ angular.module('HistoricalDirective', [])
               .tickPadding(8)
               .orient("left");
 
-            //Defines the y axis styles
+            //Defines the x axis styles
             var xAxis = d3.svg.axis()
               .scale(xScale)
               .tickPadding(8)
@@ -475,20 +481,24 @@ angular.module('HistoricalDirective', [])
             data.sort(function(a,b) { return a.date - b.date; });
             //console.log(data)
 
-            //Defines the xScale max
+            //Defines the xScale max and min
             xScale.domain(d3.extent(data, function(d) { return d.date; }));
 
+            var yscalemax = d3.extent(data, function(d) { return d.num; })[1];
             //Defines the yScale max
-            yScale.domain(d3.extent(data, function(d) { return d.num; }));
+            //yScale.domain(d3.extent(data, function(d) { return d.num; }));
+            yScale.domain([0, yscalemax]);
 
             //Appends the y axis
             var yAxisGroup = svg.append("g")
               .attr("class", "y axis")
+              .attr("transform", "translate(0, 0)")
               .call(yAxis);
 
             //Appends the x axis
             var xAxisGroup = svg.append("g")
               .attr("class", "x axis")
+              //.attr("transform", "translate(50, 0)")
               .call(xAxis);
 
             //Binds the data to the line
@@ -503,11 +513,14 @@ angular.module('HistoricalDirective', [])
                 .style("display", "none");
 
             //Adds circle to focus point on line
+            //help: how come dont need to specify cx,cy(relative positions)
             focus.append("circle")
                 .attr("r", 4);
 
             //Adds text to focus point on line
             focus.append("text")
+                //help: this dosent work, why?
+                //.text(function (d) {return d.num;})
                 .attr("x", 9)
                 .attr("dy", ".35em");
 
