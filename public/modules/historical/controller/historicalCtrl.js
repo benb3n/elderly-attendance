@@ -682,7 +682,15 @@ angular.module('HistoricalCtrl', [])
       })//end obj
       console.log(month_count[index]);
     })//end for each month in month list
-
+    /* activity_month_data.push({
+      "date": '2017-12',
+      "num": 2
+    })//end obj
+    activity_month_data.push({
+      "date": '2018-01',
+      "num": 3
+    })//end obj*/
+    console.log(activity_month_data);
     activityMonthData = [];
     test_dates = ['2017-10','2017-11','2017-12','2018-01'];
     test_values = [1,3,2,5];
@@ -693,7 +701,7 @@ angular.module('HistoricalCtrl', [])
       })//end obj
     });
 
-    vm.activityMonthData=angular.copy(activityMonthData);
+    vm.activityMonthData=angular.copy(activity_month_data);
 
     //{"date": '2011-03', "num" : 9}
   }// end func update_activity_month_chart
