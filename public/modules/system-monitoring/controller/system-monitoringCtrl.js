@@ -24,19 +24,7 @@ angular.module('SystemMonitoringCtrl', [])
             selectMonths: true, // Creates a dropdown to control month
             selectYears: 15 // Creates a dropdown of 15 years to control year
         });
-        $('.modal').modal({
-            dismissible: true, // Modal can be dismissed by clicking outside of the modal
-            opacity: .5, // Opacity of modal background
-            inDuration: 300, // Transition in duration
-            outDuration: 200, // Transition out duration
-            startingTop: '4%', // Starting top style attribute
-            endingTop: '10%', // Ending top style attribute
-            ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-
-            },
-            complete: function() {} // Callback for Modal close
-        }
-        );
+        $('.modal').modal();
 
     });
 
@@ -60,13 +48,9 @@ angular.module('SystemMonitoringCtrl', [])
         if(typeof vm.searchname == 'undefined' || vm.searchname == "" ){
             return vm.display.system_monitoring_device_backup;
         }else{
-            console.log(vm.searchname);
-            console.log(vm.display.system_monitoring_device_backup)
             if(isNaN(vm.searchname)){
-                console.log("STR")
                 return filterByAttr("resident_list", vm.searchname, vm.display.system_monitoring_device_backup);
             }else{
-                console.log("NUM")
                 return filterByAttrNum("value", vm.searchname, vm.display.system_monitoring_device_backup);
             }
         }
@@ -87,12 +71,18 @@ angular.module('SystemMonitoringCtrl', [])
 
     initController();
     function initController(){
-        vm.data = {};
+        vm.data = {
+            system_monitoring: [],
+            system_monitoring_hash: {},
+            resident: [],
+            resident_hash: {}
+        };
         vm.display = {
             all_devices: [],
             system_monitoring_device: [],
             system_monitoring_device_backup: []
         }
+        vm.update = {};
         vm.searchname = "";
 
         vm.loading = true;
@@ -102,15 +92,25 @@ angular.module('SystemMonitoringCtrl', [])
     function generateDataForInit(){
         $q.when()
         .then(function(){
-            return getAllDevices(vm.api.project, vm.api.center, vm.api.system_monitoring_device_count)
+            return getAllResidents(vm.api.project, vm.api.all_device_count)
+        })
+        .then(function(result){
+            vm.data.resident = result.results;
+            result.results.forEach(function(value, index){
+                vm.data.resident_hash[value.resident_index] = value;
+            })
+
+            return getSystemMonitoringDevice(vm.api.project, vm.api.center, vm.api.system_monitoring_device_count)
         })
         .then(function(result){
             console.log(result)
             vm.data.system_monitoring = result.results;
-        
-            vm.data.system_monitoring_by_device = {};
+           
             result.results.forEach(function(value, index){
-                value.image = "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg";
+                vm.data.system_monitoring_hash[value.id] = value;
+                var index = value.resident_list.indexOf(",");
+                value.resident_index = value.resident_list.substring(0, index);
+                value.image = (vm.data.resident_hash[value.resident_index].profile_picture != null) ? vm.data.resident_hash[value.resident_index].profile_picture : "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg";
                 value.last_seen = moment(value.gw_timestamp).format("YYYY-MM-DD HH:mm:ss")
                 value.status = (value.value > 2.7) ? "Green" : "Red"
                 vm.display.system_monitoring_device.push(value);
@@ -145,6 +145,18 @@ angular.module('SystemMonitoringCtrl', [])
     ***********************/
     vm.addNewDevice = addNewDevice;
     vm.updateNewDevice = updateNewDevice;
+    vm.refresh = refresh;
+
+    function refresh(id){
+        $('.modal').modal();
+        vm.update.update_selectedPerson = vm.data.system_monitoring_hash[id].resident_list;
+        console.log(vm.update.update_selectedPerson)
+        $timeout(function () {
+            $('select').material_select()
+            Materialize.updateTextFields();
+        });
+        
+    }
 
     function addNewDevice(){
         console.log(" " + $('#new_name').val() + " , " +$('#new_device_id').val())
@@ -162,13 +174,37 @@ angular.module('SystemMonitoringCtrl', [])
         
     }
 
-    //https://dev-starlight.icitylab.com/api/v1/readings/sysmonreading/?gw_device=6902&reading_type=battery_voltage&start_datetime=2017-12-20T00:00:00
-
     /******************
         WEB SERVICE 
     ******************/
-    function getAllDevices (project_prefix, center_code_name) {
-        console.log(center_code_name + "  , " + project_prefix)
+    function getAllDevices (project_prefix, page_size) { //url, _defer, overall
+        var _defer = $q.defer();
+        var params = {
+            project_prefix: project_prefix,
+            page_size: page_size
+        }
+        SMService.getAllDevices(params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    function getAllResidents (project_prefix, page_size) { 
+        var _defer = $q.defer();
+        SMService.getAllResidents(project_prefix, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+
+    function getSystemMonitoringDevice (project_prefix, center_code_name) {
         var _defer = $q.defer();
         var params = {
             project_prefix: project_prefix,

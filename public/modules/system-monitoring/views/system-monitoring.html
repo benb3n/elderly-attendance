@@ -3,7 +3,7 @@
 <div class="row">
   <div class="row" style="margin-top:10px !important">
     <div class="col s12 m2">
-      <h5 style="font-weight: 250;">Beacon Battery Status</h5>
+      <h5 style="font-weight: 300;">Beacon Battery Status</h5>
     </div>
 
       <div class="input-field col s9 m2">
@@ -15,20 +15,18 @@
       <a class="btn-floating btn-large waves-effect waves-light red darken-4 modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Add/Pair a new device"   data-target="addModal" >
         <i class="material-icons">add</i>
       </a>
-
   </div>
-    
-    
-  
 
-  <div class="row" style="margin-top:50px !important">
+  <div class="row">
     <div ng-repeat="person in sm.display.system_monitoring_device">
       <div class="col s6 m3 l2 animated fadeIn">
         <div ng-class="{'card card-profile card-red': person.status == 'Red', 'card card-profile card-green': person.status == 'Green'}">
-          <div class="card-profile-avatar pulse">
-            <a class="modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Update device"  data-target="updateModal" style="margin-right  :10px !important">
+          <div class="card-profile-avatar-edit">
+            <a class="modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Update device"  data-target="updateModal" style="margin-right  :10px !important" ng-click="sm.refresh(person.id)">
               <img src={{person.image}} style="cursor: pointer">
+              <i class="material-icons">edit</i>
             </a>
+
           </div>
           <div class="card-profile-content" style="font-weight: 300;">
             <h4 class="card-profile-title">{{person.resident_list}}</h4>
@@ -85,12 +83,12 @@
           <h4>Update Device</h4>
           <div class="input-field col s12">
             <i class="material-icons prefix">account_circle</i>
-            <input id="update_name" type="text" class="validate" ng-model="sm.update_selectedPerson">
+            <input id="update_name" type="text" class="validate" ng-model="sm.update.update_selectedPerson">
             <label for="update_name" data-error="Kindly enter a name" data-success="">Name</label>
           </div>
           <div class="input-field col s12">
               <i class="material-icons prefix">devices_other</i>
-              <input id="update_device_id" type="text" class="validate" ng-model="sm.update_selectedPerson">
+              <input id="update_device_id" type="text" class="validate" ng-model="sm.update.update_selectedPerson">
               <label for="update_device_id" data-error="Kindly enter a beacon ID" data-success="">Beacon Device Id</label>
             </div>
         </div>

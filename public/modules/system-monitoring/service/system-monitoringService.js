@@ -5,28 +5,35 @@ angular.module('SystemMonitoringService', [])
     var service = {};
     service.getSystemMonitoringDevice = getSystemMonitoringDevice;
     service.getAllDevices = getAllDevices;
+    service.getAllResidents = getAllResidents;
     service.addDevice = addDevice;
     service.updateDevice = updateDevice;
     
     return service;
     
 
-    function getAllDevices(project_prefix, page_size, callback){
+    function getAllDevices(params, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(deviceAPI.url  ,
-            {   
-                params: {
-                    project_prefix : project_prefix,
-                    page_size: page_size
-                }
-            }
-        )
+        console.log(params)
+        $http.get(starlightAPI.url + '/api/v1/manifest_device/device/', params)
         .then(
-            function(result){ 
-                callback(result.data) },
+            function(result){ callback(result.data) },
             function(){ callback(false) }
         );
-     
+    }
+
+    function getAllResidents(project_prefix, page_size, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.get(starlightAPI.url + '/api/v1/manifest_user/resident/',{
+            params: {
+                project_prefix: project_prefix,
+                page_size: page_size
+            }
+        })
+        .then(
+            function(result){ callback(result.data) },
+            function(){ callback(false) }
+        );
     }
 
     function getSystemMonitoringDevice (params, callback) { 

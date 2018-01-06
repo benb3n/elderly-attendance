@@ -23,6 +23,27 @@ body{
     overflow: hidden;
     box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
 }
+.card-profile .card-profile-avatar-edit{
+  max-width: 130px;
+  max-height: 130px;
+  margin: -50px auto 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+}
+.card-profile .card-profile-avatar-edit:hover img{
+  opacity: 0.8
+}
+.card-profile .card-profile-avatar-edit:hover i{
+  display: block;
+}
+.card-profile .card-profile-avatar-edit i{
+  color:black;
+  position:absolute;
+  display:none;
+  top:0;
+  right:0;
+}
 .card-profile img{
     width: 100%;
     height: auto;
