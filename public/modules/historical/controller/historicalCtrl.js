@@ -43,7 +43,6 @@ angular.module('HistoricalCtrl', [])
   },function(newCenter, oldCenter) {
     if(newCenter != oldCenter) {
       vm.selectedCenter = newCenter;
-      callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     }
   });
 
@@ -386,8 +385,8 @@ angular.module('HistoricalCtrl', [])
     //vm.selectedEndDate_courses = new Date('29 October 2017');
     //vm.selectedStartDate_courses = new Date('5 November 2017');
 
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
+    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
+    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
   }//end initController
 
   function callSensorReadings (center, start_date_time, end_date_time){
@@ -402,7 +401,7 @@ angular.module('HistoricalCtrl', [])
       .then(function(result){
           //update_heatmap_chart(result)
           //console.log(result);
-          //update_most_active_chart(result);
+          update_most_active_chart(result);
           //update_avg_week_heatmap_chart(result);
           update_activity_month_chart(result,"language");
           generateDataForOverview(result)
@@ -581,6 +580,7 @@ angular.module('HistoricalCtrl', [])
   }//end update_most_active_chart function
 
   function update_activity_month_chart(result,course_type){
+    console.log("called");
     //get data related to course
     var course_result = {
       "count": 3,
@@ -680,12 +680,20 @@ angular.module('HistoricalCtrl', [])
         "date": '' + value,
         "num": month_count[index]
       })//end obj
+      console.log(month_count[index]);
     })//end for each month in month list
 
-    console.log(activity_month_data);
-    vm.activityMonthData=angular.copy(activity_month_data);
-    console.log(vm.activityMonthData);
-    //help: "date" string value becomes a date object in activityMonthData
+    activityMonthData = [];
+    test_dates = ['2017-10','2017-11','2017-12','2018-01'];
+    test_values = [1,3,2,5];
+    test_dates.forEach(function(value,index){
+      activityMonthData.push({
+        "date": value,
+        "num": test_values[index]
+      })//end obj
+    });
+
+    vm.activityMonthData=angular.copy(activityMonthData);
 
     //{"date": '2011-03', "num" : 9}
   }// end func update_activity_month_chart
@@ -894,7 +902,6 @@ angular.module('HistoricalCtrl', [])
         }//end if
       })//end for each course
     })//end forEach instance
-    console.log(course_instance_array);
     return course_instance_array;
   }//end func instancesArray_to_coursesInstancesArr
 

@@ -394,17 +394,19 @@ angular.module('HistoricalDirective', [])
 
         scope.renderChart = function(data){
           d3.select(Element[0]).selectAll("*").remove;
-          
+            console.log("helo");
           if(data && data.length > 0){
 
             //Margin conventions
             var margin = {top: 20, right: 70, bottom: 40, left: 35};
 
             var widther = window.outerWidth;
-            //console.log(widther);
+            console.log(widther);
+
 
             var width = widther - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
+
 
             //Parses date for correct time format
             var parseDate = d3.time.format("%Y-%m-%d");
@@ -416,6 +418,8 @@ angular.module('HistoricalDirective', [])
             var svg = d3.select(Element[0]).append("svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
+              //.attr("preserveAspectRatio", "xMinYMin meet")
+              //.attr("viewBox", "0 0 960 500")
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -540,19 +544,25 @@ angular.module('HistoricalDirective', [])
 
             //RESPONSIVENESS
             d3.select(window).on("resize", resized);
+
             resized();
+            console.log("end dir");
+
           }else {
             d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
           }
 
           function resized(){
-
+            console.log("resized");
             //new margin
-            var newMargin = {top: 10, right: 80, bottom: 20, left: 50};
+            var newMargin = {top: 10, right: 80, bottom: 20, left: 100};
 
             //Get the width of the window
             var w = d3.select(".g-chart").node().clientWidth;
-            //console.log("resized", w);
+            //var w = document.getElementById("monthly_content").clientWidth;
+
+            //console.log(Element[0].clientWidth);
+            console.log("new width", w);
 
             //Change the width of the svg
             d3.select("svg")
@@ -587,12 +597,12 @@ angular.module('HistoricalDirective', [])
 
         //Determines number of ticks base on width
         function numTicks(widther) {
-          if (widther <= 900) {
-            return 4
+          if (widther <= 400) {
+            return 3
             //console.log("return 4")
           }
           else {
-            return 12
+            return 3
             //console.log("return 5")
           }
         }//end numticks
