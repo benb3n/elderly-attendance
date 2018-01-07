@@ -29,7 +29,7 @@ angular.module('RealTimeCtrl', [])
         return vm.selectedCenter;
     },function(newCenter, oldCenter) {
         if(newCenter != oldCenter) {
-            //console.log(newCenter)
+            console.log("new center", newCenter)
             vm.selectedCenter = newCenter;
             generateRealTimeData();
         }
@@ -56,8 +56,11 @@ angular.module('RealTimeCtrl', [])
             }else{
                 result = applySearchFilter();
             }   
-            result = angular.copy(applyEventTypeFilter(result));
+            result = applyEventTypeFilter(result);
         }
+        console.log(result)
+        result = Array.from(new Set(result));
+        result.sort(compareCount);
         vm.display.elderly_attendance = angular.copy(result);
     }
     function applySearchFilter(data){
@@ -70,7 +73,7 @@ angular.module('RealTimeCtrl', [])
     function applyEventTypeFilter(data){
         var result = [];
         vm.selectedStatus.forEach(function(value, index) {
-            result = result.concat(filterByAttr("status", value, data));
+            result = result.concat(filterByAttr("recent_status", value, data));
         });
         return result;
       }
@@ -86,23 +89,26 @@ angular.module('RealTimeCtrl', [])
         vm.loading = true;
         vm.data = {
             all_residents: [],
+            all_residents_by_resident_index: {},
             all_centers: [],
             all_centers_by_center_code: {},
             all_centers_activity: [],
-            all_centers_activity_by_id: {}
+            all_centers_activity_by_id: {},
+            real_time_activity_reading: [],
+            real_time_activity_reading_hash: {}
         };
         vm.display = {
             centers: [],
-            courses: [],
+            activity: [],
             elderly_attendance: [],
             elderly_attendance_backup: [],
-            status: [{name:"Present", value:"Present"}, {name:"Absent", value:"NA"}]
+            status: [{name:"Absent", value:"2"}, {name:"Present", value:"1"}, {name:"Present And Left", value:"0"}]
         };
         vm.status = {
             no_data:false
         };
 
-        vm.selectedStatus = ['Present', 'NA']
+        vm.selectedStatus = ['0', '1', '2']
         vm.searchname = "";
         
         
@@ -119,7 +125,7 @@ angular.module('RealTimeCtrl', [])
             vm.data.all_residents = result;
             console.log("resident", result)
             result.results.forEach(function(value, index){
-            
+                vm.data.all_residents_by_resident_index[value.resident_index] = value;
             })
             return getAllCenters(vm.api.project, vm.api.all_device_count)
         })
@@ -138,6 +144,7 @@ angular.module('RealTimeCtrl', [])
             return getAllDevices(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
+            console.log('devices' , result)
             vm.data.all_devices = result;
             vm.data.all_devices_pairs = {};
             result.results.forEach(function(value, index){
@@ -151,9 +158,6 @@ angular.module('RealTimeCtrl', [])
             return generateRealTimeData();  
         })  
         .then(function(){
-            $timeout(function () {
-                $('select').material_select()
-            });
             vm.loading = false;
         })
 
@@ -161,56 +165,64 @@ angular.module('RealTimeCtrl', [])
     }
 
     function generateRealTimeData(){
+        if(typeof vm.data.all_devices_pairs == 'undefined'){
+            return [];
+        }
+
         var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
-        var start_datetime = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
+        var start_datetime = moment('2017-12-20').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
         var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
         var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD") 
 
         $q.when()
         .then(function(){
-   
-            
-            return getAllCentersActivity(vm.api.project, vm.api.center_code_name, start_date, end_date, vm.api.all_activity_count)
+            return getAllCentersActivity(vm.api.project, vm.selectedCenter, start_date, end_date, vm.api.all_activity_count)
         })
         .then(function(result){
             vm.data.all_centers_activity = result
             console.log("activity" , result)
             result.results.forEach(function(value, index){
                 vm.data.all_centers_activity_by_id[value.id] = value;
-                vm.display.courses.push({name: value.activity_desc, value: value.id})
+                vm.display.activity.push({name: value.activity_desc, value: value.id})
             })   
 
-            
-            return getSensorReadings(vm.selectedGwDevice, start_datetime, end_datetime, vm.api.latest_sensor_reading_count);
+            return getCurrentAttendees(vm.api.project, vm.selectedCenter, start_datetime, end_datetime);
+            //return getSensorReadings(vm.selectedGwDevice, start_datetime, end_datetime, vm.api.latest_sensor_reading_count);
         })
         .then(function(result){
             console.log('readings' , result)
             
-            if(result.results.length == 0){
+            if(result.data.length == 0){
                 vm.status.no_data = true;
                 vm.loading = false;
             }else{
+                vm.data.real_time_activity_reading = result
                 vm.status.no_data = false;
                 vm.display.elderly_attendance = [];
                 vm.display.elderly_attendance_backup = [];
-                result.results.forEach(function(value, index){
-                    if(value.reading_type == "beacon"){
-                        var index = value.device_id.indexOf("-") + 1;
-                        var id = value.device_id.substring(index);
-                        vm.display.elderly_attendance.push({
-                            resident_id: vm.data.all_devices_pairs[id].id,
-                            name: vm.data.all_devices_pairs[id].resident_list,
-                            image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
-                            status: "Present"
-                        })
-                    }
+                result.data.forEach(function(value, index){
+                    vm.data.real_time_activity_reading_hash[value.resident_index] = value;
                 })
+   
+                vm.data.all_residents.results.forEach(function(value, index){
+                    vm.display.elderly_attendance.push({
+                        name: value.display_name,
+                        device_id: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? vm.data.real_time_activity_reading_hash[value.resident_index].device_id : "",
+                        image: (value.profile_picture!= null) ? value.profile_picture : "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
+                        status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? "Present And Left" : "Present") : "NA",
+                        recent_status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status : ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status) : "2"
+                    })
+                })
+
+                vm.display.elderly_attendance.sort(compareCount);
                 vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
             
             }
-
-            
-
+        })
+        .then(function(){
+            $timeout(function () {
+                $('select').material_select()
+            });
         })
         
     }
@@ -281,22 +293,34 @@ angular.module('RealTimeCtrl', [])
         return _defer.promise;
     }
 
+    function getCurrentAttendees (project_prefix, center_code_name, start_datetime, end_datetime) { 
+        var _defer = $q.defer();
+        RTService.getCurrentAttendees(project_prefix, center_code_name, start_datetime, end_datetime, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    
     function getSensorReadings (gw_device, start_datetime, end_datetime, page_size) {
         var _defer = $q.defer();
+        console.log(gw_device + " , " + start_datetime + " , " + end_datetime + " , " + page_size)
         if(gw_device.length > 1){
             var results = [];
             gw_device.forEach(function(device, index){
                 RTService.getSensorReadings(device, start_datetime, end_datetime, page_size, function (result) {
                     if (result) {
-                        console.log(result)
                         results = results.concat(result.results)
+                        if(index == (gw_device.length-1) ){
+                            _defer.resolve(results);
+                        }
                     } else {
                         _defer.reject();
                     }
                 });
-                if(index == (gw_device.length-1)){
-                    _defer.resolve(result);
-                }
             })
         }else{
             RTService.getSensorReadings(gw_device, start_datetime, end_datetime, page_size, function (result) {
@@ -313,5 +337,10 @@ angular.module('RealTimeCtrl', [])
     /******************** 
         HELPERS METHOD
     *********************/
-
+    function compareCount (a, b) {
+        // ASCENDING ORDER
+        if (a.recent_status > b.recent_status) return 1;
+        if (a.recent_status < b.recent_status) return -1;
+        return 0;
+    }
 })

@@ -53,11 +53,15 @@ body{
     margin-top: 15px;
 }
 .card-red {
-    background: #f55a4e;
+  background: #f55a4e;
 }
 .card-green {
-    background: #5cb860;
+  background: #5cb860;
 }
+.card-orange{
+  background: #ffcc80;
+}
+
 .card .card-profile-title {
     font-size: 15px !important;
     white-space: nowrap;

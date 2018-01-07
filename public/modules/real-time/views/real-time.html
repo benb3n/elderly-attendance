@@ -40,7 +40,7 @@
     <div class="col s12">
       <ul class="tabs tabs-fixed-width">
         <li class="tab col s3"><a class="active" href="#realtime"><i class="material-icons">person</i> Real Time</a></li>
-        <li class="tab col s3"><a class="active" href="#attendance"><i class="material-icons">chrome_reader_mode</i> Attendance</a></li>
+        <li class="tab col s3"><a class="active" href="#attendance"><i class="material-icons">chrome_reader_mode</i>  Attendance</a></li>
       </ul>
     </div>
 
@@ -63,9 +63,9 @@
                 <i class="material-icons prefix">description</i>
                 <select multiple ng-model="rt.selectedCourse">
                   <option value = "" disabled selected>Select Course</option>
-                  <option value={{course.value}} ng-repeat="course in rt.display.courses">{{course.name}}</option>
+                  <option value={{course.value}} ng-repeat="course in rt.display.activity">{{course.name}}</option>
                 </select>
-                <label>Course</label>
+                <label>Activity</label>
               </div>
               <div class="input-field col s12 m2">
                 <i class="material-icons prefix">person</i>
@@ -95,12 +95,13 @@
             <div class="col s12 m12">
               <div ng-repeat="person in rt.display.elderly_attendance">
                 <div class="col s6 m3 l2 animated fadeIn">
-                  <div ng-class="{'card card-profile card-red': person.status == 'NA', 'card card-profile card-green': person.status == 'Present'}">
+                  <div ng-class="{'card card-profile card-red': person.status == 'NA', 'card card-profile card-green': person.status == 'Present', 'card card-profile card-orange': person.status == 'Present And Left'}">
                     <div class="card-profile-avatar">
                       <img src={{person.image}}>
                     </div>
                     <div class="card-profile-content" style="font-weight: 300">
                       <h4 class="card-profile-title">{{person.name}}</h4>
+                      <p style="margin: 0px !important;">Recent Status <b>{{person.status}}</b></p>
                     </div>
                   </div>
                 </div>

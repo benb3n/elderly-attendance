@@ -8,6 +8,7 @@ angular.module('RealTimeService', [])
     service.getAllResidents = getAllResidents;
     service.getAllCenters = getAllCenters;
     service.getAllCentersActivity = getAllCentersActivity;
+    service.getCurrentAttendees = getCurrentAttendees;
     
     return service;
     
@@ -75,6 +76,22 @@ angular.module('RealTimeService', [])
                 start_date: start_date,
                 end_date: end_date,
                 page_size: page_size
+            }
+        })
+        .then(
+            function(result){ callback(result.data) },
+            function(){ callback(false) }
+        );
+    }
+
+    function getCurrentAttendees(project_prefix, center_code_name, start_date, end_date, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.get(starlightAPI.url + '/api/v1/manifest_center/centercurrentattendee/',{
+            params: {
+                project_prefix: project_prefix,
+                center_code_name: center_code_name,
+                start_datetime: start_date,
+                end_datetime: end_date
             }
         })
         .then(
