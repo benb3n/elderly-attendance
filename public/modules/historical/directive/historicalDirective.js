@@ -386,27 +386,26 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
+
           if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
-            scope.renderChart(data);
+
+            var parseData = data
           }
 
+          scope.renderChart(parseData);
         },true);
 
         scope.renderChart = function(data){
-          d3.select(Element[0]).selectAll("*").remove;
-            console.log("helo");
+          d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
 
             //Margin conventions
             var margin = {top: 20, right: 70, bottom: 40, left: 35};
 
             var widther = window.outerWidth;
-            console.log(widther);
-
 
             var width = widther - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
-
 
             //Parses date for correct time format
             var parseDate = d3.time.format("%Y-%m-%d");
@@ -429,8 +428,8 @@ angular.module('HistoricalDirective', [])
             //help: how come dont set domain first but set later
             var xScale = d3.time.scale()
               //.domain([d3.min(data, function(d) { return d.date; }) , d3.max(data, function(d) { return d.date; })])
-              //.range([0, width]);
-              .range([padding, width - padding]);
+              .range([0, width]);
+              //.range([padding, width - padding]);
 
             //Creates the yScale
             var yScale = d3.scale.linear()
@@ -441,11 +440,12 @@ angular.module('HistoricalDirective', [])
             var yAxis = d3.svg.axis()
               .scale(yScale)
               .tickSize(-width)
-              .tickPadding(8)
-              .orient("left");
+              .tickPadding(2)
+              .ticks(numTicks(width))
+              .orient("left")
               //help: maybe the data is stored as a doube instead of the integers i pass in,resulting in .5 values
               //https://github.com/danielgindi/Charts/issues/315
-              //.tickFormat(d3.format(".0f"));
+              .tickFormat(d3.format(".0f"));
 
             //Defines the x axis styles
             var xAxis = d3.svg.axis()
@@ -453,7 +453,7 @@ angular.module('HistoricalDirective', [])
               .tickPadding(8)
               .orient("bottom")
               .tickSize(height)
-              .ticks(numTicks(width))
+              .ticks(numTicks(data.length))
               .tickFormat(d3.time.format("%m/%Y"));
               //help: prevent duplicate ticks
               //.tickFormat(d3.time.format("%d %b"));
@@ -473,6 +473,7 @@ angular.module('HistoricalDirective', [])
               */
               //FORMAT data
               data.forEach(function(d) {
+                //d.num = parseInt(d.num);
                 d.num = +d.num;
                 d.date = new Date(d.date);
               });
@@ -487,7 +488,9 @@ angular.module('HistoricalDirective', [])
             //console.log(data)
 
             //Defines the xScale max and min
-            xScale.domain(d3.extent(data, function(d) { return d.date; }));
+            xScale.domain(d3.extent(data, function(d) {
+              return d.date;
+            }));
 
             var yscalemax = d3.extent(data, function(d) { return d.num; })[1];
             //Defines the yScale max
@@ -518,7 +521,7 @@ angular.module('HistoricalDirective', [])
                 .style("display", "none");
 
             //Adds circle to focus point on line
-            //help: how come dont need to specify cx,cy(relative positions)
+            //help: dont need to specify cx,cy(relative positions) cause you move them later?in mouseover
             focus.append("circle")
                 .attr("r", 4);
 
@@ -543,8 +546,13 @@ angular.module('HistoricalDirective', [])
               var x0 = xScale.invert(d3.mouse(this)[0]),
                   i = bisectDate(data, x0, 1),
                   d0 = data[i - 1],
-                  d1 = data[i],
-                  d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+                  d1 = data[i];
+                  var d;
+                  if (typeof d1 == "undefined"){
+                    d = d0;
+                  }else{
+                    d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+                  }
               focus.attr("transform", "translate(" + xScale(d.date) + "," + yScale(d.num) + ")");
               focus.select("text").text(d.num);
             }//end mouseover
@@ -560,11 +568,12 @@ angular.module('HistoricalDirective', [])
               .attr("class", "g-source-reg");
               */
 
+              console.log(data);
+              console.log(numTicks(data.length));
+              var num_months = data.length;
             //RESPONSIVENESS
             d3.select(window).on("resize", resized);
-
             resized();
-            console.log("end dir");
 
           }else {
             d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
@@ -573,7 +582,7 @@ angular.module('HistoricalDirective', [])
           function resized(){
             console.log("resized");
             //new margin
-            var newMargin = {top: 10, right: 80, bottom: 20, left: 100};
+            var newMargin = {top: 20, right: 70, bottom: 40, left: 35};
 
             //Get the width of the window
             var w = d3.select(".g-chart").node().clientWidth;
@@ -605,8 +614,18 @@ angular.module('HistoricalDirective', [])
             //Updates ticks
             xAxis
               .scale(xScale)
-              .ticks(numTicks(w));
+              .ticks(numTicks(num_months));
 
+              xAxisGroup
+                .selectAll("text")
+                 //.attr("dy", ".71em")
+                 //.attr("y","150")
+                 //.attr("x","330")
+                 .attr("y","100")
+                 .attr("x","-200")
+                 .attr("transform", "rotate(-65)");
+
+              console.log(numTicks(num_months));
             //Updates yAxis
             yAxis
               .tickSize(-w - newMargin.right);
@@ -614,14 +633,12 @@ angular.module('HistoricalDirective', [])
         }
 
         //Determines number of ticks base on width
-        function numTicks(widther) {
-          if (widther <= 400) {
-            return 3
-            //console.log("return 4")
+        function numTicks(num_months) {
+          if (num_months > 5) {
+            return 5
           }
           else {
-            return 3
-            //console.log("return 5")
+            return num_months
           }
         }//end numticks
     }

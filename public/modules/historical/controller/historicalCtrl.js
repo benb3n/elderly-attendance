@@ -395,13 +395,13 @@ angular.module('HistoricalCtrl', [])
 
     $q.when()
       .then(function(){
-        console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
+        //console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
           return getSensorReadings(center, start_date_time, end_date_time, 500 );
       })
       .then(function(result){
           //update_heatmap_chart(result)
           //console.log(result);
-          update_most_active_chart(result);
+          //update_most_active_chart(result);
           //update_avg_week_heatmap_chart(result);
           update_activity_month_chart(result,"language");
           generateDataForOverview(result)
@@ -580,7 +580,6 @@ angular.module('HistoricalCtrl', [])
   }//end update_most_active_chart function
 
   function update_activity_month_chart(result,course_type){
-    console.log("called");
     //get data related to course
     var course_result = {
       "count": 3,
@@ -680,27 +679,25 @@ angular.module('HistoricalCtrl', [])
         "date": '' + value,
         "num": month_count[index]
       })//end obj
-      console.log(month_count[index]);
     })//end for each month in month list
-    /* activity_month_data.push({
+    activity_month_data.push({
       "date": '2017-12',
       "num": 2
     })//end obj
+    /*
     activity_month_data.push({
       "date": '2018-01',
       "num": 3
     })//end obj*/
-    console.log(activity_month_data);
     activityMonthData = [];
-    test_dates = ['2017-10','2017-11','2017-12','2018-01'];
-    test_values = [1,3,2,5];
+    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
+    test_values = [1,3,2,5,6,7,4,6,2];
     test_dates.forEach(function(value,index){
       activityMonthData.push({
         "date": value,
         "num": test_values[index]
       })//end obj
     });
-
     vm.activityMonthData=angular.copy(activityMonthData);
 
     //{"date": '2011-03', "num" : 9}
