@@ -3,7 +3,9 @@ angular.module('RealTimeCtrl', [])
     var vm = this;
     vm.api = {
         project: 'mp',
-        all_device_count: 1000,
+        center_code_name : 'gl15',
+        all_activity_count: 5000,
+        all_device_count: 3000,
         latest_sensor_reading_count: 1000
     }
 
@@ -27,7 +29,7 @@ angular.module('RealTimeCtrl', [])
         return vm.selectedCenter;
     },function(newCenter, oldCenter) {
         if(newCenter != oldCenter) {
-            //console.log(newCenter)
+            console.log("new center", newCenter)
             vm.selectedCenter = newCenter;
             generateRealTimeData();
         }
@@ -54,8 +56,11 @@ angular.module('RealTimeCtrl', [])
             }else{
                 result = applySearchFilter();
             }   
-            result = angular.copy(applyEventTypeFilter(result));
+            result = applyEventTypeFilter(result);
         }
+        console.log(result)
+        result = Array.from(new Set(result));
+        result.sort(compareCount);
         vm.display.elderly_attendance = angular.copy(result);
     }
     function applySearchFilter(data){
@@ -68,7 +73,7 @@ angular.module('RealTimeCtrl', [])
     function applyEventTypeFilter(data){
         var result = [];
         vm.selectedStatus.forEach(function(value, index) {
-            result = result.concat(filterByAttr("status", value, data));
+            result = result.concat(filterByAttr("recent_status", value, data));
         });
         return result;
       }
@@ -79,23 +84,31 @@ angular.module('RealTimeCtrl', [])
         });
     }
     
-
-
-    
     initController();
     function initController(){
         vm.loading = true;
-        vm.data = {};
+        vm.data = {
+            all_residents: [],
+            all_residents_by_resident_index: {},
+            all_centers: [],
+            all_centers_by_center_code: {},
+            all_centers_activity: [],
+            all_centers_activity_by_id: {},
+            real_time_activity_reading: [],
+            real_time_activity_reading_hash: {}
+        };
         vm.display = {
+            centers: [],
+            activity: [],
             elderly_attendance: [],
             elderly_attendance_backup: [],
-            status: [{name:"Present", value:"Present"}, {name:"Absent", value:"NA"}]
+            status: [{name:"Absent", value:"2"}, {name:"Present", value:"1"}, {name:"Present And Left", value:"0"}]
         };
         vm.status = {
             no_data:false
         };
 
-        vm.selectedStatus = ['Present', 'NA']
+        vm.selectedStatus = ['0', '1', '2']
         vm.searchname = "";
         
         
@@ -106,9 +119,32 @@ angular.module('RealTimeCtrl', [])
     function generateDataForInit () {
         $q.when()
         .then(function(){
+            return getAllResidents(vm.api.project, vm.api.all_device_count)
+        })
+        .then(function(result){
+            vm.data.all_residents = result;
+            console.log("resident", result)
+            result.results.forEach(function(value, index){
+                vm.data.all_residents_by_resident_index[value.resident_index] = value;
+            })
+            return getAllCenters(vm.api.project, vm.api.all_device_count)
+        })
+        .then(function(result){
+            vm.data.all_centers = result;
+            console.log("centers", result)
+            vm.selectedCenter = result.results[0].code_name
+            vm.selectedGwDevice = result.results[0].device_list.split("; ")
+            result.results.forEach(function(value, index){
+                vm.data.all_centers_by_center_code[value.code_name] = value;
+                vm.display.centers.push({name: value.code_name, value: value.code_name})
+            })
+            //return getAllCenters(vm.api.project, vm.api.all_device_count)
+        })    
+        .then(function(result){
             return getAllDevices(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
+            console.log('devices' , result)
             vm.data.all_devices = result;
             vm.data.all_devices_pairs = {};
             result.results.forEach(function(value, index){
@@ -119,41 +155,6 @@ angular.module('RealTimeCtrl', [])
                 }
             })
             
-            vm.display.centers = [
-                {name:"6901", value:6901},
-                {name:"6902", value:6902},
-                {name:"6903", value:6903}
-            ]
-            vm.display.courses = [
-                {name:"Mon Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:1},
-                {name:"Tue Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:2},
-                {name:"Wed Phyiscal Activites", start_time:"13:30", end_time:"14:30", value:3},
-                {name:"Thu Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:4},
-                {name:"Fri Phyiscal Activites", start_time:"09:30", end_time:"10:30", value:5},
-
-                {name:"Mon Language Lessons", start_time:"10:30", end_time:"12:30", value:6},
-                {name:"Tue Language Lessons", start_time:"10:30", end_time:"12:30", value:7},
-                {name:"Thu Language Lessons", start_time:"14:00", end_time:"15:30", value:8},
-                {name:"Fri Language Lessons", start_time:"109:30", end_time:"12:30", value:9},
-
-                {name:"Wed Art & Music", start_time:"09:30", end_time:"10:30", value:10},
-                {name:"Fri Art & Music", start_time:"15:30", end_time:"16:30", value:11},
-
-                {name:"Mon Bingo", start_time:"14:30", end_time:"16:00", value:12},
-
-                {name:"Tue Karaoke", start_time:"14:30", end_time:"16:00", value:13},
-                {name:"Thu Karaoke", start_time:"13:00", end_time:"16:30", value:14},
-                {name:"Wed TCM", start_time:"14:30", end_time:"17:00", value:15},
-                {name:"Fri Movie", start_time:"14:30", end_time:"15:30", value:16}
-            ]
-
-            vm.selectedCenter = "6901";
-            $timeout(function () {
-                $('select').material_select()
-            });
-
-
-
             return generateRealTimeData();  
         })  
         .then(function(){
@@ -164,39 +165,64 @@ angular.module('RealTimeCtrl', [])
     }
 
     function generateRealTimeData(){
+        if(typeof vm.data.all_devices_pairs == 'undefined'){
+            return [];
+        }
+
+        var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
+        var start_datetime = moment('2017-12-20').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
+        var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
+        var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD") 
+
         $q.when()
         .then(function(){
-            var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
-            var start_datetime = moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
-            return getSensorReadings(vm.selectedCenter, start_datetime, end_datetime, vm.api.latest_sensor_reading_count);
+            return getAllCentersActivity(vm.api.project, vm.selectedCenter, start_date, end_date, vm.api.all_activity_count)
         })
         .then(function(result){
-            console.log(result)
+            vm.data.all_centers_activity = result
+            console.log("activity" , result)
+            result.results.forEach(function(value, index){
+                vm.data.all_centers_activity_by_id[value.id] = value;
+                vm.display.activity.push({name: value.activity_desc, value: value.id})
+            })   
+
+            return getCurrentAttendees(vm.api.project, vm.selectedCenter, start_datetime, end_datetime);
+            //return getSensorReadings(vm.selectedGwDevice, start_datetime, end_datetime, vm.api.latest_sensor_reading_count);
+        })
+        .then(function(result){
+            console.log('readings' , result)
             
-            if(result.results.length == 0){
+            if(result.data.length == 0){
                 vm.status.no_data = true;
+                vm.loading = false;
             }else{
+                vm.data.real_time_activity_reading = result
                 vm.status.no_data = false;
                 vm.display.elderly_attendance = [];
                 vm.display.elderly_attendance_backup = [];
-                result.results.forEach(function(value, index){
-                    if(value.reading_type == "beacon"){
-                        var index = value.device_id.indexOf("-") + 1;
-                        var id = value.device_id.substring(index);
-                        vm.display.elderly_attendance.push({
-                            resident_id: vm.data.all_devices_pairs[id].id,
-                            name: vm.data.all_devices_pairs[id].resident_list,
-                            image:"http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
-                            status: "Present"
-                        })
-                    }
+                result.data.forEach(function(value, index){
+                    vm.data.real_time_activity_reading_hash[value.resident_index] = value;
                 })
+   
+                vm.data.all_residents.results.forEach(function(value, index){
+                    vm.display.elderly_attendance.push({
+                        name: value.display_name,
+                        device_id: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? vm.data.real_time_activity_reading_hash[value.resident_index].device_id : "",
+                        image: (value.profile_picture!= null) ? value.profile_picture : "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
+                        status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? "Present And Left" : "Present") : "NA",
+                        recent_status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status : ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status) : "2"
+                    })
+                })
+
+                vm.display.elderly_attendance.sort(compareCount);
                 vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
             
             }
-
-            
-
+        })
+        .then(function(){
+            $timeout(function () {
+                $('select').material_select()
+            });
         })
         
     }
@@ -230,11 +256,12 @@ angular.module('RealTimeCtrl', [])
         
         return _defer.promise;
     }
-    function getSensorReadings (gw_device, start_datetime, end_datetime, page_size) {
+
+    function getAllResidents (project_prefix, page_size) { 
         var _defer = $q.defer();
-        RTService.getSensorReadings(gw_device, start_datetime, end_datetime, page_size, function (result) {
+        RTService.getAllResidents(project_prefix, page_size, function (result) {
             if (result) {
-                _defer.resolve(result);
+                _defer.resolve(result)
             } else {
                 _defer.reject();
             }
@@ -242,8 +269,78 @@ angular.module('RealTimeCtrl', [])
         return _defer.promise;
     }
 
+    function getAllCentersActivity (project_prefix, center_code_name, start_date, end_date, page_size) { 
+        var _defer = $q.defer();
+        RTService.getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+
+    function getAllCenters (project_prefix, page_size) { 
+        var _defer = $q.defer();
+        RTService.getAllCenters(project_prefix, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+
+    function getCurrentAttendees (project_prefix, center_code_name, start_datetime, end_datetime) { 
+        var _defer = $q.defer();
+        RTService.getCurrentAttendees(project_prefix, center_code_name, start_datetime, end_datetime, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    
+    function getSensorReadings (gw_device, start_datetime, end_datetime, page_size) {
+        var _defer = $q.defer();
+        console.log(gw_device + " , " + start_datetime + " , " + end_datetime + " , " + page_size)
+        if(gw_device.length > 1){
+            var results = [];
+            gw_device.forEach(function(device, index){
+                RTService.getSensorReadings(device, start_datetime, end_datetime, page_size, function (result) {
+                    if (result) {
+                        results = results.concat(result.results)
+                        if(index == (gw_device.length-1) ){
+                            _defer.resolve(results);
+                        }
+                    } else {
+                        _defer.reject();
+                    }
+                });
+            })
+        }else{
+            RTService.getSensorReadings(gw_device, start_datetime, end_datetime, page_size, function (result) {
+                if (result) {
+                    _defer.resolve(result);
+                } else {
+                    _defer.reject();
+                }
+            });
+        }
+        return _defer.promise;
+    }
+
     /******************** 
         HELPERS METHOD
     *********************/
-
+    function compareCount (a, b) {
+        // ASCENDING ORDER
+        if (a.recent_status > b.recent_status) return 1;
+        if (a.recent_status < b.recent_status) return -1;
+        return 0;
+    }
 })
