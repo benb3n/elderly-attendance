@@ -18,8 +18,8 @@ angular.module('RealTimeCtrl', [])
             edge: 'left', // Choose the horizontal origin
             closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
             });
-
         $('select').material_select();
+        $('.modal').modal();
     });
 
     /*************** 
@@ -29,7 +29,6 @@ angular.module('RealTimeCtrl', [])
         return vm.selectedCenter;
     },function(newCenter, oldCenter) {
         if(newCenter != oldCenter) {
-            console.log("new center", newCenter)
             vm.selectedCenter = newCenter;
             generateRealTimeData();
         }
@@ -58,7 +57,6 @@ angular.module('RealTimeCtrl', [])
             }   
             result = applyEventTypeFilter(result);
         }
-        console.log(result)
         result = Array.from(new Set(result));
         result.sort(compareCount);
         vm.display.elderly_attendance = angular.copy(result);
@@ -95,18 +93,21 @@ angular.module('RealTimeCtrl', [])
             all_centers_activity: [],
             all_centers_activity_by_id: {},
             real_time_activity_reading: [],
-            real_time_activity_reading_hash: {}
+            real_time_activity_reading_hash: {},
+            elderly_attendance_hash: {}
         };
         vm.display = {
             centers: [],
             activity: [],
             elderly_attendance: [],
             elderly_attendance_backup: [],
-            status: [{name:"Absent", value:"2"}, {name:"Present", value:"1"}, {name:"Present And Left", value:"0"}]
+            status: [{name:"Absent", value:"2"}, {name:"Present", value:"1"}, {name:"Present And Left", value:"0"}],
+            update_modal:{}
         };
         vm.status = {
             no_data:false
         };
+        vm.update = {}; 
 
         vm.selectedStatus = ['0', '1', '2']
         vm.searchname = "";
@@ -138,9 +139,9 @@ angular.module('RealTimeCtrl', [])
                 vm.data.all_centers_by_center_code[value.code_name] = value;
                 vm.display.centers.push({name: value.code_name, value: value.code_name})
             })
-            //return getAllCenters(vm.api.project, vm.api.all_device_count)
+            generateRealTimeData();
         })    
-        .then(function(result){
+        /*.then(function(result){
             return getAllDevices(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
@@ -155,20 +156,17 @@ angular.module('RealTimeCtrl', [])
                 }
             })
             
-            return generateRealTimeData();  
+            
+            
         })  
         .then(function(){
-            vm.loading = false;
-        })
+           
+        })*/
 
         
     }
 
     function generateRealTimeData(){
-        if(typeof vm.data.all_devices_pairs == 'undefined'){
-            return [];
-        }
-
         var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
         var start_datetime = moment('2017-12-20').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
         var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
@@ -187,7 +185,6 @@ angular.module('RealTimeCtrl', [])
             })   
 
             return getCurrentAttendees(vm.api.project, vm.selectedCenter, start_datetime, end_datetime);
-            //return getSensorReadings(vm.selectedGwDevice, start_datetime, end_datetime, vm.api.latest_sensor_reading_count);
         })
         .then(function(result){
             console.log('readings' , result)
@@ -205,29 +202,63 @@ angular.module('RealTimeCtrl', [])
                 })
    
                 vm.data.all_residents.results.forEach(function(value, index){
-                    vm.display.elderly_attendance.push({
-                        name: value.display_name,
+                    var obj = {
+                        resident_index: value.resident_index,
+                        id: vm.data.all_residents_by_resident_index[value.resident_index].id,
+                        gender: vm.data.all_residents_by_resident_index[value.resident_index].gender,
+                        display_name: value.display_name,
                         device_id: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? vm.data.real_time_activity_reading_hash[value.resident_index].device_id : "",
                         image: (value.profile_picture!= null) ? value.profile_picture : "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
-                        status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? "Present And Left" : "Present") : "NA",
+                        status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? "Present And Left" : "Present") : "Absent",
                         recent_status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status : ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status) : "2"
-                    })
+                    }
+                    vm.data.elderly_attendance_hash[value.resident_index] = obj
+                    vm.display.elderly_attendance.push(obj)
                 })
 
                 vm.display.elderly_attendance.sort(compareCount);
-                vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
-            
+                vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance); 
             }
         })
         .then(function(){
             $timeout(function () {
                 $('select').material_select()
             });
+            vm.loading = false; 
         })
         
     }
     
+    
 
+    /**********************
+        BUTTON FUNCTION 
+    **********************/
+    vm.updateAttendance = updateAttendance;
+    vm.refresh = refresh;
+
+    function refresh(resident_index){
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: true // Close upon selecting a date,
+        });
+
+        var $input = $('.datepicker').pickadate()
+        var picker = $input.pickadate('picker')
+        picker.set('select', new Date())
+        vm.display.update_modal.resident_name = vm.data.elderly_attendance_hash[resident_index].display_name
+
+        $('.modal').modal();
+        $('#updateModal').modal('open');
+    }
+    function updateAttendance(){
+        console.log(vm.update)
+        $('#updateModal').modal('close');
+    }
     
     /******************** 
         WEB SERVICES
@@ -333,7 +364,7 @@ angular.module('RealTimeCtrl', [])
         }
         return _defer.promise;
     }
-
+    
     /******************** 
         HELPERS METHOD
     *********************/

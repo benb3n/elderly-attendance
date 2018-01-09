@@ -70,7 +70,9 @@ body{
     margin-left: 5px;
     margin-right: 5px;
 }
-
+.input-field .dropdown-content [type="checkbox"]+label {
+  top: -11px !important; /* previously 1px; */
+ }
 .login{
     background: url('../img/bg_5.jpg') no-repeat;
     background-position: center center;
