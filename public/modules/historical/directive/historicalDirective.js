@@ -158,179 +158,7 @@ angular.module('HistoricalDirective', [])
         }
       }
 
-})
-/*
-.directive('crD3Bars', [
-  function() {
-    return {
-      restrict: 'E',
-      scope: {
-        data: '='
-      },
-      link: function(scope, element) {
-
-        function getDate(d) {
-          var dt = new Date(d.date);
-          dt.setHours(0);
-          dt.setMinutes(0);
-          dt.setSeconds(0);
-          dt.setMilliseconds(0);
-          return dt;
-        }
-
-        function showData(obj, d) {
-          var coord = d3.mouse(obj);
-          var infobox = d3.select(".infobox");
-          // now we just position the infobox roughly where our mouse is
-          infobox.style("left", (coord[0] + 100) + "px");
-          infobox.style("top", (coord[1] - 175) + "px");
-          $(".infobox").html(d);
-          $(".infobox").show();
-        }
-
-        function hideData() {
-          $(".infobox").hide();
-        }
-
-        var drawChart = function(data) {
-
-          // define dimensions of graph
-          var m = [50,50,50,50]; // margins
-          var w = 400 - m[1] - m[3]; // width
-          var h = 200 - m[0] - m[2]; // height
-
-          data.sort(function(a, b) {
-            var d1 = getDate(a);
-            var d2 = getDate(b);
-            if (d1 == d2) return 0;
-            if (d1 > d2) return 1;
-            return -1;
-          });
-
-          var minDate = getDate(data[0]),
-            maxDate = getDate(data[data.length - 1]);
-
-          var x = d3.time.scale().domain([minDate, maxDate]).range([0, w]);
-          var y = d3.scale.linear().domain([0, d3.max(data, function(d) {
-            return d.trendingValue;
-          })]).range([h, 0]);
-
-
-          var line = d3.svg.line()
-            .x(function(d, i) {
-              return x(getDate(d)); //x(i);
-            })
-            .y(function(d) {
-              return y(d.trendingValue);
-            });
-
-          function xx(e) {
-            return x(getDate(e));
-          }
-
-          function yy(e) {
-            return y(e.trendingValue);
-          }
-
-          var graph = d3.select(element[0]).append("svg:svg")
-            .attr("width", w + m[1] + m[3])
-            .attr("height", h + m[0] + m[2])
-            .append("svg:g")
-            .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
-
-
-          var xAxis = d3.svg.axis().scale(x).ticks(d3.time.months, 1).tickSize(-h).tickSubdivide(true);
-
-          var yAxisLeft = d3.svg.axis().scale(y).ticks(10).orient("left"); //.tickFormat(formalLabel);
-
-          graph
-            .selectAll("circle")
-            .data(data)
-            .enter().append("circle")
-            .attr("fill", "steelblue")
-            .attr("r", 5)
-            .attr("cx", xx)
-            .attr("cy", yy)
-            .on("mouseover", function(d) {
-              showData(this, d.trendingValue);
-            })
-            .on("mouseout", function() {
-              hideData();
-            });
-
-          graph.append("svg:path").attr("d", line(data));
-
-          $("#graphDiv3").append("<div class='infobox' style='display:none;'>Test</div>");
-        };
-
-        drawChart(scope.data);
-      }
-    };
-  }
-])
-.directive('horizontalStackedBarChart', function(){
-    return {
-        restrict: 'E',
-        scope: {
-            options: '='
-        },
-        template: '<div id="chart"></div>',
-        link: function ($scope) {
-            function parseData(params) {
-                var parsedArr = [];
-
-                // If the data is an object, convert it to an array
-                if (_.isObject(params.data)) {
-                    params.data = _.values(params.data);
-                }
-
-                // If the yAxis param is a string, convert it to an array
-                if (_.isString(params.yAxis)) {
-                    params.yAxis = [params.yAxis];
-                }
-
-                _.each(params.data, function (d) {
-                    var parsed = {};
-                    parsed.total = 0;
-                    parsed.types = [];
-                    _.each(params.yAxis, function (cat) {
-                        parsed[cat] = d[cat];
-                        parsed.types.push(parsed[cat]);
-                        parsed.total += d[cat];
-                    });
-                    parsed[params.xAxis] = d[params.xAxis];
-                    parsedArr.push(parsed);
-                });
-                _.each(parsedArr, function (d) {
-                    var y0 = 0;
-                    d.types = params.yAxis.map(function (type) {
-                        var bar = {
-                            y0: y0,
-                            y1: y0 += +d[type]
-                        };
-                        bar[params.xAxis] = type;
-                        return bar;
-                    });
-                    d.total = _.last(d.types).y1;
-                });
-                return _.sortBy(parsedArr, function (d) {
-                    return d[params.sortBy];
-                });
-            }
-
-            var chart;
-
-            chart = {
-                data: parseData($scope.options),
-                width: $scope.options.width || 350,
-                height: $scope.options.height || 350,
-                gutter: $scope.options.gutter || 5
-            };
-        }
-    };
-})
-*/
-
+})//end dir
 .directive('horizontalBarChart',function(){
   return {
     restrict: 'EA',
@@ -400,7 +228,7 @@ angular.module('HistoricalDirective', [])
           if(data && data.length > 0){
 
             //Margin conventions
-            var margin = {top: 20, right: 70, bottom: 40, left: 35};
+            var margin = {top: 20, right: 70, bottom: 50, left: 35};
 
             var widther = window.outerWidth;
 
@@ -422,18 +250,12 @@ angular.module('HistoricalDirective', [])
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            var padding = 50;
-
             //Creates the xScale
-            //help: how come dont set domain first but set later
             var xScale = d3.time.scale()
-              //.domain([d3.min(data, function(d) { return d.date; }) , d3.max(data, function(d) { return d.date; })])
               .range([0, width]);
-              //.range([padding, width - padding]);
 
             //Creates the yScale
             var yScale = d3.scale.linear()
-              //.domain([d3.max(data, function(d) { return d.num; }), 0 ])
               .range([height, 0]);
 
             //Defines the y axis styles
@@ -454,7 +276,7 @@ angular.module('HistoricalDirective', [])
               .orient("bottom")
               .tickSize(height)
               .ticks(numTicks(data.length))
-              .tickFormat(d3.time.format("%m/%Y"));
+              .tickFormat(d3.time.format("%b %Y"));
               //help: prevent duplicate ticks
               //.tickFormat(d3.time.format("%d %b"));
 
@@ -462,21 +284,13 @@ angular.module('HistoricalDirective', [])
             var line = d3.svg.line()
               .x(function(d) { return xScale(d.date); })
               .y(function(d) { return yScale(d.num); });
-            /*
-            //Loads the data
-            d3.csv("linetemplate.csv", ready);
 
-            function ready(err, data) {
-
-              if (err) throw "error loading data";
-              console.log("hello");
-              */
-              //FORMAT data
-              data.forEach(function(d) {
-                //d.num = parseInt(d.num);
-                d.num = +d.num;
-                d.date = new Date(d.date);
-              });
+            //FORMAT data
+            data.forEach(function(d) {
+              //d.num = parseInt(d.num);
+              d.num = +d.num;
+              d.date = new Date(d.date);
+            });
 
             //Appends chart headline
             //d3.select(".g-hed").text("Chart headline goes here");
@@ -484,8 +298,7 @@ angular.module('HistoricalDirective', [])
             //Appends chart intro text
             //d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
 
-            data.sort(function(a,b) { return a.date - b.date; });
-            //console.log(data)
+            //data.sort(function(a,b) { return a.date - b.date; });
 
             //Defines the xScale max and min
             xScale.domain(d3.extent(data, function(d) {
@@ -567,9 +380,6 @@ angular.module('HistoricalDirective', [])
               .text("Chart source info goes here")
               .attr("class", "g-source-reg");
               */
-
-              console.log(data);
-              console.log(numTicks(data.length));
               var num_months = data.length;
             //RESPONSIVENESS
             d3.select(window).on("resize", resized);
@@ -580,16 +390,14 @@ angular.module('HistoricalDirective', [])
           }
 
           function resized(){
-            console.log("resized");
+
             //new margin
-            var newMargin = {top: 20, right: 70, bottom: 40, left: 35};
+            var newMargin = {top: 20, right: 70, bottom: 110, left: 35};
 
             //Get the width of the window
             var w = d3.select(".g-chart").node().clientWidth;
-            //var w = document.getElementById("monthly_content").clientWidth;
 
-            //console.log(Element[0].clientWidth);
-            console.log("new width", w);
+            //console.log("Responsive line chart resized: new width", w);
 
             //Change the width of the svg
             d3.select("svg")
@@ -618,14 +426,10 @@ angular.module('HistoricalDirective', [])
 
               xAxisGroup
                 .selectAll("text")
-                 //.attr("dy", ".71em")
-                 //.attr("y","150")
-                 //.attr("x","330")
-                 .attr("y","100")
-                 .attr("x","-200")
+                 .attr("y","135")
+                 .attr("x","-325")
                  .attr("transform", "rotate(-65)");
 
-              console.log(numTicks(num_months));
             //Updates yAxis
             yAxis
               .tickSize(-w - newMargin.right);
@@ -643,7 +447,7 @@ angular.module('HistoricalDirective', [])
         }//end numticks
     }
   }
-})//end dir
+})//end dir responsiveLineChart
 
 .directive('responsiveHorizontalBarChart',function(){
   return {
