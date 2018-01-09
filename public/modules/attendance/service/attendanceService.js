@@ -5,8 +5,38 @@ angular.module('AttendanceService', [])
     var service = {};
     service.getSensorReadings = getSensorReadings;
     service.getAllDevices = getAllDevices;
+    service.getAllResidents = getAllResidents;
+    service.getAllCenters = getAllCenters;
     
     return service;
+
+    function getAllResidents(project_prefix, page_size, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.get(starlightAPI.url + '/api/v1/manifest_user/resident/',{
+            params: {
+                project_prefix: project_prefix,
+                page_size: page_size
+            }
+        })
+        .then(
+            function(result){ callback(result.data) },
+            function(){ callback(false) }
+        );
+    }
+
+    function getAllCenters(project_prefix, page_size, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.get(starlightAPI.url + '/api/v1/manifest_center/center/',{
+            params: {
+                project_prefix: project_prefix,
+                page_size: page_size
+            }
+        })
+        .then(
+            function(result){ callback(result.data) },
+            function(){ callback(false) }
+        );
+    }
     
     function getAllDevices(project_prefix, page_size, callback){
         /*var apiURL = "";
