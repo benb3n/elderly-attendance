@@ -30,7 +30,7 @@ angular.module('RealTimeCtrl', [])
     },function(newCenter, oldCenter) {
         if(newCenter != oldCenter) {
             vm.selectedCenter = newCenter;
-            generateRealTimeData();
+            //generateRealTimeData();
         }
     });
     $scope.$watch(function() {
@@ -140,7 +140,7 @@ angular.module('RealTimeCtrl', [])
                 vm.display.centers.push({name: value.code_name, value: value.code_name})
             })
             generateRealTimeData();
-        })    
+        })
         /*.then(function(result){
             return getAllDevices(vm.api.project, vm.api.all_device_count)
         })

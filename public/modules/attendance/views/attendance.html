@@ -1,45 +1,86 @@
 <div>
-    <div class="row" style="margin-bottom:0px">
-        <div class="col s12" style="margin-top:25px">
-            <div ng-repeat="person in attendance.display.attendance_alert">
-                <div class="col s6 m3 l2 animated fadeIn">
-                    <div class="card card-profile ">
-                        <div class="card-profile-avatar pulse">
-                            <img src={{person.image}}>
-                        </div>
-                        <div class="card-profile-content" style="font-weight: 300">
-                            <h4 class="card-profile-title">{{person.name}}</h4>
-                            <p style="margin:0px">{{person.course}}</p>
-                            <p style="margin:0px">last seen {{person.last_seen}}</p>
+    <div class="row">
+        <div class="col s12">
+            <ul class="tabs tabs-fixed-width">
+                <li class="tab col s3"><a class="active" href="#alert">Resident Alerts</a></li>
+                <li class="tab col s3"><a href="#resident">Resident</a></li>
+                <li class="tab col s3"><a href="#center">Centers</a></li>
+                <li class="tab col s3"><a href="#activity">Center Activities</a></li>
+            </ul>
+        </div>
+
+        <!-- ALERT -->
+        <div id="alert" class="col s12">
+            <div class="row" style="margin-bottom:0px">
+                <div class="col s12" style="margin-top:25px">
+                    <div ng-repeat="person in attendance.display.attendance_alert">
+                        <div class="col s6 m3 l2 animated fadeIn">
+                            <div class="card card-profile ">
+                                <div class="card-profile-avatar pulse">
+                                    <img src={{person.image}}>
+                                </div>
+                                <div class="card-profile-content" style="font-weight: 300">
+                                    <h4 class="card-profile-title">{{person.name}}</h4>
+                                    <p style="margin:0px">{{person.course}}</p>
+                                    <p style="margin:0px">last seen {{person.last_seen}}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div ng-if="attendance.loading" class="col s12">
-            <div class="col s6"></div>
-            <div class="preloader-wrapper big active" style="text-align: center">
-                <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="gap-patch">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
+                <div ng-if="attendance.loading" class="col s12">
+                    <div class="col s6"></div>
+                    <div class="preloader-wrapper big active" style="text-align: center">
+                        <div class="spinner-layer spinner-blue-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
+        <!-- END OF ALERTS -->
 
+        <!-- RESIDENT -->
+        <div id="resident" class="col s12">
+            <div class="col s12">
+                <table id="resident_table" class="table responsive-table display responsive nowrap" width:"100%" cellspacing="0"></table>
+            </div>
+        </div>
+        <!-- END OF RESIDENT -->
+
+        <!-- CENTER -->
+        <div id="center" class="col s12">
+            <div class="col s12">
+                <table id="center_table" class="table responsive-table display responsive nowrap" width:"100%" cellspacing="0"></table>
+            </div>
+        </div>
+        <!-- END OF CENTER -->
+
+        <!-- ACTIVITY -->
+        <div id="activity" class="col s12">
+            <div class="col s12">
+                <table id="activity_table" class="table responsive-table display responsive nowrap" width:"100%" cellspacing="0"></table>
+            </div>
+        </div>
+        <!-- END OF ACTIVITY --> 
+        
     </div>
 
+    
+
     <div class="row">
-        <div class="col s12" id="test">
-            <table id="attendance_table" class="table responsive-table display responsive nowrap" width:"100%" cellspacing="0">
-            </table>
+        <div class="col s12" >
+            <!--<table id="attendance_table" class="table responsive-table display responsive nowrap" width:"100%" cellspacing="0"></table> -->
             
             <!-- Update Modal -->
             <div id="updateModal" class="modal modal-fixed-footer ">

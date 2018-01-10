@@ -22,7 +22,12 @@ angular.module('AttendanceCtrl', [])
 
     initController();
     function initController(){
-        vm.data = {};
+        vm.data = {
+            all_residents: [],
+            all_residents_by_resident_index: {},
+            all_centers: [],
+            all_centers_by_center_code: {}
+        };
         vm.update = {};
         vm.delete = {};
         vm.alertLoading = false;
@@ -33,6 +38,82 @@ angular.module('AttendanceCtrl', [])
     function generateDataForInit(){
         $q.when()
         .then(function(){
+            return getAllResidents(vm.api.project, vm.api.all_device_count)
+        })
+        .then(function(result){
+            vm.data.all_residents = result;
+            console.log("resident", result)
+            result.results.forEach(function(value, index){
+                vm.data.all_residents_by_resident_index[value.resident_index] = value;
+            })
+            $('#resident_table').DataTable({
+                "destroy": true,
+                "responsive": true,
+                "data": vm.data.all_residents.results,
+                "columns": [
+                    { title: "ID" ,data: "id" },
+                    { title: "Resident Index" ,data: "resident_index" },
+                    { title: "Display Name", data: "display_name" },
+                    { title: "First Name", data: "name_first" },
+                    { title: "Last Name", data: "name_last" },
+                    { title: "Gender", data: "gender" },
+                    { title: "Ethnicity", data: "ethnicity" },
+                    { title: "Date of Birth", data: "dob" },
+                    { title: "Contact", data: "contact_mobile" },
+                    { title: "Address Blk", data: "address_blk" },
+                    { title: "Address Street", data: "address_street" },
+                    { title: "Address Floor", data: "address_floor" },
+                    { title: "Address Unit", data: "address_unit"},
+                    { title: "Language", data: "language_list"},
+                    { title: "Active", data: "active"},
+                    {
+                        title: "Edit / Delete",
+                        data: null,
+                        className: "center",
+                        defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' +
+                            '&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
+                    }
+                ],
+                "bLengthChange": true,
+                "language": {
+                    "emptyTable": "No Data Available"
+                }
+            });
+
+            return getAllCenters(vm.api.project, vm.api.all_device_count)
+        })
+        .then(function(result){
+            vm.data.all_centers = result;
+            console.log("centers", result)
+            vm.selectedCenter = result.results[0].code_name
+            vm.selectedGwDevice = result.results[0].device_list.split("; ")
+            result.results.forEach(function(value, index){
+                vm.data.all_centers_by_center_code[value.code_name] = value;
+            })
+            $('#center_table').DataTable({
+                "destroy": true,
+                "responsive": true,
+                "data": vm.data.all_centers.results,
+                "columns": [
+                    { title: "ID" ,data: "id" },
+                    { title: "Project Prefix" ,data: "project_prefix" },
+                    { title: "Device List", data: "device_list" },
+                    { title: "Center Code Name", data: "code_name" },
+                    { title: "Project Description", data: "project_desc" },
+                    {
+                        title: "Edit / Delete",
+                        data: null,
+                        className: "center",
+                        defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' +
+                            '&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
+                    }
+                ],
+                "bLengthChange": true,
+                "language": {
+                    "emptyTable": "No Data Available"
+                }
+            });
+
             return getAllDevices(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
@@ -150,6 +231,30 @@ angular.module('AttendanceCtrl', [])
     /******************
         WEB SERVICE 
     ******************/
+    function getAllResidents (project_prefix, page_size) { 
+        var _defer = $q.defer();
+        AService.getAllResidents(project_prefix, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+
+    function getAllCenters (project_prefix, page_size) { 
+        var _defer = $q.defer();
+        AService.getAllCenters(project_prefix, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+
     function getAllDevices (project_prefix, page_size) { //url, _defer, overall
         var _defer = $q.defer();
         AService.getAllDevices(project_prefix, page_size, function (result) {

@@ -1,6 +1,6 @@
 angular.module('AttendanceService', [])
 
-.factory('AService', function($http, $q, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('AService', function($http, $q, starlightAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
 
     var service = {};
     service.getSensorReadings = getSensorReadings;

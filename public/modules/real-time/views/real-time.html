@@ -50,13 +50,13 @@
           <div ng-class="{'card card-profile card-red': person.recent_status == '2', 'card card-profile card-green': person.recent_status == '1', 'card card-profile card-orange': person.recent_status == '0'}">
             <div class="card-profile-avatar-edit">
               <a class="modal-trigger" data-target="updateModal" style="margin-right  :10px !important" ng-click="rt.refresh(person.resident_index)">
-                <img src={{person.image}} style="cursor: pointer">
+                <img src={{person.image}} style="cursor: pointer"></img>
                 <i class="material-icons">edit</i>
               </a>
             </div>
             <div class="card-profile-content" style="font-weight: 300;">
               <h4 class="card-profile-title">{{person.display_name}}</h4>
-              <p style="margin:0px !important"><b>{{person.status}}</b></p>
+              <p style="margin:0px !important">{{person.status}}</p>
             </div>
           </div>
         </div>
@@ -68,6 +68,7 @@
     <div id="updateModal" class="modal modal-fixed-footer ">
       <div class="modal-content">
         <h4>Update Elderly Attendace - {{rt.display.update_modal.resident_name}}</h4>
+
         <!--<div class="input-field col s12">
           <i class="material-icons prefix">account_circle</i>
           <input id="update_name" ng-model="rt.update.name" type="text" class="validate">
