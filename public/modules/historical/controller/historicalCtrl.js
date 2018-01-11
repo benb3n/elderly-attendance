@@ -309,8 +309,8 @@ angular.module('HistoricalCtrl', [])
     }//end else
   }//end func update_heatmap_chart
 
-  function update_avg_week_heatmap_chart(result){
-
+  function update_avg_week_heatmap_chart(attendance){
+    /********************
     var temp_arr = objArr_to_dateObjArr(result.results);
     var date_list = temp_arr[0];//array that stores all the unique dates
     var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
@@ -324,6 +324,10 @@ angular.module('HistoricalCtrl', [])
         date_instances_array.push(objArr_to_instances(value)[1]);
       };
     })//end of for each
+  *********************/
+    temp_arr = insArr_to_dateInsArr(attendance);
+    var date_ins_array = temp_arr[1];
+    var date_list = temp_arr[0];
 
     //week_arr[7*hour_arr], contains hour_arr for that day of the week
     //hour_arr[25], counts number of unique mac_ids during in that slot
@@ -344,17 +348,26 @@ angular.module('HistoricalCtrl', [])
     //TODO:
     var time_comparison_arr = []; //to compare the number of people attending classes that start at specific times
 
-    date_instances_array.forEach(function(value,index) {
+    date_ins_array.forEach(function(date_value,date_index) {
       //check date
-      var this_date = moment(date_list[index]);
+      var this_date = moment(date_list[date_index]);
       var day_index = moment(this_date).weekday(); //weekday returns 0-6 where 0 is Monday
       var time_arr = generate_time_array(this_date,8,20);
 
-      value.forEach(function(instance_value){
-        //instance = [mac_id,instance_start_date_time,time_spent]
+      date_value.forEach(function(instance_value){
+        /*instance = 
+          device_id:"c074ab8a97a5"
+          end_timestamp:"2017-11-28T13:48:19"
+          resident_display_name: "Ali bin HUSSAIN"
+          resident_index: "MP0012"
+          resident_profile_picture: null
+          start_timestamp: "2017-11-28T13:47:34"
+          time_spent_min: 0
+          time_spent_sec: 45
+        */
         var time_index;
-        var this_start = moment(instance_value[1]);
-        var this_end = this_start.clone().add(instance_value[2], 'seconds');
+        var this_start = moment(instance_value.start_timestamp);
+        var this_end = moment(instance_value.end_timestamp);
         //console.log(instance_value);
         //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
         for (i = 0; i < time_arr.length-1; i++) {
@@ -417,61 +430,61 @@ angular.module('HistoricalCtrl', [])
       vm.mostActiveData = angular.copy(time_data);
   }//end update_most_active_chart function
 
-  function update_activity_month_chart(attendance,center_activities,course_type, start_date, end_date){
+  function update_activity_month_chart(attendance, center_activities, course_type, start_date, end_date){
     //get data related to course
-  center_activities = {
-      "count": 3,
-      "next": null,
-      "previous": null,
-      "results": [
-        {
-            "id": 15,
-            "project_prefix": "MP",
-            "project_desc": "Marine Parade",
-            "center_id": 2,
-            "center_code_name": "gl52",
-            "activity_desc": "activity desc",
-            "activity_type_list": "music; sports",
-            "start_date": "2017-11-01",
-            "end_date": "2017-11-01",
-            "start_time": "10:00:00",
-            "end_time": "11:00:00",
-            "repeat_params": {
-                "days_of_week": [1, 2, 3]
-              }
-        },{
-            "id": 20,
-            "project_prefix": "MP",
-            "project_desc": "Marine Parade",
-            "center_id": 2,
-            "center_code_name": "gl52",
-            "activity_desc": "Hokkien",
-            "activity_type_list": "language",
-            "start_date": "2017-10-30",
-            "end_date": "2017-11-03",
-            "start_time": "10:00:00",
-            "end_time": "11:00:00",
-            "repeat_params": {
-                "days_of_week": [2,3,4]
-              }
-        },{
-            "id": 30,
-            "project_prefix": "MP",
-            "project_desc": "Marine Parade",
-            "center_id": 2,
-            "center_code_name": "gl52",
-            "activity_desc": "English",
-            "activity_type_list": "language",
-            "start_date": "2017-11-01",
-            "end_date": "2017-11-30",
-            "start_time": "12:00:00",
-            "end_time": "14:00:00",
-            "repeat_params": {
-                "days_of_week": [1,3,5]
-              }
-        }
-      ]
-    }//end obj
+    center_activities = {
+        "count": 3,
+        "next": null,
+        "previous": null,
+        "results": [
+          {
+              "id": 15,
+              "project_prefix": "MP",
+              "project_desc": "Marine Parade",
+              "center_id": 2,
+              "center_code_name": "gl52",
+              "activity_desc": "activity desc",
+              "activity_type_list": "music; sports",
+              "start_date": "2017-11-01",
+              "end_date": "2017-11-01",
+              "start_time": "10:00:00",
+              "end_time": "11:00:00",
+              "repeat_params": {
+                  "days_of_week": [1, 2, 3]
+                }
+          },{
+              "id": 20,
+              "project_prefix": "MP",
+              "project_desc": "Marine Parade",
+              "center_id": 2,
+              "center_code_name": "gl52",
+              "activity_desc": "Hokkien",
+              "activity_type_list": "language",
+              "start_date": "2017-10-30",
+              "end_date": "2017-11-03",
+              "start_time": "10:00:00",
+              "end_time": "11:00:00",
+              "repeat_params": {
+                  "days_of_week": [2,3,4]
+                }
+          },{
+              "id": 30,
+              "project_prefix": "MP",
+              "project_desc": "Marine Parade",
+              "center_id": 2,
+              "center_code_name": "gl52",
+              "activity_desc": "English",
+              "activity_type_list": "language",
+              "start_date": "2017-11-01",
+              "end_date": "2017-11-30",
+              "start_time": "12:00:00",
+              "end_time": "14:00:00",
+              "repeat_params": {
+                  "days_of_week": [1,3,5]
+                }
+          }
+        ]
+      }//end obj
 
     var temp_arr = courseObj_to_courseArr(center_activities.results,course_type,start_date,end_date);
     var courses_date_array = temp_arr[1]; // arr[date[course,course],date[course]..]
