@@ -396,16 +396,16 @@ angular.module('HistoricalCtrl', [])
     }
 
       //sort the data by mac ID
-      var temp_arr = objArr_to_macObjArr(result.results);
+      var temp_arr = insArr_to_macInsArr(result.results);
       var mac_id_list = temp_arr[0];//array that stores all the unique ID
-      var mac_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular mac id
+      var mac_ins_array = temp_arr[1];//array that stores arrays of instances, each array contains all instances of a particular mac id
 
       //var mac_time_list = [];//array that stores total time per corresponding mac id
       var time_data = [];
 
       //get timings of each mac_id and store in object
-      mac_obj_array.forEach(function(value,index){
-        var id_time = objArr_to_instances(value)[0] /(60*60);
+      mac_ins_array.forEach(function(value,index){
+        var id_time = getInstancesTotalTime /(60*60);
         time_data.push({
             "category": ""+ mac_id_list[index],
             "num": id_time
@@ -415,7 +415,6 @@ angular.module('HistoricalCtrl', [])
       time_data.sort(compare_time_data);
 
       vm.mostActiveData = angular.copy(time_data);
-      vm.responsiveHorizontalBarData = angular.copy(time_data);
   }//end update_most_active_chart function
 
   function update_activity_month_chart(attendance,center_activities,course_type, start_date, end_date){
@@ -549,7 +548,9 @@ angular.module('HistoricalCtrl', [])
         "num": test_values[index]
       })//end obj
     });
-    vm.activityMonthData=angular.copy(activityMonthData);
+    //vm.activityMonthData=angular.copy(activityMonthData);
+    vm.activityMonthData=angular.copy(activity_month_data);
+
     //{"date": '2011-03', "num" : 9}
   }// end func update_activity_month_chart
 
@@ -560,6 +561,27 @@ angular.module('HistoricalCtrl', [])
   /********************
     REUSEABLE FUNCTIONS
   *********************/
+  function getInstancesTotalTime(instances_array){
+    /*instance = {
+      device_id:"c074ab8a97a5"
+      end_timestamp:"2017-11-28T13:48:19"
+      resident_display_name: "Ali bin HUSSAIN"
+      resident_index: "MP0012"
+      resident_profile_picture: null
+      start_timestamp: "2017-11-28T13:47:34"
+      time_spent_min: 0
+      time_spent_sec: 45
+    */
+    var total_time = 0; // seconds
+
+    instances_array.forEach(function(value){
+      total_time += value.time_spent_sec;
+    })
+
+    return total_time;
+
+  }//end of getInstancesTotalTime
+
   function getInstancesForDateRange(instances_array,start_datetime, end_datetime){
     //returns array of instances that are within start & end date specified
     var focused_instances_array = [];
@@ -700,6 +722,40 @@ angular.module('HistoricalCtrl', [])
 
     return [mac_id_list,mac_obj_array];
   }
+
+  function insArr_to_macInsArr(instances_array){
+    //returns [mac_id_list,mac_obj_array]
+    //mac_id_list, each index contains one mac id(String)
+    //mac_obj_array, each index contains all instances of the corresponding mac id
+    /*instance = {
+      device_id:"c074ab8a97a5"
+      end_timestamp:"2017-11-28T13:48:19"
+      resident_display_name: "Ali bin HUSSAIN"
+      resident_index: "MP0012"
+      resident_profile_picture: null
+      start_timestamp: "2017-11-28T13:47:34"
+      time_spent_min: 0
+      time_spent_sec: 45
+    */
+    mac_id_list = [];
+    mac_ins_array = [];
+    instances_array.forEach(function(value){
+      var id = value.device_id;
+      //check if that mac ID already has an array in mac_ins_array by checking if ID exist in mac_id_list
+      //if not, then add ID into mac_id_list AND create the array for that ID in mac_ins_array
+      if(mac_id_list.indexOf(id) == -1){ //does not exist in mac_id_list
+        //add into mac_id_list
+        mac_id_list.push(id);
+        //create array for that ID in mac_ins_array
+        mac_ins_array.push([]);
+      }//end if
+      //add object into the corresponding array
+      mac_ins_array[mac_id_list.indexOf(id)].push(value);
+    })//end of forEach loop
+
+    return [mac_id_list,mac_ins_array];
+  }//end of insArr_to_macInsArr
+
 
   function objArr_to_instances(object_array){
     //retire
