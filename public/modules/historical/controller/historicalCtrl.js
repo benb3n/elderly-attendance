@@ -250,16 +250,21 @@ angular.module('HistoricalCtrl', [])
   /********************
         CHARTS
   *********************/
-  function update_heatmap_chart(result){
+  function update_heatmap_chart(attendance){
     if (result.results.length == 0){
       document.getElementById("calendar_error").style.visibility='visible';
     }else{
       document.getElementById("calendar_error").style.visibility='hidden';
-
+      /*
       var temp_arr = objArr_to_dateObjArr(result.results);
       var date_list = temp_arr[0];//array that stores all the unique dates
       var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
+      */
+      temp_arr = insArr_to_dateInsArr(attendance);
+      var date_ins_array = temp_arr[1];
+      var date_list = temp_arr[0];
 
+      /*
       //split date obj by mac_id
       var date_mac_obj_array = []; //array of mac_id[obj,obj..] for corresponding date
       date_obj_array.forEach(function(value){
@@ -285,10 +290,23 @@ angular.module('HistoricalCtrl', [])
         date_time_array.push(total_time);
         date_instances_array.push(instances_array);
       })//end for each date
+      */
+
+      var date_mac_ins_array = [];
+      var date_time_array = [];
+
+      date_ins_array.forEach(function(date_value,date_index){
+        var mac_ins_array =insArr_to_macInsArr(date_value)[1];//array that stores arrays of instances, each array contains all instances of a particular mac id
+        date_mac_ins_array[date_index].push(mac_ins_array);
+        mac_ins_array.forEach(function(value){
+          date_time_array += getInstancesTotalTime(value);
+        })
+      })//end for each date
+      //sort the data by mac ID
 
       //pushing into data
       var calendar_data = [];
-      for(var i = 0 ; i<date_instances_array.length ; i++){
+      for(var i = 0 ; i<date_ins_array.length ; i++){
         calendar_data.push({
           "date": ""+ date_list[i],
           "total": date_time_array[i],
@@ -296,16 +314,28 @@ angular.module('HistoricalCtrl', [])
         })//end push to calendar_data
       }//end for loop
 
-      date_instances_array.forEach(function(date_value,date_index){
+      /*instance = {
+        device_id:"c074ab8a97a5"
+        end_timestamp:"2017-11-28T13:48:19"
+        resident_display_name: "Ali bin HUSSAIN"
+        resident_index: "MP0012"
+        resident_profile_picture: null
+        start_timestamp: "2017-11-28T13:47:34"
+        time_spent_min: 0
+        time_spent_sec: 45
+      */
+      date_ins_array.forEach(function(date_value,date_index){
         date_value.forEach(function(value,index){
           calendar_data[date_index].details.push({
-            "name": ""+ value[0],
-            "date": ""+ value[1],
-            "value": parseInt(value[2])
+            "name": ""+ value.resident_display_name,
+            "date": ""+ value.start_timestamp,
+            "value": parseInt(value.time_spent_sec)
           })//end calendar_data push
         })//end forEach
       })//end forEach day_value
+
       vm.calendarheatmapdata=angular.copy(calendar_data);
+
     }//end else
   }//end func update_heatmap_chart
 
@@ -328,7 +358,6 @@ angular.module('HistoricalCtrl', [])
     temp_arr = insArr_to_dateInsArr(attendance);
     var date_ins_array = temp_arr[1];
     var date_list = temp_arr[0];
-    
 
     //week_arr[7*hour_arr], contains hour_arr for that day of the week
     //hour_arr[25], counts number of unique mac_ids during in that slot
@@ -345,9 +374,6 @@ angular.module('HistoricalCtrl', [])
     week_instances_count.fill(0);
     //vm.selectedStartDate_courses
     //console.log(vm.selectedEndDate_courses);
-
-    //TODO:
-    var time_comparison_arr = []; //to compare the number of people attending classes that start at specific times
 
     date_ins_array.forEach(function(date_value,date_index) {
       //check date
