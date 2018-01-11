@@ -328,6 +328,7 @@ angular.module('HistoricalCtrl', [])
     temp_arr = insArr_to_dateInsArr(attendance);
     var date_ins_array = temp_arr[1];
     var date_list = temp_arr[0];
+    
 
     //week_arr[7*hour_arr], contains hour_arr for that day of the week
     //hour_arr[25], counts number of unique mac_ids during in that slot
@@ -355,7 +356,7 @@ angular.module('HistoricalCtrl', [])
       var time_arr = generate_time_array(this_date,8,20);
 
       date_value.forEach(function(instance_value){
-        /*instance = 
+        /*instance =
           device_id:"c074ab8a97a5"
           end_timestamp:"2017-11-28T13:48:19"
           resident_display_name: "Ali bin HUSSAIN"
