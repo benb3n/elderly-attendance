@@ -7,6 +7,7 @@ angular.module('AttendanceService', [])
     service.getAllDevices = getAllDevices;
     service.getAllResidents = getAllResidents;
     service.getAllCenters = getAllCenters;
+    service.getAllCentersActivity = getAllCentersActivity;
     
     return service;
 
@@ -29,6 +30,23 @@ angular.module('AttendanceService', [])
         $http.get(starlightAPI.url + '/api/v1/manifest_center/center/',{
             params: {
                 project_prefix: project_prefix,
+                page_size: page_size
+            }
+        })
+        .then(
+            function(result){ callback(result.data) },
+            function(){ callback(false) }
+        );
+    }
+
+    function getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, page_size, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.get(starlightAPI.url + '/api/v1/manifest_center/centeractivity/',{
+            params: {
+                project_prefix: project_prefix,
+                center_code_name: center_code_name,
+                start_date: start_date,
+                end_date: end_date,
                 page_size: page_size
             }
         })

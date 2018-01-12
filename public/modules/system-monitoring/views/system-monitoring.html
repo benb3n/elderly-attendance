@@ -20,16 +20,16 @@
   <div class="row">
     <div ng-repeat="person in sm.display.system_monitoring_device">
       <div class="col s6 m3 l2 animated fadeIn">
-        <div ng-class="{'card card-profile card-red': person.status == 'Red', 'card card-profile card-green': person.status == 'Green'}">
+        <div ng-class="{'card card-profile card-red': person.status == 'Red', 'card card-profile card-green': person.status == 'Green', 'card card-profile card-orange': person.status == 'Orange'}">
           <div class="card-profile-avatar-edit">
             <a class="modal-trigger tooltipped" data-position="bottom" data-delay="50" data-tooltip="Update device"  data-target="updateModal" style="margin-right  :10px !important" ng-click="sm.refresh(person.id)">
-              <img src={{person.image}} style="cursor: pointer">
+              <img src={{person.image}} style="cursor: pointer; width:100%">
               <i class="material-icons">edit</i>
             </a>
           </div>
           <div class="card-profile-content" style="font-weight: 300;">
             <h4 class="card-profile-title">{{person.resident_list}}</h4>
-            <p style="margin:0px !important">Voltage:  <b>{{person.value}}</b></p>
+            <p style="margin:0px !important">Voltage:  <b>{{person.battery_status}}</b></p>
             <p style="margin-top:0px !important">last seen at <b>{{person.last_seen}}</b></p>
           </div>
         </div>

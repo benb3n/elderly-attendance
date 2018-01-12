@@ -3,7 +3,9 @@ angular.module('AttendanceCtrl', [])
     var vm = this;
     vm.api = {
         project: 'mp',
-        all_device_count: 1000,
+        center_code_name : 'gl15',
+        all_activity_count: 5000,
+        all_device_count: 3000,
         latest_sensor_reading_count: 1000
     }
 
@@ -26,7 +28,9 @@ angular.module('AttendanceCtrl', [])
             all_residents: [],
             all_residents_by_resident_index: {},
             all_centers: [],
-            all_centers_by_center_code: {}
+            all_centers_by_center_code: {},
+            all_centers_activity: [],
+            all_centers_activity_by_id: {}
         };
         vm.update = {};
         vm.delete = {};
@@ -113,6 +117,41 @@ angular.module('AttendanceCtrl', [])
                     "emptyTable": "No Data Available"
                 }
             });
+
+            var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
+            var start_datetime = moment('2017-12-20').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
+            var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
+            var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD") 
+
+            return getAllCentersActivity(vm.api.project, vm.selectedCenter, start_date, end_date, vm.api.all_activity_count)
+        })
+        .then(function(result){
+            vm.data.all_centers_activity = result
+            console.log("activity" , result)
+            $('#activity_table').DataTable({
+                "destroy": true,
+                "responsive": true,
+                "data": vm.data.all_centers.results,
+                "columns": [
+                    { title: "ID" ,data: "id" },
+                    { title: "Project Prefix" ,data: "project_prefix" },
+                    { title: "Device List", data: "device_list" },
+                    { title: "Center Code Name", data: "code_name" },
+                    { title: "Project Description", data: "project_desc" },
+                    {
+                        title: "Edit / Delete",
+                        data: null,
+                        className: "center",
+                        defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' +
+                            '&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
+                    }
+                ],
+                "bLengthChange": true,
+                "language": {
+                    "emptyTable": "No Data Available"
+                }
+            });
+            
 
             return getAllDevices(vm.api.project, vm.api.all_device_count)
         })
@@ -246,6 +285,18 @@ angular.module('AttendanceCtrl', [])
     function getAllCenters (project_prefix, page_size) { 
         var _defer = $q.defer();
         AService.getAllCenters(project_prefix, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+
+    function getAllCentersActivity (project_prefix, center_code_name, start_date, end_date, page_size) { 
+        var _defer = $q.defer();
+        AService.getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, page_size, function (result) {
             if (result) {
                 _defer.resolve(result)
             } else {

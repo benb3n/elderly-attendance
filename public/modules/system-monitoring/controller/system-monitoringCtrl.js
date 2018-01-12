@@ -95,6 +95,7 @@ angular.module('SystemMonitoringCtrl', [])
             return getAllResidents(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
+            console.log("resident", result)
             vm.data.resident = result.results;
             result.results.forEach(function(value, index){
                 vm.data.resident_hash[value.resident_index] = value;
@@ -103,17 +104,20 @@ angular.module('SystemMonitoringCtrl', [])
             return getSystemMonitoringDevice(vm.api.project, vm.api.center, vm.api.system_monitoring_device_count)
         })
         .then(function(result){
-            console.log(result)
+            console.log("sys mon", result)
             vm.data.system_monitoring = result.results;
            
             result.results.forEach(function(value, index){
+     
                 vm.data.system_monitoring_hash[value.id] = value;
                 var index = value.resident_list.indexOf(",");
                 value.resident_index = value.resident_list.substring(0, index);
-                value.image = (vm.data.resident_hash[value.resident_index].profile_picture != null) ? vm.data.resident_hash[value.resident_index].profile_picture : "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg";
-                value.last_seen = moment(value.gw_timestamp).format("YYYY-MM-DD HH:mm:ss")
-                value.status = (value.value > 2.7) ? "Green" : "Red"
+                value.image = (typeof vm.data.resident_hash[value.resident_index] != 'undefined' && vm.data.resident_hash[value.resident_index].profile_picture != null) ? vm.data.resident_hash[value.resident_index].profile_picture : "https://openclipart.org/download/247319/abstract-user-flat-3.svg";
+                value.last_seen = (moment(new Date()).diff(moment(value.gw_timestamp), 'days') == 0) ? moment(new Date()).diff(moment(value.gw_timestamp), 'minutes') + " minutes ago" : moment(new Date()).diff(moment(value.gw_timestamp), 'days') + " days ago"   //.format("YYYY-MM-DD HH:mm:ss")
+                value.status = (value.value > 2.9) ? "Green" : (value.value > 2.7) ? "Orange" : "Red"
+                value.battery_status = (value.value > 2.9) ? "High" : (value.value > 2.7) ? "Medium" : "Low"
                 vm.display.system_monitoring_device.push(value);
+                
             })
             console.log(vm.display.system_monitoring_device)
             vm.display.system_monitoring_device.sort(compareCount)
