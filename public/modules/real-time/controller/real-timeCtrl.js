@@ -65,7 +65,7 @@ angular.module('RealTimeCtrl', [])
         if(vm.searchname == ""){
             return vm.display.elderly_attendance_backup;
         }else{
-            return filterByAttr("name", vm.searchname, vm.display.elderly_attendance_backup);
+            return filterByAttr("display_name", vm.searchname, vm.display.elderly_attendance_backup);
         }
     }
     function applyEventTypeFilter(data){

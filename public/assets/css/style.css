@@ -1,8 +1,7 @@
 body{
     font-family: Roboto !important;
     font-weight: 300;
-}
-
+} 
 .card-profile{
     display: inline-block;
     position: relative;
@@ -149,6 +148,12 @@ svg.nvd3-svg{
 .tabs .material-icons{
   display: inline-flex;
   vertical-align: middle;
+}
+table.dataTable tbody th, table.dataTable tbody td {
+  padding: 9px 10px !important;
+}
+table.dataTable.no-footer {
+  border-bottom: 0px !important;
 }
 
 .g-hed {

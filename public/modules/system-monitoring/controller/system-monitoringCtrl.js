@@ -116,10 +116,11 @@ angular.module('SystemMonitoringCtrl', [])
                 value.last_seen = (moment(new Date()).diff(moment(value.gw_timestamp), 'days') == 0) ? moment(new Date()).diff(moment(value.gw_timestamp), 'minutes') + " minutes ago" : moment(new Date()).diff(moment(value.gw_timestamp), 'days') + " days ago"   //.format("YYYY-MM-DD HH:mm:ss")
                 value.status = (value.value > 2.9) ? "Green" : (value.value > 2.7) ? "Orange" : "Red"
                 value.battery_status = (value.value > 2.9) ? "High" : (value.value > 2.7) ? "Medium" : "Low"
+                value.last_seen_in_minutes = moment(new Date()).diff(moment(value.gw_timestamp), 'minutes')
                 vm.display.system_monitoring_device.push(value);
                 
             })
-            console.log(vm.display.system_monitoring_device)
+
             vm.display.system_monitoring_device.sort(compareCount)
             vm.display.system_monitoring_device_backup = angular.copy(vm.display.system_monitoring_device)            
 
@@ -143,6 +144,10 @@ angular.module('SystemMonitoringCtrl', [])
         if (a.value < b.value) return -1;
         return 0;
     }
+    function sortFunc(a, b) {
+        var sortingArr = [ 'Red', 'Orange', 'Green'];
+        return sortingArr.indexOf(a[1]) - sortingArr.indexOf(b[1]);
+      }
 
     /***********************
         BUTTON FUNCTIONS 

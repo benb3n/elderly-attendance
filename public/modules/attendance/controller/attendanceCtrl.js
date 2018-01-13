@@ -50,39 +50,54 @@ angular.module('AttendanceCtrl', [])
             result.results.forEach(function(value, index){
                 vm.data.all_residents_by_resident_index[value.resident_index] = value;
             })
+            
             $('#resident_table').DataTable({
                 "destroy": true,
                 "responsive": true,
+                "bAutoWidth": false,
                 "data": vm.data.all_residents.results,
                 "columns": [
                     { title: "ID" ,data: "id" },
                     { title: "Resident Index" ,data: "resident_index" },
-                    { title: "Display Name", data: "display_name" },
+                    //{ title: "Display Name", data: "display_name" },
                     { title: "First Name", data: "name_first" },
                     { title: "Last Name", data: "name_last" },
                     { title: "Gender", data: "gender" },
-                    { title: "Ethnicity", data: "ethnicity" },
-                    { title: "Date of Birth", data: "dob" },
+                    //{ title: "Ethnicity", data: "ethnicity" },
+                    //{ title: "Date of Birth", data: "dob" },
                     { title: "Contact", data: "contact_mobile" },
-                    { title: "Address Blk", data: "address_blk" },
-                    { title: "Address Street", data: "address_street" },
-                    { title: "Address Floor", data: "address_floor" },
-                    { title: "Address Unit", data: "address_unit"},
-                    { title: "Language", data: "language_list"},
-                    { title: "Active", data: "active"},
+                    //{ title: "Address Blk", data: "address_blk" },
+                    //{ title: "Address Street", data: "address_street" },
+                    //{ title: "Address Floor", data: "address_floor" },
+                    //{ title: "Address Unit", data: "address_unit"},
+                    //{ title: "Language", data: "language_list"},
+                    //{ title: "Active", data: "active"},
                     {
                         title: "Edit / Delete",
                         data: null,
                         className: "center",
-                        defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' +
-                            '&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
+                        defaultContent: 
+                            '<button  class="btn-x   waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' //+
+                            //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
                     }
                 ],
-                "bLengthChange": true,
                 "language": {
                     "emptyTable": "No Data Available"
                 }
-            });
+               
+            })
+            var resident_table = $('#resident_table').DataTable();
+            //Edit Button
+            $('#resident_table tbody').on( 'click', 'button', function () {
+                var data = resident_table.row( $(this).parents('tr') ).data();
+                console.log(data)
+                Materialize.updateTextFields();
+                $('select').material_select();
+                $('#updateResidentModal').modal();
+                $('#updateResidentModal').modal('open');
+
+            } );
+
 
             return getAllCenters(vm.api.project, vm.api.all_device_count)
         })
@@ -97,6 +112,7 @@ angular.module('AttendanceCtrl', [])
             $('#center_table').DataTable({
                 "destroy": true,
                 "responsive": true,
+                "bAutoWidth": false,
                 "data": vm.data.all_centers.results,
                 "columns": [
                     { title: "ID" ,data: "id" },
@@ -118,6 +134,18 @@ angular.module('AttendanceCtrl', [])
                 }
             });
 
+            var center_table = $('#center_table').DataTable();
+            //Edit Button
+            $('#center_table tbody').on( 'click', 'button', function () {
+                var data = center_table.row( $(this).parents('tr') ).data();
+                console.log(data)
+                Materialize.updateTextFields();
+                $('select').material_select();
+                $('#updateCenterModal').modal();
+                $('#updateCenterModal').modal('open');
+
+            } );
+
             var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
             var start_datetime = moment('2017-12-20').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
             var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
@@ -131,22 +159,26 @@ angular.module('AttendanceCtrl', [])
             $('#activity_table').DataTable({
                 "destroy": true,
                 "responsive": true,
-                "data": vm.data.all_centers.results,
+                "bAutoWidth": false,
+                "bScrollCollapse" : true,
+                "sScrollY": "500px",
+                "data": vm.data.all_centers_activity.results,
                 "columns": [
                     { title: "ID" ,data: "id" },
-                    { title: "Project Prefix" ,data: "project_prefix" },
-                    { title: "Device List", data: "device_list" },
-                    { title: "Center Code Name", data: "code_name" },
-                    { title: "Project Description", data: "project_desc" },
+                    { title: "Name" ,data: "activity_desc" },
+                    { title: "Center", data: "center_code_name" },
+                    { title: "Start Date", data: "start_date" },
+                    { title: "Start Time", data: "start_time" },
+                    { title: "End Date", data: "end_date" },
+                    { title: "End Time", data: "end_time" },
                     {
                         title: "Edit / Delete",
                         data: null,
                         className: "center",
-                        defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' +
-                            '&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
+                        defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="tiny material-icons">edit</i></button>  ' //+
+                            //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
                     }
                 ],
-                "bLengthChange": true,
                 "language": {
                     "emptyTable": "No Data Available"
                 }
@@ -200,19 +232,6 @@ angular.module('AttendanceCtrl', [])
 
         
 
-            // Edit record
-            $('#edit_btn').on('click', function (e) {
-                Materialize.updateTextFields();
-                e.preventDefault();
-                
-                
-                $('select').material_select();
-                
-                $('#updateModal').modal();
-                $('#updateModal').modal('open');
-                
-                
-            });
             // Delete record
             $('#delete_btn').on('click', function (e) {
                 e.preventDefault();

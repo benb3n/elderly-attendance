@@ -1,12 +1,15 @@
 angular.module('HistoricalService', [])
 
-.factory('HService', function($http, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('HService', function($http, starlightAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
     var service = {};
     service.getSensorReadings = getSensorReadings;
     service.getAllDevices = getAllDevices;
 
     return service;
     
+    
+
+
     function getAllDevices(project_prefix){
         $http.get(deviceAPI.url ,
             {
