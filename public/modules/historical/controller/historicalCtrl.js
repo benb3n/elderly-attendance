@@ -413,184 +413,6 @@ angular.module('HistoricalCtrl', [])
 
   }//end box_heatmap_widget
 
-  function update_heatmap_chart(attendance){
-    if (result.results.length == 0){
-      document.getElementById("calendar_error").style.visibility='visible';
-    }else{
-      document.getElementById("calendar_error").style.visibility='hidden';
-      /*
-      var temp_arr = objArr_to_dateObjArr(result.results);
-      var date_list = temp_arr[0];//array that stores all the unique dates
-      var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
-      */
-      temp_arr = insArr_to_dateInsArr(attendance);
-      var date_ins_array = temp_arr[1];
-      var date_list = temp_arr[0];
-
-      /*
-      //split date obj by mac_id
-      var date_mac_obj_array = []; //array of mac_id[obj,obj..] for corresponding date
-      date_obj_array.forEach(function(value){
-        if (value.length==0){
-          date_mac_obj_array.push([]);
-        }else {
-          date_mac_obj_array.push(objArr_to_macObjArr(value)[1]);
-        };
-      })//end of for each
-
-      //get instances for each date
-      var date_time_array = []; //[date_total_time, date_total_time...]
-      var date_instances_array = []; // [date[instance,instance,instance],date[instance,instance]...]
-
-      date_mac_obj_array.forEach(function(date_value,date_index){
-        var instances_array = [];//instances for that date
-        var total_time = 0; //total time for that date
-        date_value.forEach(function(id_value){
-          temp_arr = objArr_to_instances(id_value); //[total_time,instances_array]
-          total_time += temp_arr[0]; //adding hours from that mac_id to total hours for that date
-          instances_array = instances_array.concat(temp_arr[1]); //adding array of instances for that mac_id into instances_array
-        })//end for each id
-        date_time_array.push(total_time);
-        date_instances_array.push(instances_array);
-      })//end for each date
-      */
-
-      var date_mac_ins_array = [];
-      var date_time_array = [];
-
-      date_ins_array.forEach(function(date_value,date_index){
-        var mac_ins_array =insArr_to_macInsArr(date_value)[1];//array that stores arrays of instances, each array contains all instances of a particular mac id
-        date_mac_ins_array[date_index].push(mac_ins_array);
-        mac_ins_array.forEach(function(value){
-          date_time_array += getInstancesTotalTime(value);
-        })
-      })//end for each date
-      //sort the data by mac ID
-
-      //pushing into data
-      var calendar_data = [];
-      for(var i = 0 ; i<date_ins_array.length ; i++){
-        calendar_data.push({
-          "date": ""+ date_list[i],
-          "total": date_time_array[i],
-          "details": []//end details
-        })//end push to calendar_data
-      }//end for loop
-
-      /*instance = {
-        device_id:"c074ab8a97a5"
-        end_timestamp:"2017-11-28T13:48:19"
-        resident_display_name: "Ali bin HUSSAIN"
-        resident_index: "MP0012"
-        resident_profile_picture: null
-        start_timestamp: "2017-11-28T13:47:34"
-        time_spent_min: 0
-        time_spent_sec: 45
-      */
-      date_ins_array.forEach(function(date_value,date_index){
-        date_value.forEach(function(value,index){
-          calendar_data[date_index].details.push({
-            "name": ""+ value.resident_display_name,
-            "date": ""+ value.start_timestamp,
-            "value": parseInt(value.time_spent_sec)
-          })//end calendar_data push
-        })//end forEach
-      })//end forEach day_value
-
-      vm.calendarheatmapdata=angular.copy(calendar_data);
-
-    }//end else
-  }//end func update_heatmap_chart
-
-  function update_avg_week_heatmap_chart(attendance){
-    /********************
-    var temp_arr = objArr_to_dateObjArr(result.results);
-    var date_list = temp_arr[0];//array that stores all the unique dates
-    var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
-
-    //get instances of each day, instance[id,instance_start_date_time,time_spent]
-    var date_instances_array = []; //array of instances for corresponding date
-    date_obj_array.forEach(function(value){
-      if (value.length==0){
-        date_instances_array.push([]);
-      }else {
-        date_instances_array.push(objArr_to_instances(value)[1]);
-      };
-    })//end of for each
-  *********************/
-    temp_arr = insArr_to_dateInsArr(attendance);
-    var date_ins_array = temp_arr[1];
-    var date_list = temp_arr[0];
-
-    //week_arr[7*hour_arr], contains hour_arr for that day of the week
-    //hour_arr[25], counts number of unique mac_ids during in that slot
-    var week_arr = [];
-    for(i=0; i<7; i++){
-      var hour_arr  = new Array(25);
-      hour_arr.fill(0);
-      week_arr.push(hour_arr);
-    }
-
-    //TODO: count number of each day of the week for chosen date range
-    //ask if can use vm.selectedEndDate_courses etc
-    var week_instances_count = new Array(7); //counts number of weeks the chosen dataset has of each day
-    week_instances_count.fill(0);
-    //vm.selectedStartDate_courses
-    //console.log(vm.selectedEndDate_courses);
-
-    date_ins_array.forEach(function(date_value,date_index) {
-      //check date
-      var this_date = moment(date_list[date_index]);
-      var day_index = moment(this_date).weekday(); //weekday returns 0-6 where 0 is Monday
-      var time_arr = generate_time_array(this_date,8,20);
-
-      date_value.forEach(function(instance_value){
-        /*instance =
-          device_id:"c074ab8a97a5"
-          end_timestamp:"2017-11-28T13:48:19"
-          resident_display_name: "Ali bin HUSSAIN"
-          resident_index: "MP0012"
-          resident_profile_picture: null
-          start_timestamp: "2017-11-28T13:47:34"
-          time_spent_min: 0
-          time_spent_sec: 45
-        */
-        var time_index;
-        var this_start = moment(instance_value.start_timestamp);
-        var this_end = moment(instance_value.end_timestamp);
-        //console.log(instance_value);
-        //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
-        for (i = 0; i < time_arr.length-1; i++) {
-          if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
-            //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
-            week_arr[day_index][i] += 1;
-          };//end if
-        };//end for loop
-      })//end forEach instance
-
-    })//end for each date
-
-    //add data
-    weekly_activity_data = [];
-    week_arr.forEach(function(day_value,day_index){
-      day_value.forEach(function(value,index){
-        weekly_activity_data.push({
-          "day": day_index+1,
-          "hour":	index+1,
-          "value": value // /week_instances_count[day_index] //TODO
-        })
-      })//end for each hour
-    })//end for each day
-
-    vm.dayHourHeatmapData=angular.copy(weekly_activity_data);
-    /*
-    {
-        key: "not averaged yet",
-        values: [
-            {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
-    }*/
-  }//end func update_avg_week_heatmap_chart
-
   function update_most_active_chart(result){
     if (result.results.length == 0){
       document.getElementById("active_error").style.visibility='visible';
@@ -766,14 +588,22 @@ angular.module('HistoricalCtrl', [])
   *********************/
   function getInstancesTotalTime(instances_array){
     /*instance = {
-      device_id:"c074ab8a97a5"
-      end_timestamp:"2017-11-28T13:48:19"
-      resident_display_name: "Ali bin HUSSAIN"
-      resident_index: "MP0012"
-      resident_profile_picture: null
-      start_timestamp: "2017-11-28T13:47:34"
-      time_spent_min: 0
-      time_spent_sec: 45
+          activity_desc:"Karaoke"
+          date:"2018-01-02"
+          day:"2"
+          day_of_the_week:2
+          device_id:"cf67c80cf6e8"
+          end_timestamp:"2018-01-02T14:56:55"
+          hour:"14"
+          minute:"26"
+          month:"1"
+          resident_display_name:"Annie HO Pei Ling"
+          resident_index:"MP0014"
+          resident_profile_picture:null
+          start_timestamp:"2018-01-02T14:26:56"
+          time_spent_min:29
+          time_spent_sec:1799
+          year:"2018"
     */
     var total_time = 0; // seconds
 
