@@ -22,6 +22,72 @@ angular.module('HistoricalDirective', [])
   }
 })
 
+.directive('barHorizontalChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "=",
+        axis: "="
+    },
+    link: function(scope, Element, Attrs) {
+      scope.$watch('data', function(data) {
+        if(typeof data != 'undefined' && data.length!=0 ){
+          var parsedData = data
+        }
+
+        scope.renderChart(parsedData, scope.axis);
+      },true);
+
+      scope.renderChart = function(data, axis_device_id){
+        d3.select(Element[0]).selectAll("*").remove();
+
+        if(data && data.length > 0){
+          var chart = c3.generate({
+            bindto: Element[0],
+            data: {
+                columns: [data],
+                types: {
+                    residents: 'bar',
+                }
+            },
+            axis: {
+              rotated:true,
+              x: {
+                  type: 'category',
+                  categories: axis_device_id
+              }
+            },
+            legend:{
+              show:true
+            },
+            tooltip: {
+              position: function (data, width, height, element) {
+                var top = d3.mouse(element)[1] - element.height.baseVal.value
+                return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
+              }
+            }
+          });
+
+          d3.select(window).on("resize", resized);
+          chart.resize();
+
+
+        }else {
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+        }
+
+        function resized(){
+            chart.resize();
+
+        }
+
+
+      }
+    }
+  }
+})//end dir barHorizontalChart
+
 .directive('weeklyLineChart',function(){
   return {
     restrict: 'EA',

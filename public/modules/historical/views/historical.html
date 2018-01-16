@@ -54,7 +54,19 @@
             </div>
           </div>
         </div>
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Hours</span>
+            <div class="card-content">
+              <!--<p>(signup vs acutal attendance)</p>-->
+              <bar-Horizontal-Chart class="chart" id="horizontal" data="historical.data.top_active_resident" axis="historical.data.top_active_resident_xaxis" ></bar-Horizontal-Chart>
+            </div>
+          </div>
+        </div>
       </div>
+
+
 
       <div class="row">
         <div class="col s12">
@@ -62,11 +74,13 @@
             <span class="card-title col s12 teal darken-1 white-text">Activity Heat Map</span>
             <div class="card-content">
               <label id="calendar_error">No Data Available </label>
-              <calendar-heatmap data="historical.data.calendarheatmap" color="'#ff0000'" overview="'year'" handler="print"></calendar-heatmap>
+              <calendar-heatmap data="historical.data.calendarheatmap"  color="'#ff0000'" overview="'year'" handler="print"></calendar-heatmap>
             </div>
           </div>
         </div>
       </div>
+
+
 
     </div>
     <!-- END OF OVERVIEW TAB -->
@@ -143,14 +157,7 @@
             </div>
           </div>
         </div>
-        <div class="col s12 m6 l4">
-          <div class="card">
-            <span class="card-title">Percentage Attendance</span>
-            <div class="card-content">
-              <p>(signup vs acutal attendance)</p>
-            </div>
-          </div>
-        </div>
+
 
         <div class="col s12 m6 l4">
           <div class="card">

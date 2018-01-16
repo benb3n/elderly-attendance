@@ -134,6 +134,15 @@ angular.module('HistoricalCtrl', [])
         }
       ]; //end data
 
+      //HERE
+    /*vm.c3HorizontalData =[
+      {columns: [
+          ['data1', 30, 200, 100, 400, 150, 250],
+          ['data2', 50, 20, 10, 40, 15, 25]
+      ]
+    }
+  ];*/
+
     //vm.selectedCenter = 6901;
 
     //vm.selectedEndDate_courses = new Date('29 October 2017');
@@ -152,7 +161,9 @@ angular.module('HistoricalCtrl', [])
       real_time_activity_reading: [],
       real_time_activity_reading_hash: {},
       calendarheatmap: null,
-      popular_days: []
+      popular_days: [],
+      top_active_resident: [],
+      top_active_resident_xaxis: []
     }
     vm.display = {
       centers:[],
@@ -189,7 +200,7 @@ angular.module('HistoricalCtrl', [])
         vm.display.centers.push({name: value.code_name, value: value.code_name})
       })
 
-      callSensorReadings(vm.selectedCenter, '2018-01-01', '2018-01-14') //'2017-12-01'
+      callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-01-14') //'2017-12-01'
     })
 
   }
@@ -223,7 +234,7 @@ angular.module('HistoricalCtrl', [])
       return getAllCenterAttendanceInterval(vm.api.project, vm.api.center_code_name, start_datetime, end_datetime );
     })
     .then(function(result){
-      console.log("readings" , result)
+
       var arr = [];
       var total_time_spent_in_sec = 0;
       result.data.forEach(function(value, index){
@@ -251,9 +262,11 @@ angular.module('HistoricalCtrl', [])
 
         }
       })
+      console.log("readings" , vm.data.real_time_activity_reading)
       console.log("total seconds " + total_time_spent_in_sec)
       //OVERVIEW TAB
       calendar_heatmap_widget(total_time_spent_in_sec);
+      top_active_resident_widget();
 
       //COURSES TAB
       day_of_week_widget();
@@ -355,9 +368,6 @@ angular.module('HistoricalCtrl', [])
       data.push(cal_event)
     })
     vm.data.calendarheatmap = angular.copy(data)
-    console.log( vm.data.calendarheatmap )
-
-
   }
 
   function box_heatmap_widget(){
@@ -413,6 +423,55 @@ angular.module('HistoricalCtrl', [])
 
   }//end box_heatmap_widget
 
+  function top_active_resident_widget(){
+    var real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
+      r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
+      r[a.resident_display_name + " -" + a.device_id].push(a);
+      return r;
+    }, Object.create(null));
+
+    Object.keys(real_time_activity_reading_by_device_id).forEach(function(key){
+      real_time_activity_reading_by_device_id[key] = getInstancesTotalTime(real_time_activity_reading_by_device_id[key])/(60*60);
+    })//end for each macID
+
+    //placing in to array for sorting
+    var active_arr = [];
+    //var key_arr = [];
+    for (var key in real_time_activity_reading_by_device_id) {
+      active_arr.push({
+        name: key,
+        value: real_time_activity_reading_by_device_id[key]
+      });
+    }
+
+    //sorting
+    var sorted = active_arr.sort(function(a, b) {
+      return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
+    });
+
+    var data = ["residents"];
+    var xaxis = [];
+
+    for (i = 0; i <= 5; i++) {
+      data.push(active_arr[i].value);
+      xaxis.push(active_arr[i].name);
+    }
+/*
+    active_arr.forEach(function(value){
+      data.push(value.value);
+      xaxis.push(value.name);
+    })//end for each
+
+    Object.keys(real_time_activity_reading_by_device_id).forEach(function(key,index){
+      data.push(real_time_activity_reading_by_device_id[key]); //to change
+      xaxis.push(key);
+    })//end for each
+    */
+    vm.data.top_active_resident_xaxis = angular.copy(xaxis);
+    vm.data.top_active_resident = angular.copy(data);
+  }// top active
+
+
   function update_most_active_chart(result){
     if (result.results.length == 0){
       document.getElementById("active_error").style.visibility='visible';
@@ -430,7 +489,7 @@ angular.module('HistoricalCtrl', [])
 
       //get timings of each mac_id and store in object
       mac_ins_array.forEach(function(value,index){
-        var id_time = getInstancesTotalTime /(60*60);
+        var id_time = getInstancesTotalTime(value) /(60*60);
         time_data.push({
             "category": ""+ mac_id_list[index],
             "num": id_time
