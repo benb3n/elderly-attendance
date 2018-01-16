@@ -11,16 +11,323 @@ angular.module('HistoricalDirective', [])
       scope.$watch('data', function(data) {
         scope.renderChart(data, "")
       },true);
-    
+
       scope.renderChart = function(data, color){
-        var numberDisplay = dc.numberDisplay(Element[0]);
-        
         
       }
+
+
 
     }
   }
 })
+
+.directive('weeklyLineChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+      scope.$watch('data', function(data) {
+        if(typeof data != 'undefined' && data.length!=0 ){
+
+          /*SAMPLE DATA FORMAT
+          var parsedData = [
+            ['data1', 30, 200, 100, 400, 150, 250],
+            ['data2', 50, 20, 10, 40, 15, 25]
+          ]*/
+          var parsedData = data
+
+        }
+
+        scope.renderChart(parsedData);
+      },true);
+
+      scope.renderChart = function(data){
+        d3.select(Element[0]).selectAll("*").remove();
+
+        if(data && data.length > 0){
+          var chart = c3.generate({
+            bindto: Element[0],
+            data: {
+                columns: data 
+            },
+            axis: {
+              x: {
+                  type: 'category',
+                  categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+              }
+            },
+            legend:{
+              show:true
+            },
+            tooltip: {
+              position: function (data, width, height, element) {
+                var top = d3.mouse(element)[1] - element.height.baseVal.value
+                return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
+              }
+            }
+          });
+
+          d3.select(window).on("resize", resized);
+
+        }else {
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+        }
+
+        function resized(){
+            chart.resize();
+
+        }
+          
+        
+      }
+    }
+  }
+})//end dir weeklyLineChart
+
+.directive('responsiveLineChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+        scope.$watch('data', function(data) {
+          if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
+            var parseData = data
+          }
+
+          scope.renderChart(parseData);
+        },true);
+
+        scope.renderChart = function(data){
+          d3.select(Element[0]).selectAll("*").remove();
+
+          if(data && data.length > 0){
+
+            //Margin conventions
+            var margin = {top: 20, right: 70, bottom: 50, left: 35};
+            var widther = window.outerWidth;
+            var width = widther - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            //Parses date for correct time format
+            var parseDate = d3.time.format("%Y-%m-%d");
+
+            //Divides date for tooltip placement
+            var bisectDate = d3.bisector(function(d) { return d.date; }).left;
+
+            //Appends the svg to the chart-container div
+            var svg = d3.select(Element[0]).append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              //.attr("preserveAspectRatio", "xMinYMin meet")
+              //.attr("viewBox", "0 0 960 500")
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            //Creates the xScale
+            var xScale = d3.time.scale()
+              .range([0, width]);
+
+            //Creates the yScale
+            var yScale = d3.scale.linear()
+              .range([height, 0]);
+
+            //Defines the y axis styles
+            var yAxis = d3.svg.axis()
+              .scale(yScale)
+              .tickSize(-width)
+              .tickPadding(2)
+              .ticks(numTicks(width))
+              .orient("left")
+              //help: maybe the data is stored as a doube instead of the integers i pass in,resulting in .5 values
+              //https://github.com/danielgindi/Charts/issues/315
+              .tickFormat(d3.format(".0f"));
+
+            //Defines the x axis styles
+            var xAxis = d3.svg.axis()
+              .scale(xScale)
+              .tickPadding(8)
+              .orient("bottom")
+              .tickSize(height)
+              .ticks(numTicks(data.length))
+              .tickFormat(d3.time.format("%b %Y"));
+              //help: prevent duplicate ticks
+              //.tickFormat(d3.time.format("%d %b"));
+
+            //line function convention (feeds an array)
+            var line = d3.svg.line()
+              .x(function(d) { return xScale(d.date); })
+              .y(function(d) { return yScale(d.num); });
+
+            //FORMAT data
+            data.forEach(function(d) {
+              //d.num = parseInt(d.num);
+              d.num = +d.num;
+              d.date = new Date(d.date);
+            });
+
+            //Appends chart headline
+            //d3.select(".g-hed").text("Chart headline goes here");
+
+            //Appends chart intro text
+            //d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
+
+            //data.sort(function(a,b) { return a.date - b.date; });
+
+            //Defines the xScale max and min
+            xScale.domain(d3.extent(data, function(d) {
+              return d.date;
+            }));
+
+            var yscalemax = d3.extent(data, function(d) { return d.num; })[1];
+            //Defines the yScale max
+            //yScale.domain(d3.extent(data, function(d) { return d.num; }));
+            yScale.domain([0, yscalemax]);
+
+            //Appends the y axis
+            var yAxisGroup = svg.append("g")
+              .attr("class", "y axis")
+              .attr("transform", "translate(0, 0)")
+              .call(yAxis);
+
+            //Appends the x axis
+            var xAxisGroup = svg.append("g")
+              .attr("class", "x axis")
+              //.attr("transform", "translate(50, 0)")
+              .call(xAxis);
+
+            //Binds the data to the line
+            var drawline = svg.append("path")
+              .datum(data)
+              .attr("class", "line")
+              .attr("d", line);
+
+            //Tooltips
+            var focus = svg.append("g")
+                .attr("class", "focus")
+                .style("display", "none");
+
+            //Adds circle to focus point on line
+            //help: dont need to specify cx,cy(relative positions) cause you move them later?in mouseover
+            focus.append("circle")
+                .attr("r", 4);
+
+            //Adds text to focus point on line
+            focus.append("text")
+                //help: this dosent work, why?
+                //.text(function (d) {return d.num;})
+                .attr("x", 9)
+                .attr("dy", ".35em");
+
+            //Creates larger area for tooltip
+            var overlay = svg.append("rect")
+                .attr("class", "overlay")
+                .attr("width", width)
+                .attr("height", height)
+                .on("mouseover", function() { focus.style("display", null); })
+                .on("mouseout", function() { focus.style("display", "none"); })
+                .on("mousemove", mousemove);
+
+            //Tooltip mouseovers
+            function mousemove() {
+              var x0 = xScale.invert(d3.mouse(this)[0]),
+                  i = bisectDate(data, x0, 1),
+                  d0 = data[i - 1],
+                  d1 = data[i];
+                  var d;
+                  if (typeof d1 == "undefined"){
+                    d = d0;
+                  }else{
+                    d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+                  }
+              focus.attr("transform", "translate(" + xScale(d.date) + "," + yScale(d.num) + ")");
+              focus.select("text").text(d.num);
+            }//end mouseover
+
+            /*
+            //Appends chart source
+            d3.select(".g-source-bold")
+              .text("SOURCE: ")
+              .attr("class", "g-source-bold");
+
+            d3.select(".g-source-reg")
+              .text("Chart source info goes here")
+              .attr("class", "g-source-reg");
+              */
+              var num_months = data.length;
+            //RESPONSIVENESS
+            d3.select(window).on("resize", resized);
+            resized();
+
+          }else {
+            d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+          }
+
+          function resized(){
+
+            //new margin
+            var newMargin = {top: 20, right: 70, bottom: 110, left: 35};
+
+            //Get the width of the window
+            var w = d3.select(".g-chart").node().clientWidth;
+
+            //console.log("Responsive line chart resized: new width", w);
+
+            //Change the width of the svg
+            d3.select("svg")
+              .attr("width", w);
+
+            //Change the xScale
+            xScale
+              .range([0, w - newMargin.right]);
+
+            //Update the line
+            line = d3.svg.line()
+              .x(function(d) { return xScale(d.date); })
+              .y(function(d) { return yScale(d.num); });
+
+            d3.selectAll('.line')
+              .attr("d", line);
+
+            //Updates xAxis
+            xAxisGroup
+              .call(xAxis);
+
+            //Updates ticks
+            xAxis
+              .scale(xScale)
+              .ticks(numTicks(num_months));
+
+              xAxisGroup
+                .selectAll("text")
+                 .attr("y","135")
+                 .attr("x","-325")
+                 .attr("transform", "rotate(-65)");
+
+            //Updates yAxis
+            yAxis
+              .tickSize(-w - newMargin.right);
+          }//end resize
+        }
+
+        //Determines number of ticks base on width
+        function numTicks(num_months) {
+          if (num_months > 5) {
+            return 5
+          }
+          else {
+            return num_months
+          }
+        }//end numticks
+    }
+  }
+})//end dir responsiveLineChart
 
 .directive('barChart', function() {
     return {
@@ -158,179 +465,7 @@ angular.module('HistoricalDirective', [])
         }
       }
 
-})
-/*
-.directive('crD3Bars', [
-  function() {
-    return {
-      restrict: 'E',
-      scope: {
-        data: '='
-      },
-      link: function(scope, element) {
-
-        function getDate(d) {
-          var dt = new Date(d.date);
-          dt.setHours(0);
-          dt.setMinutes(0);
-          dt.setSeconds(0);
-          dt.setMilliseconds(0);
-          return dt;
-        }
-
-        function showData(obj, d) {
-          var coord = d3.mouse(obj);
-          var infobox = d3.select(".infobox");
-          // now we just position the infobox roughly where our mouse is
-          infobox.style("left", (coord[0] + 100) + "px");
-          infobox.style("top", (coord[1] - 175) + "px");
-          $(".infobox").html(d);
-          $(".infobox").show();
-        }
-
-        function hideData() {
-          $(".infobox").hide();
-        }
-
-        var drawChart = function(data) {
-
-          // define dimensions of graph
-          var m = [50,50,50,50]; // margins
-          var w = 400 - m[1] - m[3]; // width
-          var h = 200 - m[0] - m[2]; // height
-
-          data.sort(function(a, b) {
-            var d1 = getDate(a);
-            var d2 = getDate(b);
-            if (d1 == d2) return 0;
-            if (d1 > d2) return 1;
-            return -1;
-          });
-
-          var minDate = getDate(data[0]),
-            maxDate = getDate(data[data.length - 1]);
-
-          var x = d3.time.scale().domain([minDate, maxDate]).range([0, w]);
-          var y = d3.scale.linear().domain([0, d3.max(data, function(d) {
-            return d.trendingValue;
-          })]).range([h, 0]);
-
-
-          var line = d3.svg.line()
-            .x(function(d, i) {
-              return x(getDate(d)); //x(i);
-            })
-            .y(function(d) {
-              return y(d.trendingValue);
-            });
-
-          function xx(e) {
-            return x(getDate(e));
-          }
-
-          function yy(e) {
-            return y(e.trendingValue);
-          }
-
-          var graph = d3.select(element[0]).append("svg:svg")
-            .attr("width", w + m[1] + m[3])
-            .attr("height", h + m[0] + m[2])
-            .append("svg:g")
-            .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
-
-
-          var xAxis = d3.svg.axis().scale(x).ticks(d3.time.months, 1).tickSize(-h).tickSubdivide(true);
-
-          var yAxisLeft = d3.svg.axis().scale(y).ticks(10).orient("left"); //.tickFormat(formalLabel);
-
-          graph
-            .selectAll("circle")
-            .data(data)
-            .enter().append("circle")
-            .attr("fill", "steelblue")
-            .attr("r", 5)
-            .attr("cx", xx)
-            .attr("cy", yy)
-            .on("mouseover", function(d) {
-              showData(this, d.trendingValue);
-            })
-            .on("mouseout", function() {
-              hideData();
-            });
-
-          graph.append("svg:path").attr("d", line(data));
-
-          $("#graphDiv3").append("<div class='infobox' style='display:none;'>Test</div>");
-        };
-
-        drawChart(scope.data);
-      }
-    };
-  }
-])
-.directive('horizontalStackedBarChart', function(){
-    return {
-        restrict: 'E',
-        scope: {
-            options: '='
-        },
-        template: '<div id="chart"></div>',
-        link: function ($scope) {
-            function parseData(params) {
-                var parsedArr = [];
-
-                // If the data is an object, convert it to an array
-                if (_.isObject(params.data)) {
-                    params.data = _.values(params.data);
-                }
-
-                // If the yAxis param is a string, convert it to an array
-                if (_.isString(params.yAxis)) {
-                    params.yAxis = [params.yAxis];
-                }
-
-                _.each(params.data, function (d) {
-                    var parsed = {};
-                    parsed.total = 0;
-                    parsed.types = [];
-                    _.each(params.yAxis, function (cat) {
-                        parsed[cat] = d[cat];
-                        parsed.types.push(parsed[cat]);
-                        parsed.total += d[cat];
-                    });
-                    parsed[params.xAxis] = d[params.xAxis];
-                    parsedArr.push(parsed);
-                });
-                _.each(parsedArr, function (d) {
-                    var y0 = 0;
-                    d.types = params.yAxis.map(function (type) {
-                        var bar = {
-                            y0: y0,
-                            y1: y0 += +d[type]
-                        };
-                        bar[params.xAxis] = type;
-                        return bar;
-                    });
-                    d.total = _.last(d.types).y1;
-                });
-                return _.sortBy(parsedArr, function (d) {
-                    return d[params.sortBy];
-                });
-            }
-
-            var chart;
-
-            chart = {
-                data: parseData($scope.options),
-                width: $scope.options.width || 350,
-                height: $scope.options.height || 350,
-                gutter: $scope.options.gutter || 5
-            };
-        }
-    };
-})
-*/
-
+})//end dir
 .directive('horizontalBarChart',function(){
   return {
     restrict: 'EA',
@@ -377,228 +512,7 @@ angular.module('HistoricalDirective', [])
       }
 })//end dir horizontalBarChart
 
-.directive('responsiveLineChart',function(){
-  return {
-    restrict: 'EA',
-    scope: {
-        data: "=",
-        color: "="
-    },
-    link: function(scope, Element, Attrs) {
-        scope.$watch('data', function(data) {
-          if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
-            scope.renderChart(data);
-          }
-          
-        },true);
 
-        scope.renderChart = function(data){
-          d3.select(Element[0]).selectAll("*").remove;
-          
-          if(data && data.length > 0){
-           
-            //Margin conventions
-            var margin = {top: 20, right: 70, bottom: 40, left: 35};
-
-            var widther = window.outerWidth;
-            console.log(widther);
-            
-            var width = widther - margin.left - margin.right,
-                height = 400 - margin.top - margin.bottom;
-
-            //Parses date for correct time format
-            var parseDate = d3.time.format("%Y-%m-%d");
-
-            //Divides date for tooltip placement
-            var bisectDate = d3.bisector(function(d) { return d.date; }).left;
-
-            //Appends the svg to the chart-container div
-            var svg = d3.select(Element[0]).append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            //Creates the xScale
-            var xScale = d3.time.scale()
-              .range([0, width]);
-
-            //Creates the yScale
-            var yScale = d3.scale.linear()
-              .range([height, 0]);
-
-            //Defines the y axis styles
-            var yAxis = d3.svg.axis()
-              .scale(yScale)
-              .tickSize(-width)
-              .tickPadding(8)
-              .orient("left");
-
-            //Defines the y axis styles
-            var xAxis = d3.svg.axis()
-              .scale(xScale)
-              .tickPadding(8)
-              .orient("bottom")
-              .tickSize(height)
-              .ticks(numTicks(width))
-              .tickFormat(d3.time.format("%m/%Y"));
-
-            //line function convention (feeds an array)
-            var line = d3.svg.line()
-              .x(function(d) { return xScale(d.date); })
-              .y(function(d) { return yScale(d.num); });
-            /*
-            //Loads the data
-            d3.csv("linetemplate.csv", ready);
-
-            function ready(err, data) {
-
-              if (err) throw "error loading data";
-              console.log("hello");
-              */
-              //FORMAT data
-              data.forEach(function(d) {
-                d.num = +d.num;
-                d.date = new Date(d.date);
-              });
-            
-            //Appends chart headline
-            //d3.select(".g-hed").text("Chart headline goes here");
-
-            //Appends chart intro text
-            //d3.select(".g-intro").text("Chart intro text goes here. Write a short sentence describing the chart here.");
-
-            data.sort(function(a,b) { return a.date - b.date; });
-            console.log(data)
-
-            //Defines the xScale max
-            xScale.domain(d3.extent(data, function(d) { return d.date; }));
-
-            //Defines the yScale max
-            yScale.domain(d3.extent(data, function(d) { return d.num; }));
-
-            //Appends the y axis
-            var yAxisGroup = svg.append("g")
-              .attr("class", "y axis")
-              .call(yAxis);
-
-            //Appends the x axis
-            var xAxisGroup = svg.append("g")
-              .attr("class", "x axis")
-              .call(xAxis);
-
-            //Binds the data to the line
-            var drawline = svg.append("path")
-              .datum(data)
-              .attr("class", "line")
-              .attr("d", line);
-
-            //Tooltips
-            var focus = svg.append("g")
-                .attr("class", "focus")
-                .style("display", "none");
-
-            //Adds circle to focus point on line
-            focus.append("circle")
-                .attr("r", 4);
-
-            //Adds text to focus point on line
-            focus.append("text")
-                .attr("x", 9)
-                .attr("dy", ".35em");
-
-            //Creates larger area for tooltip
-            var overlay = svg.append("rect")
-                .attr("class", "overlay")
-                .attr("width", width)
-                .attr("height", height)
-                .on("mouseover", function() { focus.style("display", null); })
-                .on("mouseout", function() { focus.style("display", "none"); })
-                .on("mousemove", mousemove);
-              
-            //Tooltip mouseovers
-            function mousemove() {
-              var x0 = xScale.invert(d3.mouse(this)[0]),
-                  i = bisectDate(data, x0, 1),
-                  d0 = data[i - 1],
-                  d1 = data[i],
-                  d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-              focus.attr("transform", "translate(" + xScale(d.date) + "," + yScale(d.num) + ")");
-              focus.select("text").text(d.num);
-            }//end mouseover
-
-            /*
-            //Appends chart source
-            d3.select(".g-source-bold")
-              .text("SOURCE: ")
-              .attr("class", "g-source-bold");
-
-            d3.select(".g-source-reg")
-              .text("Chart source info goes here")
-              .attr("class", "g-source-reg");
-              */
-            
-            //RESPONSIVENESS
-            d3.select(window).on("resize", resized);
-            resized();
-          }else {
-            d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
-          }
-
-          function resized(){
-
-            //new margin
-            var newMargin = {top: 10, right: 80, bottom: 20, left: 50};
-
-            //Get the width of the window
-            var w = d3.select(".g-chart").node().clientWidth;
-            //console.log("resized", w);
-
-            //Change the width of the svg
-            d3.select("svg")
-              .attr("width", w);
-
-            //Change the xScale
-            xScale
-              .range([0, w - newMargin.right]);
-
-            //Update the line
-            line = d3.svg.line()
-              .x(function(d) { return xScale(d.date); })
-              .y(function(d) { return yScale(d.num); });
-
-            d3.selectAll('.line')
-              .attr("d", line);
-
-            //Updates xAxis
-            xAxisGroup
-              .call(xAxis);
-
-            //Updates ticks
-            xAxis
-              .scale(xScale)
-              .ticks(numTicks(w));
-
-            //Updates yAxis
-            yAxis
-              .tickSize(-w - newMargin.right);
-          }//end resize
-        }
-
-        //Determines number of ticks base on width
-        function numTicks(widther) {
-          if (widther <= 900) {
-            return 4
-            //console.log("return 4")
-          }
-          else {
-            return 12
-            //console.log("return 5")
-          }
-        }//end numticks
-    }
-  }
-})//end dir
 
 .directive('responsiveHorizontalBarChart',function(){
   return {
@@ -610,7 +524,7 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
               if(typeof data != 'undefined' && data.length!=0){
-                
+
               }
               scope.renderChart(data);
         },true);
@@ -802,7 +716,7 @@ angular.module('HistoricalDirective', [])
                 .text("Chart source info goes here")
                 .attr("class", "g-source-reg");
 
-              
+
               //RESPONSIVENESS
               d3.select(window).on("resize", resized);
               resized();
@@ -837,9 +751,9 @@ angular.module('HistoricalDirective', [])
             return 10
           }
         }//end numticks
-        
+
       }
-    
+
   }
 })//end responsiveHorizontalBarChart
 
@@ -853,7 +767,7 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
             if(typeof data != 'undefined' && data.length!=0){
-              
+
             }
             scope.heatmapChart(data);
         },true);
@@ -900,11 +814,11 @@ angular.module('HistoricalDirective', [])
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
               var colorScale = d3.scale.quantile()
-                  .domain([0, buckets - 1, d3.max(data, function (d) { 
+                  .domain([0, buckets - 1, d3.max(data, function (d) {
                     return d.value; })])
                   .range(colors);
-              
-            
+
+
 
               var cards = svg.selectAll(".hour")
                   .data(data, function(d) {return d.day+':'+d.hour;});
@@ -975,7 +889,7 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
           if(typeof data != 'undefined' && data.length!=0){
-                  
+
           }
           scope.heatmapChart(data);
         },true);

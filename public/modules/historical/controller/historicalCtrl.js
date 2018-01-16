@@ -1,5 +1,14 @@
 angular.module('HistoricalCtrl', [])
-.controller('HistoricalController', function ($scope, $q, HService) {
+.controller('HistoricalController', function ($scope, $q, $timeout, HService) {
+    var vm = this;
+    vm.api = {
+        project: 'mp',
+        center_code_name : 'gl15',
+        all_activity_count: 5000,
+        all_device_count: 3000,
+        latest_sensor_reading_count: 1000
+    }
+
     $(document).ready(function() {
         $('ul.tabs').tabs();
         $('.button-collapse').sideNav({
@@ -33,7 +42,7 @@ angular.module('HistoricalCtrl', [])
 
     });
 
-  var vm = this;
+
 
   /***************
       WATCHERS
@@ -43,7 +52,6 @@ angular.module('HistoricalCtrl', [])
   },function(newCenter, oldCenter) {
     if(newCenter != oldCenter) {
       vm.selectedCenter = newCenter;
-      callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     }
   });
 
@@ -93,13 +101,13 @@ angular.module('HistoricalCtrl', [])
   initController();
   function initController(){
     document.getElementById("calendar_error").style.visibility='hidden';
-    vm.centers = [
+    /*vm.centers = [
       {name:"6901", value:6901},
       {name:"6902", value:6902},
       {name:"6903", value:6903}
-    ]
+    ]*/
     //COURSE DETAILS
-    vm.display = {
+    /*m.display = {
       courses: [
       {date:"2017-11-20", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"1"},
       {date:"2017-11-20", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"2"},
@@ -155,96 +163,9 @@ angular.module('HistoricalCtrl', [])
       {date:"2017-12-12", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"52"},
       {date:"2017-12-12", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"53"},
       {date:"2017-12-12", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"54"}
-    ]}
+    ]}*/
 
-    vm.unique_visitors_data= [
-      {
-            key:"language lesson",
-            values:[
-              [1, 5],
-              [2, 5],
-              [3, 5],
-              [4, 5],
-              [5, 7],
-              [6, 6],
-              [7, 0],
-            ]
-      },
-      {
-            key:"physical exercise",
-            values:[
-              [1, 7],
-              [2, 6],
-              [3, 6],
-              [4, 5],
-              [5, 7],
-              [6, 7],
-              [7, 6],
-            ]
-      },
-      {
-            key:"bingo",
-            values:[
-              [1, 4],
-              [2, 20],
-              [3, 12],
-              [4, 10],
-              [5, 1],
-              [6, 3],
-              [7, 1],
-            ]
-      },
-      {
-            key:"karaoke",
-            values:[
-              [1, 19],
-              [2, 0],
-              [3, 10],
-              [4, 4],
-              [5, 6],
-              [6, 7],
-              [7, 9],
-            ]
-      }
-      ]; //end unique_visitors_data
-    vm.center_attendance_data = [
-      {
-            key:"6901",
-            values:[
-              [1, 5],
-              [2, 5],
-              [3, 5],
-              [4, 5],
-              [5, 7],
-              [6, 6],
-              [7, 0],
-            ]
-      },
-      {
-            key:"6902",
-            values:[
-              [1, 6],
-              [2, 5],
-              [3, 2],
-              [4, 15],
-              [5, 9],
-              [6, 13],
-              [7, 3],
-              ]
-      },
-      {
-            key:"6903",
-            values:[
-              [1, 3],
-              [2, 5],
-              [3, 6],
-              [4, 8],
-              [5, 10],
-              [6, 20],
-              [7, 2],
-              ]
-      }
-    ]; //end line_data
+    //testing data
     vm.activity_comparison_data =[
       {
         key: 'language lesson',
@@ -268,80 +189,6 @@ angular.module('HistoricalCtrl', [])
           {x: 5,y: 8}
         ]
       }];
-
-    //testing data
-    vm.myData = [
-      {
-        "date": "2015-10-01",
-        "trendingValue": "244"
-      },
-      {
-          "date": "2015-07-01",
-          "trendingValue": "0"
-      },
-      {
-          "date": "2015-06-01",
-          "trendingValue": "117"
-      },
-      {
-          "date": "2015-05-01",
-          "trendingValue": "5353"
-      },
-      {
-          "date": "2015-04-01",
-          "trendingValue": "11159"
-      },
-      {
-          "date": "2015-03-01",
-          "trendingValue": "7511"
-      },
-      {
-          "date": "2015-02-01",
-          "trendingValue": "6906"
-      },
-      {
-          "date": "2015-01-01",
-          "trendingValue": "10816"
-      },
-      {
-          "date": "2014-12-01",
-          "trendingValue": "3481"
-      },
-      {
-          "date": "2014-11-01",
-          "trendingValue": "1619"
-      },
-      {
-          "date": "2014-10-01",
-          "trendingValue": "4084"
-      },
-      {
-          "date": "2014-09-01",
-          "trendingValue": "1114"
-      }
-    ];
-    vm.thisData = [{
-        key: 'language lesson',
-        values: [
-          {x: 0,y: 3},
-          {x: 1,y: 7},
-          {x: 2,y: 7},
-          {x: 3,y: 8},
-          {x: 4,y: 11},
-          {x: 5,y: 17}
-        ]
-      },
-      {
-        key: 'physical exercise',
-        values: [
-          {x: 0,y: 9},
-          {x: 1,y: 5},
-          {x: 2,y: 10},
-          {x: 3,y: 15},
-          {x: 4,y: 3},
-          {x: 5,y: 8}
-        ]
-    }];
     vm.barData = [
         {
             key: "Cumulative Return",
@@ -349,79 +196,249 @@ angular.module('HistoricalCtrl', [])
                 {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
         }
       ]; //end data
-    vm.responsiveLineChartData = [
-      {"date": '2008-11', "num" : 7.8},
-      {"date": '2008-12', "num" : 8.3},
-      {"date": '2009-01', "num" : 8.7},
-      {"date": '2009-02', "num" : 8.9},
-      {"date": '2009-03', "num" : 9.4},
-      {"date": '2009-04', "num" : 9.5},
-      {"date": '2009-05', "num" : 9.5},
-      {"date": '2009-06', "num" : 9.6},
-      {"date": '2009-07', "num" : 9.8},
-      {"date": '2009-08', "num" : 10},
-      {"date": '2009-09', "num" : 9.9},
-      {"date": '2009-10', "num" : 9.9},
-      {"date": '2009-11', "num" : 9.7},
-      {"date": '2009-12', "num" : 9.8},
-      {"date": '2010-01', "num" : 9.8},
-      {"date": '2010-02', "num" : 9.9},
-      {"date": '2010-03', "num" : 9.6},
-      {"date": '2010-04', "num" : 9.4},
-      {"date": '2010-05', "num" : 9.5},
-      {"date": '2010-06', "num" : 9.6},
-      {"date": '2010-07', "num" : 9.5},
-      {"date": '2010-08', "num" : 9.5},
-      {"date": '2010-09', "num" : 9.8},
-      {"date": '2010-10', "num" : 9.4},
-      {"date": '2010-11', "num" : 9.1},
-      {"date": '2010-12', "num" : 9},
-      {"date": '2011-01', "num" : 8.9},
-      {"date": '2011-02', "num" : 9},
-      {"date": '2011-03', "num" : 9}
 
-    ];
+    //vm.selectedCenter = 6901;
 
-    vm.selectedCenter = 6901;
-    vm.selectedEndDate_courses = new Date('30 November 2017');
-    vm.selectedStartDate_courses = new Date('1 November 2017');
+    //vm.selectedEndDate_courses = new Date('29 October 2017');
+    //vm.selectedStartDate_courses = new Date('5 November 2017');
 
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
+    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
+    //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
+
+    vm.data = {
+      all_residents:[],
+      all_residents_by_resident_index: {},
+      all_centers: [],
+      all_centers_by_center_code: {},
+      all_centers_activity: [],
+      all_centers_activity_by_id:{},
+      real_time_activity_reading: [],
+      real_time_activity_reading_hash: {},
+      calendarheatmap: null,
+      popular_days: []
+    }
+    vm.display = {
+      centers:[],
+      residents: [],
+      activity: []
+    }
+
+    generateDataForInit();
+
   }//end initController
 
-  function callSensorReadings (center, start_date_time, end_date_time){
-    start_date_time =moment(start_date_time).format('YYYY-MM-DD') + 'T00:00:00'
-    end_date_time =moment(end_date_time).format('YYYY-MM-DD') + 'T00:00:00'
-
+  function generateDataForInit(){
     $q.when()
-      .then(function(){
-        //console.log(center +"\n"+ start_date_time +"\n"+ end_date_time);
-          return getSensorReadings(center, start_date_time, end_date_time, 500 );
+    .then(function(){
+      return getAllResidents(vm.api.project, vm.api.all_device_count)
+    })
+    .then(function(result){
+      vm.data.all_residents = result;
+      console.log("resident", result)
+      result.results.forEach(function(value, index){
+        vm.data.all_residents_by_resident_index[value.resident_index] = value;
+        vm.display.residents.push({name: value.display_name, value: value.resident_index})
       })
-      .then(function(result){
-          //update_heatmap_chart(result)
-          //console.log(result);
+
+      return getAllCenters(vm.api.project, vm.api.all_device_count)
+    })
+    .then(function(result){
+      vm.data.all_centers = result;
+      console.log("centers", result)
+      vm.selectedCenter = result.results[0].code_name
+      vm.selectedGwDevice = result.results[0].device_list.split("; ")
+      result.results.forEach(function(value, index){
+        vm.data.all_centers_by_center_code[value.code_name] = value;
+        vm.display.centers.push({name: value.code_name, value: value.code_name})
+      })
+
+      callSensorReadings(vm.selectedCenter, '2018-01-01', '2018-01-14') //'2017-12-01'
+    })
+
+  }
+
+  function callSensorReadings (center, start_date_time, end_date_time){
+    var start_datetime =moment(start_date_time).format('YYYY-MM-DD') + 'T00:00:00'
+    var end_datetime =moment(end_date_time).format('YYYY-MM-DD') + 'T23:59:59'
+    var start_date = moment(start_date_time).subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
+    var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD") 
+
+    console.log("start date " + start_datetime + " end date" + end_datetime) 
+    $q.when()
+    .then(function(){
+      return getCenterActivities(vm.api.project, vm.api.center_code_name, start_date, end_date);
+    })
+    .then(function(result){
+      result.results.forEach(function(value, index){
+        var start_index = value.repeat_params.indexOf("[") + 1;
+        var end_index = value.repeat_params.indexOf("]");
+        value.repeat_days_of_week = value.repeat_params.substring(start_index, end_index)
+        value.start_hour = value.start_time.substring(0,2)
+        value.start_minute = value.start_time.substring(3,5)
+        value.end_hour = value.end_time.substring(0,2)
+        value.end_minute = value.end_time.substring(3,5)
+        vm.data.all_centers_activity.push(value)
+        vm.data.all_centers_activity_by_id[value.id] = value;
+        vm.display.activity.push({name: value.activity_desc, value: value.id})
+      })
+      console.log("activity" , vm.data.all_centers_activity)
+
+      return getAllCenterAttendanceInterval(vm.api.project, vm.api.center_code_name, start_datetime, end_datetime );
+    })
+    .then(function(result){
+      console.log("readings" , result)
+      var arr = [];
+      var total_time_spent_in_sec = 0;
+      result.data.forEach(function(value, index){
+        if(value.time_spent_min >= 5){
+          vm.data.real_time_activity_reading_hash[value.resident_index] = value;
+          value.year = moment(value.start_timestamp).format('YYYY');
+          value.month = moment(value.start_timestamp).format('M');
+          value.day = moment(value.start_timestamp).format('D');
+          value.day_of_the_week = moment(value.start_timestamp).isoWeekday();
+          value.hour = moment(value.start_timestamp).format('HH');
+          value.minute = moment(value.start_timestamp).format('mm');
+          value.date = moment(value.start_timestamp).format('YYYY-MM-DD');
+          total_time_spent_in_sec += value.time_spent_sec
+          var counter = 0 ;
+          vm.data.all_centers_activity.forEach(function(activity, index){
+            var range = moment.range(moment(activity.start_date, 'YYYY-MM-DD') , moment(activity.end_date,'YYYY-MM-DD') );
+            if(range.contains(moment(value.start_timestamp)) && activity.repeat_days_of_week.indexOf(value.day_of_the_week) != -1 
+            && parseInt(activity.start_hour + activity.start_minute) <= parseInt(value.hour + value.minute) 
+            && parseInt(activity.end_hour + activity.end_minute) >= parseInt(value.hour + value.minute) && counter == 0){
+              value.activity_desc = activity.activity_desc;
+              vm.data.real_time_activity_reading.push(value);
+              counter = 1;
+            }
+          })
+
+        }
+      })
+      console.log("total seconds " + total_time_spent_in_sec)
+      //OVERVIEW TAB
+
+      //COURSES TAB
+      day_of_week_widget();
+      calendar_heatmap_widget(total_time_spent_in_sec);
+      
+
+      //PERSON TAB
+
+
+        
+    })
+    .then(function(result){
+
+
+
+        //return getSensorReadings(center, start_date_time, end_date_time, 500 );
+    })
+    .then(function(result){
+        /*console.log("result attendance: ")
+        console.log(vm.center_attendance);
+
+        console.log("result activities: ");
+        console.log(vm.center_activities);
+        */
+        //vm.selectedActivity = "language"; //temp
+        //update_activity_month_chart(vm.center_attendance,vm.center_activities,vm.selectedActivity);
+        //update_activity_month_chart(result,vm.center_activities,vm.selectedActivity);
+
+
+          //update_heatmap_chart(result);
           //update_most_active_chart(result);
           //update_avg_week_heatmap_chart(result);
-          update_course_month_chart(result,"language");
-          generateDataForOverview(result)
-      })//end when.then
+          //generateDataForOverview(result);
+    })//end when.then
+    .then(function(){
+      $timeout(function () {
+        $('select').material_select()
+      });
+    })
   }//end callSensorReadings
 
   /********************
-        CHARTS
+    CHARTS - COURSES
   *********************/
-  function update_heatmap_chart(result){
+  function day_of_week_widget(){
+    var real_time_activity_reading_by_activity_name = vm.data.real_time_activity_reading.reduce(function (r, a) {
+      r[a.activity_desc] = r[a.activity_desc] || [];
+      r[a.activity_desc].push(a);
+      return r;
+    }, Object.create(null));
+
+    var popular_days = []
+    Object.keys(real_time_activity_reading_by_activity_name).forEach(function(key, index){
+      var result = real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
+        r[a.day_of_the_week] = r[a.day_of_the_week] || [];
+        r[a.day_of_the_week].push(a);
+        return r;
+      }, Object.create(null));
+      
+      popular_days.push(key)
+      for(var i = 0; i < 7; i++){
+        popular_days.push( (result[i]) ? result[i].length : 0)
+      }
+
+      vm.data.popular_days.push(popular_days);
+      popular_days = [];
+    })
+  }
+
+  function calendar_heatmap_widget(total_time_spent_in_sec){
+    var real_time_activity_reading_by_date = vm.data.real_time_activity_reading.reduce(function (r, a) {
+      r[a.date] = r[a.date] || [];
+      r[a.date].push(a);
+      return r;
+    }, Object.create(null));
+
+    var data = []
+    Array.prototype.sum = function (prop) {
+      var total = 0
+      for ( var i = 0, _len = this.length; i < _len; i++ ) {
+          total += this[i][prop]
+      }
+      return total
+    }
+    Object.values(real_time_activity_reading_by_date).forEach(function(value, index){
+      var total_time_in_sec = value.sum("time_spent_sec");
+      var cal_event = {};
+      value.forEach(function(reading, readingIndex){
+        if(readingIndex == 0){
+          cal_event.date = reading.date;
+          cal_event.total = total_time_in_sec;
+          cal_event.details = []
+        }
+        cal_event.details.push({
+          "name": reading.resident_display_name,
+          "date": reading.start_timestamp.replace("T", " "),
+          "value": reading.time_spent_sec
+        })
+      })
+      data.push(cal_event)
+    })
+    vm.data.calendarheatmap = angular.copy(data)
+    console.log( vm.data.calendarheatmap )
+
+
+  }
+
+
+  function update_heatmap_chart(attendance){
     if (result.results.length == 0){
       document.getElementById("calendar_error").style.visibility='visible';
     }else{
       document.getElementById("calendar_error").style.visibility='hidden';
-
+      /*
       var temp_arr = objArr_to_dateObjArr(result.results);
       var date_list = temp_arr[0];//array that stores all the unique dates
       var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
+      */
+      temp_arr = insArr_to_dateInsArr(attendance);
+      var date_ins_array = temp_arr[1];
+      var date_list = temp_arr[0];
 
+      /*
       //split date obj by mac_id
       var date_mac_obj_array = []; //array of mac_id[obj,obj..] for corresponding date
       date_obj_array.forEach(function(value){
@@ -447,10 +464,23 @@ angular.module('HistoricalCtrl', [])
         date_time_array.push(total_time);
         date_instances_array.push(instances_array);
       })//end for each date
+      */
+
+      var date_mac_ins_array = [];
+      var date_time_array = [];
+
+      date_ins_array.forEach(function(date_value,date_index){
+        var mac_ins_array =insArr_to_macInsArr(date_value)[1];//array that stores arrays of instances, each array contains all instances of a particular mac id
+        date_mac_ins_array[date_index].push(mac_ins_array);
+        mac_ins_array.forEach(function(value){
+          date_time_array += getInstancesTotalTime(value);
+        })
+      })//end for each date
+      //sort the data by mac ID
 
       //pushing into data
       var calendar_data = [];
-      for(var i = 0 ; i<date_instances_array.length ; i++){
+      for(var i = 0 ; i<date_ins_array.length ; i++){
         calendar_data.push({
           "date": ""+ date_list[i],
           "total": date_time_array[i],
@@ -458,21 +488,33 @@ angular.module('HistoricalCtrl', [])
         })//end push to calendar_data
       }//end for loop
 
-      date_instances_array.forEach(function(date_value,date_index){
+      /*instance = {
+        device_id:"c074ab8a97a5"
+        end_timestamp:"2017-11-28T13:48:19"
+        resident_display_name: "Ali bin HUSSAIN"
+        resident_index: "MP0012"
+        resident_profile_picture: null
+        start_timestamp: "2017-11-28T13:47:34"
+        time_spent_min: 0
+        time_spent_sec: 45
+      */
+      date_ins_array.forEach(function(date_value,date_index){
         date_value.forEach(function(value,index){
           calendar_data[date_index].details.push({
-            "name": ""+ value[0],
-            "date": ""+ value[1],
-            "value": parseInt(value[2])
+            "name": ""+ value.resident_display_name,
+            "date": ""+ value.start_timestamp,
+            "value": parseInt(value.time_spent_sec)
           })//end calendar_data push
         })//end forEach
       })//end forEach day_value
+
       vm.calendarheatmapdata=angular.copy(calendar_data);
+
     }//end else
   }//end func update_heatmap_chart
 
-  function update_avg_week_heatmap_chart(result){
-
+  function update_avg_week_heatmap_chart(attendance){
+    /********************
     var temp_arr = objArr_to_dateObjArr(result.results);
     var date_list = temp_arr[0];//array that stores all the unique dates
     var date_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular date
@@ -486,6 +528,10 @@ angular.module('HistoricalCtrl', [])
         date_instances_array.push(objArr_to_instances(value)[1]);
       };
     })//end of for each
+  *********************/
+    temp_arr = insArr_to_dateInsArr(attendance);
+    var date_ins_array = temp_arr[1];
+    var date_list = temp_arr[0];
 
     //week_arr[7*hour_arr], contains hour_arr for that day of the week
     //hour_arr[25], counts number of unique mac_ids during in that slot
@@ -503,20 +549,26 @@ angular.module('HistoricalCtrl', [])
     //vm.selectedStartDate_courses
     //console.log(vm.selectedEndDate_courses);
 
-    //TODO:
-    var time_comparison_arr = []; //to compare the number of people attending classes that start at specific times
-
-    date_instances_array.forEach(function(value,index) {
+    date_ins_array.forEach(function(date_value,date_index) {
       //check date
-      var this_date = moment(date_list[index]);
+      var this_date = moment(date_list[date_index]);
       var day_index = moment(this_date).weekday(); //weekday returns 0-6 where 0 is Monday
       var time_arr = generate_time_array(this_date,8,20);
 
-      value.forEach(function(instance_value){
-        //instance = [mac_id,instance_start_date_time,time_spent]
+      date_value.forEach(function(instance_value){
+        /*instance =
+          device_id:"c074ab8a97a5"
+          end_timestamp:"2017-11-28T13:48:19"
+          resident_display_name: "Ali bin HUSSAIN"
+          resident_index: "MP0012"
+          resident_profile_picture: null
+          start_timestamp: "2017-11-28T13:47:34"
+          time_spent_min: 0
+          time_spent_sec: 45
+        */
         var time_index;
-        var this_start = moment(instance_value[1]);
-        var this_end = this_start.clone().add(instance_value[2], 'seconds');
+        var this_start = moment(instance_value.start_timestamp);
+        var this_end = moment(instance_value.end_timestamp);
         //console.log(instance_value);
         //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
         for (i = 0; i < time_arr.length-1; i++) {
@@ -558,16 +610,16 @@ angular.module('HistoricalCtrl', [])
     }
 
       //sort the data by mac ID
-      var temp_arr = objArr_to_macObjArr(result.results);
+      var temp_arr = insArr_to_macInsArr(result.results);
       var mac_id_list = temp_arr[0];//array that stores all the unique ID
-      var mac_obj_array = temp_arr[1];//array that stores arrays of obj, each array contains all objects of a particular mac id
+      var mac_ins_array = temp_arr[1];//array that stores arrays of instances, each array contains all instances of a particular mac id
 
       //var mac_time_list = [];//array that stores total time per corresponding mac id
       var time_data = [];
 
       //get timings of each mac_id and store in object
-      mac_obj_array.forEach(function(value,index){
-        var id_time = objArr_to_instances(value)[0] /(60*60);
+      mac_ins_array.forEach(function(value,index){
+        var id_time = getInstancesTotalTime /(60*60);
         time_data.push({
             "category": ""+ mac_id_list[index],
             "num": id_time
@@ -577,51 +629,65 @@ angular.module('HistoricalCtrl', [])
       time_data.sort(compare_time_data);
 
       vm.mostActiveData = angular.copy(time_data);
-      vm.responsiveHorizontalBarData = angular.copy(time_data);
   }//end update_most_active_chart function
 
-  function update_course_month_chart(result,course_type){
+  function update_activity_month_chart(attendance, center_activities, course_type, start_date, end_date){
     //get data related to course
-    var course_result = {
-      "count": 3,
-      "next": null,
-      "previous": null,
-      "results": [
-        {
-            "id": 15,
-            "project_prefix": "MP",
-            "project_desc": "Marine Parade",
-            "center_id": 2,
-            "center_code_name": "gl52",
-            "activity_desc": "activity desc",
-            "activity_type_list": "music; sports",
-            "start_date": "2017-11-01",
-            "end_date": "2017-11-01",
-            "start_time": "10:00:00",
-            "end_time": "11:00:00",
-            "repeat_params": {
-                "days_of_week": [1, 2, 3]
-              }
-        },{
-            "id": 20,
-            "project_prefix": "MP",
-            "project_desc": "Marine Parade",
-            "center_id": 2,
-            "center_code_name": "gl52",
-            "activity_desc": "activity desc",
-            "activity_type_list": "language",
-            "start_date": "2017-10-30",
-            "end_date": "2017-11-03",
-            "start_time": "10:00:00",
-            "end_time": "11:00:00",
-            "repeat_params": {
-                "days_of_week": [2,3,4]
-              }
-        }
-      ]
-    }//end obj
+    center_activities = {
+        "count": 3,
+        "next": null,
+        "previous": null,
+        "results": [
+          {
+              "id": 15,
+              "project_prefix": "MP",
+              "project_desc": "Marine Parade",
+              "center_id": 2,
+              "center_code_name": "gl52",
+              "activity_desc": "activity desc",
+              "activity_type_list": "music; sports",
+              "start_date": "2017-11-01",
+              "end_date": "2017-11-01",
+              "start_time": "10:00:00",
+              "end_time": "11:00:00",
+              "repeat_params": {
+                  "days_of_week": [1, 2, 3]
+                }
+          },{
+              "id": 20,
+              "project_prefix": "MP",
+              "project_desc": "Marine Parade",
+              "center_id": 2,
+              "center_code_name": "gl52",
+              "activity_desc": "Hokkien",
+              "activity_type_list": "language",
+              "start_date": "2017-10-30",
+              "end_date": "2017-11-03",
+              "start_time": "10:00:00",
+              "end_time": "11:00:00",
+              "repeat_params": {
+                  "days_of_week": [2,3,4]
+                }
+          },{
+              "id": 30,
+              "project_prefix": "MP",
+              "project_desc": "Marine Parade",
+              "center_id": 2,
+              "center_code_name": "gl52",
+              "activity_desc": "English",
+              "activity_type_list": "language",
+              "start_date": "2017-11-01",
+              "end_date": "2017-11-30",
+              "start_time": "12:00:00",
+              "end_time": "14:00:00",
+              "repeat_params": {
+                  "days_of_week": [1,3,5]
+                }
+          }
+        ]
+      }//end obj
 
-    var temp_arr = courseObj_to_courseArr(course_result.results,course_type);
+    var temp_arr = courseObj_to_courseArr(center_activities.results,course_type,start_date,end_date);
     var courses_date_array = temp_arr[1]; // arr[date[course,course],date[course]..]
     var courses_date_list = temp_arr[0];
     /*courses_array.sort(function(a,b){
@@ -635,56 +701,72 @@ angular.module('HistoricalCtrl', [])
     });
     */
     var courses_date_instances = Array(courses_date_list.length);
-    //arr[date[course[ins]],date[course[ins,ins]]...]
-
-    temp_arr = objArr_to_dateObjArr(result.results);
-    var date_obj_array = temp_arr[1];
+    //arr[date[course[ins],course[ins,ins]],date[course[ins,ins]]...]
+    temp_arr = insArr_to_dateInsArr(attendance);
+    var date_ins_array = temp_arr[1];
     var date_list = temp_arr[0];
-    //console.log(result.results);
-    //console.log(courses_date_instances);
-    //console.log(date_obj_array);
 
-    date_obj_array.forEach(function(date_value,date_index){
+    date_ins_array.forEach(function(date_value,date_index){
       var course_date_index = courses_date_list.indexOf(date_list[date_index]);
       if(course_date_index==-1) return; //no courses that date
-      var focus_courses = courses_array[course_date_index];//courses in a specific date
-      var instances_array = objArr_to_instances(date_value);//get instances for that date
-      //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
-
-      courses_date_instances[course_date_index] = instancesArray_to_coursesInstancesArr(instances_array,focus_courses);
-      //console.log(courses_date_instances);
-
+      var focus_courses = courses_date_array[course_date_index];//courses in a specific date
+      courses_date_instances[course_date_index] = insArray_to_coursesInsArr(date_value,focus_courses);
     })//end for each day
-  /*
-  todo: average out the activity?
-  */
+
+    /*
+    todo: average out the activity?
+    */
     var month_list = [];
 
-    var curr_month = moment(courses_date_list[0]);
-    var end_month = moment(courses_date_list[courses_date_list.length-1]);
+    var curr_month = moment(courses_date_list[0]).set('date', 1);
+    var end_month = moment(courses_date_list[courses_date_list.length-1]).set('date', 1);
     while(curr_month.isSameOrBefore(end_month)){
       month_list.push(moment(curr_month).format('YYYY-MM'));
       curr_month = moment(curr_month).add(1, 'month');
     }//end while
 
-
-    var month_count = [month_list.length];
+    var month_count = Array(month_list.length);
     month_count.fill(0);
-    //console.log(month_list);
-    //console.log(month_count);
-
     courses_date_instances.forEach(function(date_value,date_index){
       var this_month = moment(courses_date_list[date_index]).format('YYYY-MM');
       if (month_list.indexOf(this_month) == -1){
-        console.log("error in update_course_month_chart");
+        console.log("error in update_activity_month_chart");
       };//end if
       date_value.forEach(function(course_value){
         month_count[month_list.indexOf(this_month)] += uniqueId_from_instanceArr(course_value).length;
       })//for each course
     })//for each date
 
+    var activity_month_data = [];
+    month_list.forEach(function(value,index){
+      activity_month_data.push({
+        "date": '' + value,
+        "num": month_count[index]
+      })//end obj
+    })//end for each month in month list
+    activity_month_data.push({
+      "date": '2017-12',
+      "num": 2
+    })//end obj
+    /*
+    activity_month_data.push({
+      "date": '2018-01',
+      "num": 3
+    })//end obj*/
+    activityMonthData = [];
+    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
+    test_values = [1,3,2,5,6,7,4,6,2];
+    test_dates.forEach(function(value,index){
+      activityMonthData.push({
+        "date": value,
+        "num": test_values[index]
+      })//end obj
+    });
+    //vm.activityMonthData=angular.copy(activityMonthData);
+    vm.activityMonthData=angular.copy(activity_month_data);
+
     //{"date": '2011-03', "num" : 9}
-  }// end func update_course_month_chart
+  }// end func update_activity_month_chart
 
   function update_course_time_chart(result){
     //TODO:
@@ -693,6 +775,58 @@ angular.module('HistoricalCtrl', [])
   /********************
     REUSEABLE FUNCTIONS
   *********************/
+  function getInstancesTotalTime(instances_array){
+    /*instance = {
+      device_id:"c074ab8a97a5"
+      end_timestamp:"2017-11-28T13:48:19"
+      resident_display_name: "Ali bin HUSSAIN"
+      resident_index: "MP0012"
+      resident_profile_picture: null
+      start_timestamp: "2017-11-28T13:47:34"
+      time_spent_min: 0
+      time_spent_sec: 45
+    */
+    var total_time = 0; // seconds
+
+    instances_array.forEach(function(value){
+      total_time += value.time_spent_sec;
+    })
+
+    return total_time;
+
+  }//end of getInstancesTotalTime
+
+  function getInstancesForDateRange(instances_array,start_datetime, end_datetime){
+    //returns array of instances that are within start & end date specified
+    var focused_instances_array = [];
+
+    instances_array.forEach(function(value){
+      var this_start = moment(value.start_timestamp);
+      var this_end =  moment(value.end_timestamp);
+      if(!(moment(end_datetime).isBefore(this_start) || this_end.isBefore(moment(start_datetime)))){
+        focused_instances_array.push(value);
+      }//end if statement
+    })//end for each
+
+    return focused_instances_array;
+  }//end getInstancesForDateRange
+
+  /*
+  function getCoursesForDateRange(courses_array,start_datetime, end_datetime){
+    //returns array of instances that are within start & end date specified
+    var focused_courses_array = [];
+
+    courses_array.forEach(function(value){
+      var this_start = moment(value.start_date).format('YYYY-MM-DD')+;
+      var this_end =  moment(value.end_timestamp);
+      if(!(moment(end_datetime).isBefore(this_start) || this_end.isBefore(moment(start_datetime)))){
+        focused_instances_array.push(value);
+      }//end if statement
+    })//end for each
+
+    return focused_instances_array;
+  }//end getCoursesForDateRange
+  */
   function generate_time_array(date,start_hour,end_hour){
     //create array of time with 30 min intervals for specific date
     var time_arr = [];
@@ -720,6 +854,7 @@ angular.module('HistoricalCtrl', [])
   }
 
   function objArr_to_dateObjArr(object_array){
+    //retire
     //takes an array of result objects and returns array[date_list,day_obj_array];
     //date_list is an array where each index is a specific date
     //date_obj_array an array where each index stores an array of all objects for the corresponding date
@@ -744,7 +879,39 @@ angular.module('HistoricalCtrl', [])
     return[date_list,date_obj_array]
   }//end func objArr_to_dateObjArr
 
+  function insArr_to_dateInsArr(instances_array){
+    //takes an array of result objects and returns array[date_list,day_ins_array];
+    //date_list is an array where each index is a specific date
+    //date_ins_array an array where each index stores an array of all instances for the corresponding date
+    /*instance = {
+      device_id:"c074ab8a97a5"
+      end_timestamp:"2017-11-28T13:48:19"
+      resident_display_name: "Ali bin HUSSAIN"
+      resident_index: "MP0012"
+      resident_profile_picture: null
+      start_timestamp: "2017-11-28T13:47:34"
+      time_spent_min: 0
+      time_spent_sec: 45
+    */
+    var date_ins_array = [];
+    var date_list = [];
+
+    var curr_date = moment(instances_array[0].start_timestamp).format("YYYY-MM-DD");
+
+    instances_array.forEach(function(value){
+      var this_date = moment(value.start_timestamp).format("YYYY-MM-DD");
+      if(date_list.indexOf(this_date) == -1){
+        date_ins_array.push([]);
+        date_list.push(this_date);
+      }//end if
+      date_ins_array[date_list.indexOf(this_date)].push(value);
+    })//end forEach loop
+
+    return[date_list,date_ins_array]
+  }//end func insArr_to_dateInsArr
+
   function objArr_to_macObjArr(object_array){
+    //retire
     //takes an array of result objects and returns array of 2 arrays [mac_id_list,mac_obj_array]
     //mac_id_list, each index contains one mac id(String)
     //mac_obj_array, each index contains all objects of the corresponding mac id
@@ -770,7 +937,42 @@ angular.module('HistoricalCtrl', [])
     return [mac_id_list,mac_obj_array];
   }
 
+  function insArr_to_macInsArr(instances_array){
+    //returns [mac_id_list,mac_obj_array]
+    //mac_id_list, each index contains one mac id(String)
+    //mac_obj_array, each index contains all instances of the corresponding mac id
+    /*instance = {
+      device_id:"c074ab8a97a5"
+      end_timestamp:"2017-11-28T13:48:19"
+      resident_display_name: "Ali bin HUSSAIN"
+      resident_index: "MP0012"
+      resident_profile_picture: null
+      start_timestamp: "2017-11-28T13:47:34"
+      time_spent_min: 0
+      time_spent_sec: 45
+    */
+    mac_id_list = [];
+    mac_ins_array = [];
+    instances_array.forEach(function(value){
+      var id = value.device_id;
+      //check if that mac ID already has an array in mac_ins_array by checking if ID exist in mac_id_list
+      //if not, then add ID into mac_id_list AND create the array for that ID in mac_ins_array
+      if(mac_id_list.indexOf(id) == -1){ //does not exist in mac_id_list
+        //add into mac_id_list
+        mac_id_list.push(id);
+        //create array for that ID in mac_ins_array
+        mac_ins_array.push([]);
+      }//end if
+      //add object into the corresponding array
+      mac_ins_array[mac_id_list.indexOf(id)].push(value);
+    })//end of forEach loop
+
+    return [mac_id_list,mac_ins_array];
+  }//end of insArr_to_macInsArr
+
+
   function objArr_to_instances(object_array){
+    //retire
     //takes an array of result objects and returns array of 2 arrays [array_total_time,instances_array];
     //array_total_time is the accumulated time of all valid instances captured by objects
     //instances_array an array of instances that stores mac_id,start time of instance and time spent for that instance
@@ -819,7 +1021,7 @@ angular.module('HistoricalCtrl', [])
     return[array_total_time,instances_array];
   }//end func objArr_to_instances
 
-  function courseObj_to_courseArr(courseList_obj,course_type){
+  function courseObj_to_courseArr(courseList_obj, course_type, start_date, end_date){
     //returns [courses_date_list,courses_array]
     //to format courselistobject to array of courses
     //course[curr_start_datetime,curr_end_datetime,duration_seconds,activity_type_list,days_of_week]
@@ -870,7 +1072,8 @@ angular.module('HistoricalCtrl', [])
     return [courses_date_list,courses_array];
   }//end courseObj_to_courseArr
 
-  function instancesArray_to_coursesInstancesArr(instances_array,courses_array){
+  function instancesArray_to_coursesInstancesArrOLD(instances_array,courses_array){
+    //retire
     var course_instance_array = Array(courses_array.length); // arr[course_instances[ins,ins],course_instances[ins]...]
     course_instance_array.fill([]);
 
@@ -883,17 +1086,52 @@ angular.module('HistoricalCtrl', [])
       courses_array.forEach(function(course,course_index){
         //course[start_datetime,end_datetime,duration_seconds,activity_type_arr,days_of_week]
 
-        var course_start = course[0];
-        var course_end = course[1];
+        var course_start = moment(course[0]);
+        var course_end = moment(course[1]);
         if(!(course_end.isBefore(this_start) || this_end.isBefore(course_start))){
           course_instance_array[course_index].push(value);
         }//end if
       })//end for each course
     })//end forEach instance
     return course_instance_array;
-  }//end func instancesArray_to_coursesInstancesArr
+  }//end func instancesArray_to_coursesInstancesArrOLD
 
-  function uniqueId_from_instanceArr(instances_array){
+  function insArray_to_coursesInsArr(instances_array,courses_array){
+    /*instance = {
+      device_id:"c074ab8a97a5"
+      end_timestamp:"2017-11-28T13:48:19"
+      resident_display_name: "Ali bin HUSSAIN"
+      resident_index: "MP0012"
+      resident_profile_picture: null
+      start_timestamp: "2017-11-28T13:47:34"
+      time_spent_min: 0
+      time_spent_sec: 45
+    */
+    var course_ins_array = Array(courses_array.length); // arr[course_instances[ins,ins],course_instances[ins]...]
+    course_ins_array.fill([]);
+
+    instances_array.forEach(function(value,index) {
+      var time_index;
+      var this_start = moment(value.start_timestamp);
+      var this_end = moment(value.end_timestamp);
+
+      courses_array.forEach(function(course,course_index){
+        //course[start_datetime,end_datetime,duration_seconds,activity_type_arr,days_of_week]
+
+        var course_start = moment(course[0]);
+        var course_end = moment(course[1]);
+        if(!(course_end.isBefore(this_start) || this_end.isBefore(course_start))){
+          course_ins_array[course_index].push(value);
+        }//end if
+      })//end for each course
+    })//end forEach instance
+
+    return course_ins_array;
+
+  }///insArray_to_coursesInsArr
+
+  function uniqueId_from_instanceArrOLD(instances_array){
+    //retire
     var unique_id_list = [];
     //instance = [mac_id,instance_start_date_time,time_spent]
 
@@ -904,7 +1142,30 @@ angular.module('HistoricalCtrl', [])
       }//end if
     })//for each instance
     return unique_id_list;
+  }//end func uniqueId_from_instanceArrOLD
+
+  function uniqueId_from_instanceArr(instances_array){
+    var unique_id_list = [];
+    /*instance = {
+      device_id:"c074ab8a97a5"
+      end_timestamp:"2017-11-28T13:48:19"
+      resident_display_name: "Ali bin HUSSAIN"
+      resident_index: "MP0012"
+      resident_profile_picture: null
+      start_timestamp: "2017-11-28T13:47:34"
+      time_spent_min: 0
+      time_spent_sec: 45
+    */
+
+    instances_array.forEach(function(value){
+      var curr_id =  value.device_id;
+      if(unique_id_list.indexOf(curr_id)==-1){
+        unique_id_list.push(curr_id);
+      }//end if
+    })//for each instance
+    return unique_id_list;
   }//end func uniqueId_from_instanceArr
+
   /********************
     BUTTON FUNCTIONS
   *********************/
@@ -938,8 +1199,55 @@ angular.module('HistoricalCtrl', [])
     return _defer.promise;
   }
 
+  function getAllCenterAttendanceInterval (project_prefix, center_code_name, start_datetime, end_datetime) {
+    var _defer = $q.defer();
+    HService.getAllCenterAttendanceInterval(project_prefix, center_code_name, start_datetime, end_datetime, function (result) {
+      if (result) {
+        _defer.resolve(result);
+      } else {
+        _defer.reject();
+      }
+    });
+    return _defer.promise;
+  }
+
+  function getCenterActivities (project_prefix, center_code_name, start_date, end_date) {
+    var _defer = $q.defer();
+    HService.getCenterActivities(project_prefix, center_code_name, start_date, end_date, function (result) {
+      if (result) {
+        _defer.resolve(result);
+      } else {
+        _defer.reject();
+      }
+    });
+    return _defer.promise;
+  }
+
+  function getAllCenters (project_prefix, page_size) { 
+    var _defer = $q.defer();
+    HService.getAllCenters(project_prefix, page_size, function (result) {
+      if (result) {
+        _defer.resolve(result)
+      } else {
+        _defer.reject();
+      }
+    });
+        return _defer.promise;
+  }
+  function getAllResidents (project_prefix, page_size) { 
+    var _defer = $q.defer();
+    HService.getAllResidents(project_prefix, page_size, function (result) {
+        if (result) {
+            _defer.resolve(result)
+        } else {
+            _defer.reject();
+        }
+    });
+    return _defer.promise;
+  }
+
   /***********************
-        OVERVIEW PAGE      
+        OVERVIEW PAGE
   ***********************/
 
   vm.time_treshold = 600;
@@ -956,7 +1264,7 @@ angular.module('HistoricalCtrl', [])
         return value;
       })
 
-      var group_by_result = groupBy(json_result.results, function(item){ return [item.resident_device, item.gw_date] }); 
+      var group_by_result = groupBy(json_result.results, function(item){ return [item.resident_device, item.gw_date] });
       //console.log(group_by_result)
 
       var results = [], g=[], d=0;
@@ -967,7 +1275,7 @@ angular.module('HistoricalCtrl', [])
         for(arr_length = arr.length, i = 0; i < arr_length; i++){
           var current_timestamp = moment(arr[i].timestamp);
           if(current_timestamp.isAfter(current_threshold)){
-            g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold; 
+            g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold;
             g[0].counts = g.length;
             results.push(g[0]);
             g = [];
@@ -976,13 +1284,13 @@ angular.module('HistoricalCtrl', [])
           current_threshold = moment(arr[i].timestamp).add(10, 'minutes')
         }
 
-        g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold; 
+        g[0].duration = (g.length == 1) ? vm.time_treshold :  moment(g[g.length-1].timestamp).diff(moment(g[0].timestamp), "seconds", true ) + vm.time_treshold;
         g[0].counts = g.length;
         results.push(g[0]);  // include last group otherwise unpushed
         g = [];
       });
 
-      console.log(results)
+      //console.log(results)
       var ndx = crossfilter(results)
 
     }
@@ -994,70 +1302,20 @@ angular.module('HistoricalCtrl', [])
     array.forEach( function( o ){
       var group = JSON.stringify( f(o) );
       groups[group] = groups[group] || [];
-      groups[group].push( o );  
+      groups[group].push( o );
     });
     return Object.keys(groups).map( function( group ){
-      return groups[group]; 
+      return groups[group];
     })
   }
 
   /********************************
-       END OF  OVERVIEW PAGE      
+       END OF  OVERVIEW PAGE
   ********************************/
 
 })//end controller
 
 
-
-/*
-activity_array = [
-  ["Monday","9:30am","10:30am","Physical Exercise"],
-  ["Monday","10:30am","12:30pm","Language Lessons"],
-  ["Monday","2:30pm","4:00pm","Bingo"],
-  ["Tuesday","9:30am","10:30am","Physical Exercise"],
-  ["Tuesday","10:30am","12:30pm","Language Lessons"],
-  ["Tuesday","2:30pm","4:00pm","Karaoke"],
-  ["Wednesday","9:30am","10:30am","Arts & Music"],
-  ["Wednesday","1:30pm","2:30pm","Physical Exercise"],
-  ["Wednesday","2:20pm","5:00pm","TCM"],
-  ["Thursday","9:30am","10:30am","Physical Exercise"],
-  ["Thursday","2:00pm","3:30pm","Language Lessons"],
-  ["Thursday","1:00pm","4:30pm","Karaoke"],
-  ["Friday","9:30am","10:30am","Physical Exercise"],
-  ["Friday","10:30am","12:30pm","Language Lessons"],
-  ["Friday","2:30pm","3:30pm","Movie"],
-  ["Friday","3:30pm","4:30pm","Arts & Music"]
-]
-
-activity_array = [
-  [
-    ["9:30am","10:30am","Physical Exercise"],
-    ["10:30am","12:30pm","Language Lessons"],
-    ["2:30pm","4:00pm","Bingo"]
-  ],//monday
-  [
-    ["9:30am","10:30am","Physical Exercise"],
-    ["10:30am","12:30pm","Language Lessons"],
-    ["2:30pm","4:00pm","Karaoke"]
-  ],//tueday
-  [
-    ["9:30am","10:30am","Arts & Music"],
-    ["1:30pm","2:30pm","Physical Exercise"],
-    ["2:30pm","5:00pm","TCM"]
-  ],//wednesday
-  [
-    ["9:30am","10:30am","Physical Exercise"],
-    ["2:00pm","3:30pm","Language Lessons"],
-    ["1:00pm","4:30pm","Karaoke"]
-  ],//thursday
-  [
-    ["9:30am","10:30am","Physical Exercise"],
-    ["10:30am","12:30pm","Language Lessons"],
-    ["2:30pm","3:30pm","Movie"],
-    ["3:30pm","4:30pm","Arts & Music"]
-  ]//friday
-]
-*/
 //seperate data by day
 
   /*vm.dayHourHeatmapData = [

@@ -30,7 +30,7 @@ angular.module('RealTimeCtrl', [])
     },function(newCenter, oldCenter) {
         if(newCenter != oldCenter) {
             vm.selectedCenter = newCenter;
-            //generateRealTimeData();
+            generateRealTimeData();
         }
     });
     $scope.$watch(function() {

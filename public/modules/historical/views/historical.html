@@ -4,16 +4,14 @@
           <div class="input-field col s2 m2" ng-model="historical.selectedCenter">
               <select>
                   <option value = "" disabled selected>Select Center</option>
-                  <option value={{center.value}} ng-repeat="center in historical.centers" id="center_courses">{{center.name}}</option>
+                  <option value={{center.value}} ng-repeat="center in historical.display.centers" id="center_courses">{{center.name}}</option>
               </select>
               <label>Center</label>
           </div>
           <div class="input-field col s2 m2">
             <select>
                 <option value = "" disabled selected>Select Course</option>
-                <option value = "1">C1</option>
-                <option value = "2">C2</option>
-                <option value = "3">C3</option>
+                <option value ={{activity.value}} ng-repeat="activity in historical.display.activity">{{activity.name}}</option>
             </select>
             <label>Course</label>
           </div>
@@ -38,14 +36,14 @@
 <div class="row">
     <div class="col s12">
       <ul class="tabs tabs-fixed-width">
-        <li class="tab col s3"><a class="active" href="#overview">Overview</a></li>
-        <li class="tab col s3"><a class="active" href="#course">Courses</a></li>
+        <li class="tab col s3"><a href="#overview">Overview</a></li>
+        <li class="tab col s3"><a class="active" href="#activity">Activity</a></li>
         <li class="tab col s3"><a href="#person">Person</a></li>
       </ul>
     </div>
 
     <!-- OVERVIEW TAB -->
-    <div id="overview" class="col s12"> 
+    <div id="overview" class="col s12">
       <!-- CONTENT -->
       <div class="row">
         <div class="col s12 m6 l3">
@@ -58,15 +56,37 @@
         </div>
       </div>
 
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Activity Heat Map</span>
+            <div class="card-content">
+              <label id="calendar_error">No Data Available </label>
+              <calendar-heatmap data="historical.data.calendarheatmap" color="'#ff0000'" overview="'year'" handler="print"></calendar-heatmap>
+            </div>
+          </div>
+        </div>
+      </div>
+      
     </div>
     <!-- END OF OVERVIEW TAB -->
 
-    <!-- COURSE TAB -->
-    <div id="course" class="col s12">
-      
+    <!-- Activity TAB -->
+    <div id="activity" class="col s12">
+
       <!-- CONTENT -->
       <div class="row">
         <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Best Day of the Week</span>
+            <div class="card-content" id="monthly_content">
+              <div class="g-chart">
+                <weekly-Line-Chart class="chart" data="historical.data.popular_days" color="" id="rlinecharts"></weekly-Line-Chart>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--<div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title">Visitors</span>
             <div class="card-content">
@@ -75,13 +95,13 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
         <div class="col s12 m6 l4">
           <div class="card" >
             <span class="card-title">Top active</span>
             <div class="card-content" id="top_active_content" >
               <div class="g-chart">
-                <responsive-Horizontal-Bar-Chart id="top_active"  data="historical.responsiveHorizontalBarData" color=""></responsive-Horizontal-Bar-Chart>
+                <responsive-Horizontal-Bar-Chart id="top_active"  data="historical.mostActiveData" color=""></responsive-Horizontal-Bar-Chart>
               </div>
             </div>
           </div>
@@ -135,7 +155,7 @@
           <div class="card">
             <span class="card-title">Best Performing Course Time (TODO)</span>
             <div class="card-content">
-              <cr-d3-bars data="historical.myData"></cr-d3-bars>
+
             </div>
           </div>
         </div>
