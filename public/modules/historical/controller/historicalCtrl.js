@@ -101,69 +101,6 @@ angular.module('HistoricalCtrl', [])
   initController();
   function initController(){
     document.getElementById("calendar_error").style.visibility='hidden';
-    /*vm.centers = [
-      {name:"6901", value:6901},
-      {name:"6902", value:6902},
-      {name:"6903", value:6903}
-    ]*/
-    //COURSE DETAILS
-    /*m.display = {
-      courses: [
-      {date:"2017-11-20", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"1"},
-      {date:"2017-11-20", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"2"},
-      {date:"2017-11-20", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"3"},
-      {date:"2017-11-21", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"4"},
-      {date:"2017-11-21", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"5"},
-      {date:"2017-11-21", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"6"},
-      {date:"2017-11-22", day:"Wednesday",course_type:"Arts & Music", course_name:"jazz", start_time:"9:30am", end_time:"10:30am", value:"7"},
-      {date:"2017-11-22", day:"Wednesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"1:30pm", end_time:"2:30pm", value:"8"},
-      {date:"2017-11-22", day:"Wednesday",course_type:"TCM", course_name:"tcm", start_time:"2:30pm", end_time:"5:00pm", value:"9"},
-      {date:"2017-11-23", day:"Thursday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"10"},
-      {date:"2017-11-23", day:"Thursday",course_type:"Language Lessons", course_name:"english", start_time:"2:00pm", end_time:"3:30pm", value:"11"},
-      {date:"2017-11-23", day:"Thursday",course_type:"Karaoke", course_name:"Karaoke", start_time:"1:00pm", end_time:"4:30pm", value:"12"},
-      {date:"2017-11-24", day:"Friday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"13"},
-      {date:"2017-11-24", day:"Friday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"14"},
-      {date:"2017-11-24", day:"Friday",course_type:"Movie", course_name:"movie", start_time:"2:30pm", end_time:"3:30pm", value:"15"},
-      {date:"2017-11-24", day:"Friday",course_type:"Arts & Music", course_name:"jazz", start_time:"3:30pm", end_time:"4:30pm", value:"16"},
-      {date:"2017-11-27", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"17"},
-      {date:"2017-11-27", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"18"},
-      {date:"2017-11-27", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"19"},
-      {date:"2017-11-28", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"20"},
-      {date:"2017-11-28", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"21"},
-      {date:"2017-11-28", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"22"},
-      {date:"2017-11-29", day:"Wednesday",course_type:"Arts & Music", course_name:"jazz", start_time:"9:30am", end_time:"10:30am", value:"23"},
-      {date:"2017-11-29", day:"Wednesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"1:30pm", end_time:"2:30pm", value:"24"},
-      {date:"2017-11-29", day:"Wednesday",course_type:"TCM", course_name:"tcm", start_time:"2:30pm", end_time:"5:00pm", value:"25"},
-      {date:"2017-11-30", day:"Thursday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"26"},
-      {date:"2017-11-30", day:"Thursday",course_type:"Language Lessons", course_name:"english", start_time:"2:00pm", end_time:"3:30pm", value:"27"},
-      {date:"2017-11-30", day:"Thursday",course_type:"Karaoke", course_name:"Karaoke", start_time:"1:00pm", end_time:"4:30pm", value:"28"},
-      {date:"2017-12-01", day:"Friday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"29"},
-      {date:"2017-12-01", day:"Friday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"30"},
-      {date:"2017-12-01", day:"Friday",course_type:"Movie", course_name:"movie", start_time:"2:30pm", end_time:"3:30pm", value:"31"},
-      {date:"2017-12-01", day:"Friday",course_type:"Arts & Music", course_name:"jazz", start_time:"3:30pm", end_time:"4:30pm", value:"32"},
-      {date:"2017-12-04", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"33"},
-      {date:"2017-12-04", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"34"},
-      {date:"2017-12-04", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"35"},
-      {date:"2017-12-05", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"36"},
-      {date:"2017-12-05", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"37"},
-      {date:"2017-12-05", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"38"},
-      {date:"2017-12-06", day:"Wednesday",course_type:"Arts & Music", course_name:"jazz", start_time:"9:30am", end_time:"10:30am", value:"39"},
-      {date:"2017-12-06", day:"Wednesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"1:30pm", end_time:"2:30pm", value:"40"},
-      {date:"2017-12-06", day:"Wednesday",course_type:"TCM", course_name:"tcm", start_time:"2:30pm", end_time:"5:00pm", value:"41"},
-      {date:"2017-12-07", day:"Thursday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"42"},
-      {date:"2017-12-07", day:"Thursday",course_type:"Language Lessons", course_name:"english", start_time:"2:00pm", end_time:"3:30pm", value:"43"},
-      {date:"2017-12-07", day:"Thursday",course_type:"Karaoke", course_name:"Karaoke", start_time:"1:00pm", end_time:"4:30pm", value:"44"},
-      {date:"2017-12-08", day:"Friday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"45"},
-      {date:"2017-12-08", day:"Friday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"46"},
-      {date:"2017-12-08", day:"Friday",course_type:"Movie", course_name:"movie", start_time:"2:30pm", end_time:"3:30pm", value:"47"},
-      {date:"2017-12-08", day:"Friday",course_type:"Arts & Music", course_name:"jazz", start_time:"3:30pm", end_time:"4:30pm", value:"48"},
-      {date:"2017-12-11", day:"Monday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"49"},
-      {date:"2017-12-11", day:"Monday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"50"},
-      {date:"2017-12-11", day:"Monday",course_type:"Bingo", course_name:"bingo", start_time:"2:30pm", end_time:"4:00pm", value:"51"},
-      {date:"2017-12-12", day:"Tuesday",course_type:"Physical Exercise", course_name:"tai chi", start_time:"9:30am", end_time:"10:30am", value:"52"},
-      {date:"2017-12-12", day:"Tuesday",course_type:"Language Lessons", course_name:"english", start_time:"10:30am", end_time:"12:30pm", value:"53"},
-      {date:"2017-12-12", day:"Tuesday",course_type:"Karaoke", course_name:"Karaoke", start_time:"2:30pm", end_time:"4:00pm", value:"54"}
-    ]}*/
 
     //testing data
     vm.activity_comparison_data =[
@@ -260,10 +197,10 @@ angular.module('HistoricalCtrl', [])
   function callSensorReadings (center, start_date_time, end_date_time){
     var start_datetime =moment(start_date_time).format('YYYY-MM-DD') + 'T00:00:00'
     var end_datetime =moment(end_date_time).format('YYYY-MM-DD') + 'T23:59:59'
-    var start_date = moment(start_date_time).subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
-    var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD") 
+    var start_date = moment(start_date_time).subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
+    var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD")
 
-    console.log("start date " + start_datetime + " end date" + end_datetime) 
+    console.log("start date " + start_datetime + " end date" + end_datetime)
     $q.when()
     .then(function(){
       return getCenterActivities(vm.api.project, vm.api.center_code_name, start_date, end_date);
@@ -303,8 +240,8 @@ angular.module('HistoricalCtrl', [])
           var counter = 0 ;
           vm.data.all_centers_activity.forEach(function(activity, index){
             var range = moment.range(moment(activity.start_date, 'YYYY-MM-DD') , moment(activity.end_date,'YYYY-MM-DD') );
-            if(range.contains(moment(value.start_timestamp)) && activity.repeat_days_of_week.indexOf(value.day_of_the_week) != -1 
-            && parseInt(activity.start_hour + activity.start_minute) <= parseInt(value.hour + value.minute) 
+            if(range.contains(moment(value.start_timestamp)) && activity.repeat_days_of_week.indexOf(value.day_of_the_week) != -1
+            && parseInt(activity.start_hour + activity.start_minute) <= parseInt(value.hour + value.minute)
             && parseInt(activity.end_hour + activity.end_minute) >= parseInt(value.hour + value.minute) && counter == 0){
               value.activity_desc = activity.activity_desc;
               vm.data.real_time_activity_reading.push(value);
@@ -316,16 +253,16 @@ angular.module('HistoricalCtrl', [])
       })
       console.log("total seconds " + total_time_spent_in_sec)
       //OVERVIEW TAB
+      calendar_heatmap_widget(total_time_spent_in_sec);
 
       //COURSES TAB
       day_of_week_widget();
-      calendar_heatmap_widget(total_time_spent_in_sec);
-      
+      box_heatmap_widget();
 
       //PERSON TAB
 
 
-        
+
     })
     .then(function(result){
 
@@ -374,7 +311,7 @@ angular.module('HistoricalCtrl', [])
         r[a.day_of_the_week].push(a);
         return r;
       }, Object.create(null));
-      
+
       popular_days.push(key)
       for(var i = 0; i < 7; i++){
         popular_days.push( (result[i]) ? result[i].length : 0)
@@ -423,6 +360,58 @@ angular.module('HistoricalCtrl', [])
 
   }
 
+  function box_heatmap_widget(){
+
+    temp_arr = insArr_to_dateInsArr(vm.data.real_time_activity_reading);
+    var date_ins_array = temp_arr[1];
+    var date_list = temp_arr[0];
+
+    var week_arr = [];
+    for(i=0; i<7; i++){
+      var hour_arr  = new Array(25);
+      hour_arr.fill(0);
+      week_arr.push(hour_arr);
+    }
+
+    var week_instances_count = new Array(7); //counts number of weeks the chosen dataset has of each day
+    week_instances_count.fill(0);
+    date_ins_array.forEach(function(date_value,date_index) {
+      //check date
+      var this_date = moment(date_list[date_index]);
+      var day_index = moment(this_date).weekday(); //weekday returns 0-6 where 0 is Monday
+      var time_arr = generate_time_array(this_date,8,20);
+
+      date_value.forEach(function(instance_value){
+        var time_index;
+        var this_start = moment(instance_value.start_timestamp);
+        var this_end = moment(instance_value.end_timestamp);
+        //console.log(instance_value);
+        //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
+        for (i = 0; i < time_arr.length-1; i++) {
+          if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
+            //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
+            week_arr[day_index][i] += 1;
+          };//end if
+        };//end for loop
+      })//end forEach instance
+
+    })//end for each date
+
+    //add data
+    weekly_activity_data = [];
+    week_arr.forEach(function(day_value,day_index){
+      day_value.forEach(function(value,index){
+        weekly_activity_data.push({
+          "day": day_index+1,
+          "hour":	index+1,
+          "value": value
+        })
+      })//end for each hour
+    })//end for each day
+
+    vm.dayHourBoxHeatmapData=angular.copy(weekly_activity_data);
+
+  }//end box_heatmap_widget
 
   function update_heatmap_chart(attendance){
     if (result.results.length == 0){
@@ -835,6 +824,7 @@ angular.module('HistoricalCtrl', [])
     while(current <= end_hour){
       time_arr.push(this_date.clone().hour(current).minute(0).second(0));
       time_arr.push(this_date.clone().hour(current).minute(30).second(0));
+      current += 1;
     }//end while loop
     return time_arr
   }//end func generate_time_array
@@ -969,7 +959,6 @@ angular.module('HistoricalCtrl', [])
 
     return [mac_id_list,mac_ins_array];
   }//end of insArr_to_macInsArr
-
 
   function objArr_to_instances(object_array){
     //retire
@@ -1223,7 +1212,7 @@ angular.module('HistoricalCtrl', [])
     return _defer.promise;
   }
 
-  function getAllCenters (project_prefix, page_size) { 
+  function getAllCenters (project_prefix, page_size) {
     var _defer = $q.defer();
     HService.getAllCenters(project_prefix, page_size, function (result) {
       if (result) {
@@ -1234,7 +1223,7 @@ angular.module('HistoricalCtrl', [])
     });
         return _defer.promise;
   }
-  function getAllResidents (project_prefix, page_size) { 
+  function getAllResidents (project_prefix, page_size) {
     var _defer = $q.defer();
     HService.getAllResidents(project_prefix, page_size, function (result) {
         if (result) {

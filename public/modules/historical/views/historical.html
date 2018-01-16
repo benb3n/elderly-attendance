@@ -67,7 +67,7 @@
           </div>
         </div>
       </div>
-      
+
     </div>
     <!-- END OF OVERVIEW TAB -->
 
@@ -76,6 +76,17 @@
 
       <!-- CONTENT -->
       <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Unique Visitors Heatmap</span>
+            <div class="card-content hide-on-small-only">
+              <day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></day-Hour-Heatmap-Chart>
+            </div>
+            <div class="card-content hide-on-med-and-up">
+              <flip-day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></flip-day-Hour-Heatmap-Chart>
+            </div>
+          </div>
+        </div>
         <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Best Day of the Week</span>
@@ -140,17 +151,7 @@
             </div>
           </div>
         </div>
-        <div class="col s12">
-          <div class="card">
-            <span class="card-title">Unique Visitors Heatmap</span>
-            <div class="card-content hide-on-small-only">
-              <day-Hour-Heatmap-Chart data="historical.dayHourHeatmapData"></day-Hour-Heatmap-Chart>
-            </div>
-            <div class="card-content hide-on-med-and-up">
-              <flip-day-Hour-Heatmap-Chart data="historical.dayHourHeatmapData"></flip-day-Hour-Heatmap-Chart>
-            </div>
-          </div>
-        </div>
+
         <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title">Best Performing Course Time (TODO)</span>

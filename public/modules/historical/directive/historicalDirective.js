@@ -13,7 +13,7 @@ angular.module('HistoricalDirective', [])
       },true);
 
       scope.renderChart = function(data, color){
-        
+
       }
 
 
@@ -52,7 +52,7 @@ angular.module('HistoricalDirective', [])
           var chart = c3.generate({
             bindto: Element[0],
             data: {
-                columns: data 
+                columns: data
             },
             axis: {
               x: {
@@ -81,8 +81,8 @@ angular.module('HistoricalDirective', [])
             chart.resize();
 
         }
-          
-        
+
+
       }
     }
   }
@@ -817,8 +817,6 @@ angular.module('HistoricalDirective', [])
                   .domain([0, buckets - 1, d3.max(data, function (d) {
                     return d.value; })])
                   .range(colors);
-
-
 
               var cards = svg.selectAll(".hour")
                   .data(data, function(d) {return d.day+':'+d.hour;});
