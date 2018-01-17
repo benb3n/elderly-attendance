@@ -1,22 +1,40 @@
 angular.module('HistoricalDirective', [])
 
-.directive('numberDisplay', function() {
+.directive('textDisplay',function(){
   return {
     restrict: 'EA',
     scope: {
-      data: "=",
-      color: "="
+        data: "=",
+        color: "=",
+        axis: "="
     },
     link: function(scope, Element, Attrs) {
       scope.$watch('data', function(data) {
-        scope.renderChart(data, "")
+        if(typeof data != 'undefined'){
+          var parsedData = data
+        }
+
+        scope.renderChart(parsedData, scope.axis);
       },true);
 
-      scope.renderChart = function(data, color){
-
+      scope.renderChart = function(data){
+        var format = d3.format(".0f");
+        if(typeof data != 'undefined'){
+          d3.select(Element[0])
+          .transition().duration(2000).delay(0)
+          .tween("text", function(d) {
+            var i = d3.interpolate(0, data);
+            return function(t) {
+              if(isNaN(data)){
+                d3.select(Element[0]).text( (i(t)) );
+              }else{ 
+                d3.select(Element[0]).text( format(i(t)) );
+              }
+            };
+          });
+              
+        }
       }
-
-
 
     }
   }
@@ -52,26 +70,32 @@ angular.module('HistoricalDirective', [])
                 }
             },
             axis: {
-              rotated:true,
-              x: {
+              /*x: {
                   type: 'category',
                   categories: axis_device_id
-              }
+              },*/
+              rotated:true
             },
             legend:{
               show:true
+            },
+            transition: {
+              duration: 500
             },
             tooltip: {
               position: function (data, width, height, element) {
                 var top = d3.mouse(element)[1] - element.height.baseVal.value
                 return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
               }
-            }
+            },
+            
           });
 
-          d3.select(window).on("resize", resized);
-          chart.resize();
+          chart.flush();
 
+          d3.select(window).on("resize", resized);
+  
+       
 
         }else {
           d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');

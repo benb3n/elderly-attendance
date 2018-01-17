@@ -48,22 +48,49 @@
       <div class="row">
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title">Total Visits</span>
+            <span class="card-title col s12 teal darken-1 white-text">Total Visits</span>
             <div class="card-content">
-              <number-Display id="current_visit" data=""></number-Display>
+              <h5><text-Display id="current_visit" data="historical.data.text_display_wdiget.total_count"></text-Display></h5>
             </div>
           </div>
         </div>
 
-        <div class="col s12 m6 l4">
+        <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Hours</span>
+            <span class="card-title col s12 teal darken-1 white-text">Top Resident</span>
             <div class="card-content">
-              <!--<p>(signup vs acutal attendance)</p>-->
-              <bar-Horizontal-Chart class="chart" id="horizontal" data="historical.data.top_active_resident" axis="historical.data.top_active_resident_xaxis" ></bar-Horizontal-Chart>
+              <h5><text-Display id="current_visit" data="historical.data.text_display_wdiget.top_resident"></text-Display></h5>
             </div>
           </div>
         </div>
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Top Activity Count</span>
+            <div class="card-content">
+              <h5><text-Display id="current_visit" data="historical.data.text_display_wdiget.top_activity_count"></text-Display></h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Top Activity</span>
+            <div class="card-content">
+              <h5><text-Display id="current_visit" data="historical.data.text_display_wdiget.top_activity"></text-Display></h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Hours</span>
+            <div class="card-content">
+              <bar-Horizontal-Chart id="horizontal" data="historical.data.top_active_resident" axis="historical.data.top_active_resident_xaxis" ></bar-Horizontal-Chart>
+            </div>
+          </div>
+        </div>
+
       </div>
 
 
@@ -79,6 +106,7 @@
           </div>
         </div>
       </div>
+
 
 
 
@@ -101,6 +129,7 @@
             </div>
           </div>
         </div>
+
         <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Best Day of the Week</span>
@@ -111,16 +140,9 @@
             </div>
           </div>
         </div>
-        <!--<div class="col s12 m6 l4">
-          <div class="card">
-            <span class="card-title">Visitors</span>
-            <div class="card-content">
-              <div class="g-chart">
-                <responsive-Line-Chart data="historical.responsiveLineChartData" color=""></responsive-Line-Chart>
-              </div>
-            </div>
-          </div>
-        </div>-->
+
+
+
         <div class="col s12 m6 l4">
           <div class="card" >
             <span class="card-title">Top active</span>

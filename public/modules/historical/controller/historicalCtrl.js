@@ -160,6 +160,9 @@ angular.module('HistoricalCtrl', [])
       all_centers_activity_by_id:{},
       real_time_activity_reading: [],
       real_time_activity_reading_hash: {},
+      real_time_activity_reading_by_device_id: {},
+      real_time_activity_reading_by_activity: {},
+      text_display_wdiget: {},
       calendarheatmap: null,
       popular_days: [],
       top_active_resident: [],
@@ -264,8 +267,22 @@ angular.module('HistoricalCtrl', [])
       })
       console.log("readings" , vm.data.real_time_activity_reading)
       console.log("total seconds " + total_time_spent_in_sec)
+
+      vm.real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
+        r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
+        r[a.resident_display_name + " -" + a.device_id].push(a);
+        return r;
+      }, Object.create(null));
+
+      vm.real_time_activity_reading_by_activity = vm.data.real_time_activity_reading.reduce(function (r, a) {
+        r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
+        r[a.resident_display_name + " -" + a.device_id].push(a);
+        return r;
+      }, Object.create(null));
+
       //OVERVIEW TAB
-      calendar_heatmap_widget(total_time_spent_in_sec);
+      calendar_heatmap_widget();
+      text_display_wdiget();
       top_active_resident_widget();
 
       //COURSES TAB
@@ -278,7 +295,7 @@ angular.module('HistoricalCtrl', [])
 
     })
     .then(function(result){
-
+      
 
 
         //return getSensorReadings(center, start_date_time, end_date_time, 500 );
@@ -307,35 +324,44 @@ angular.module('HistoricalCtrl', [])
     })
   }//end callSensorReadings
 
-  /********************
-    CHARTS - COURSES
-  *********************/
-  function day_of_week_widget(){
-    var real_time_activity_reading_by_activity_name = vm.data.real_time_activity_reading.reduce(function (r, a) {
-      r[a.activity_desc] = r[a.activity_desc] || [];
-      r[a.activity_desc].push(a);
-      return r;
-    }, Object.create(null));
+  /***********************
+     CHARTS - OVERVIEW   
+  ***********************/
+  function text_display_wdiget(){
+    //Total Count
+    vm.data.text_display_wdiget.total_count = angular.copy(vm.data.real_time_activity_reading.length);
 
-    var popular_days = []
-    Object.keys(real_time_activity_reading_by_activity_name).forEach(function(key, index){
-      var result = real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
-        r[a.day_of_the_week] = r[a.day_of_the_week] || [];
-        r[a.day_of_the_week].push(a);
-        return r;
-      }, Object.create(null));
-
-      popular_days.push(key)
-      for(var i = 0; i < 7; i++){
-        popular_days.push( (result[i]) ? result[i].length : 0)
+    //Top Resident
+    var current_highest_seconds_spent = 0;
+    var current_top_resident = "";
+    Object.values(vm.real_time_activity_reading_by_device_id).forEach(function(value, index){
+      value.total = 0;
+      var current_resident = "";
+      value.forEach(function(reading, readingIndex){
+        current_resident = reading.resident_display_name
+        value.total +=  reading.time_spent_sec;
+      })
+      if(value.total > current_highest_seconds_spent){
+        current_highest_seconds_spent = value.total;
+        current_top_resident = current_resident
       }
-
-      vm.data.popular_days.push(popular_days);
-      popular_days = [];
     })
-  }
+    vm.data.text_display_wdiget.top_resident = angular.copy(current_top_resident)
 
-  function calendar_heatmap_widget(total_time_spent_in_sec){
+    var current_highest_activity_count = 0;
+    var current_top_activity = "";
+    Object.values(vm.real_time_activity_reading_by_activity).forEach(function(value, index){
+      if(value.length > current_highest_activity_count){
+        current_highest_activity_count = value.length;
+        current_top_activity = value[0].activity_desc
+      }
+    })
+    vm.data.text_display_wdiget.top_activity_count = angular.copy(current_highest_activity_count)
+    vm.data.text_display_wdiget.top_activity = angular.copy(current_top_activity)
+    
+    
+  }
+  function calendar_heatmap_widget(){
     var real_time_activity_reading_by_date = vm.data.real_time_activity_reading.reduce(function (r, a) {
       r[a.date] = r[a.date] || [];
       r[a.date].push(a);
@@ -360,15 +386,48 @@ angular.module('HistoricalCtrl', [])
           cal_event.details = []
         }
         cal_event.details.push({
-          "name": reading.resident_display_name,
-          "date": reading.start_timestamp.replace("T", " "),
-          "value": reading.time_spent_sec
+          'name': reading.resident_display_name,
+          'date': reading.start_timestamp.replace("T", " "),
+          'value': reading.time_spent_sec
         })
       })
       data.push(cal_event)
     })
+    data.sort(function(a,b){
+      return new Date(a.date) - new Date(b.date);
+    });
+
     vm.data.calendarheatmap = angular.copy(data)
   }
+
+  /***********************
+     CHARTS - ACTIVITY   
+  ***********************/
+  function day_of_week_widget(){
+    var real_time_activity_reading_by_activity_name = vm.data.real_time_activity_reading.reduce(function (r, a) {
+      r[a.activity_desc] = r[a.activity_desc] || [];
+      r[a.activity_desc].push(a);
+      return r;
+    }, Object.create(null));
+
+    var popular_days = []
+    Object.keys(real_time_activity_reading_by_activity_name).forEach(function(key, index){
+      var result = real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
+        r[a.day_of_the_week] = r[a.day_of_the_week] || [];
+        r[a.day_of_the_week].push(a);
+        return r;
+      }, Object.create(null));
+
+      popular_days.push(key)
+      for(var i = 0; i < 7; i++){
+        popular_days.push( (result[i]) ? result[i].length : 0)
+      }
+
+      vm.data.popular_days.push(popular_days);
+      popular_days = [];
+    })
+  }
+  
 
   function box_heatmap_widget(){
 
@@ -456,20 +515,19 @@ angular.module('HistoricalCtrl', [])
       data.push(active_arr[i].value);
       xaxis.push(active_arr[i].name);
     }
-/*
-    active_arr.forEach(function(value){
-      data.push(value.value);
-      xaxis.push(value.name);
-    })//end for each
 
-    Object.keys(real_time_activity_reading_by_device_id).forEach(function(key,index){
-      data.push(real_time_activity_reading_by_device_id[key]); //to change
-      xaxis.push(key);
-    })//end for each
-    */
     vm.data.top_active_resident_xaxis = angular.copy(xaxis);
     vm.data.top_active_resident = angular.copy(data);
   }// top active
+
+  /***********************
+     CHARTS - PERSON   
+  ***********************/
+
+
+
+
+
 
 
   function update_most_active_chart(result){
