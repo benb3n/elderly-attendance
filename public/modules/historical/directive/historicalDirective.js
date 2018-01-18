@@ -27,12 +27,12 @@ angular.module('HistoricalDirective', [])
             return function(t) {
               if(isNaN(data)){
                 d3.select(Element[0]).text( (i(t)) );
-              }else{ 
+              }else{
                 d3.select(Element[0]).text( format(i(t)) );
               }
             };
           });
-              
+
         }
       }
 
@@ -63,13 +63,12 @@ angular.module('HistoricalDirective', [])
         if(data && data.length > 0){
           var chart = c3.generate({
             bindto: Element[0],
-            padding: {
-              left: 85
-            },
+
             data: {
                 columns: [data],
                 types: {
                     residents: 'bar',
+                    activities: 'bar',
                 }
             },
             axis: {
@@ -80,7 +79,8 @@ angular.module('HistoricalDirective', [])
               rotated:true
             },
             legend:{
-              show:true
+              show: false
+              //show:true
             },
             transition: {
               duration: 500
@@ -91,14 +91,14 @@ angular.module('HistoricalDirective', [])
                 return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
               }
             },
-            
+
           });
 
           chart.flush();
 
           d3.select(window).on("resize", resized);
-  
-       
+
+
 
         }else {
           d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');

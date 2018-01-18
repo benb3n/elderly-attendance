@@ -134,15 +134,6 @@ angular.module('HistoricalCtrl', [])
         }
       ]; //end data
 
-      //HERE
-    /*vm.c3HorizontalData =[
-      {columns: [
-          ['data1', 30, 200, 100, 400, 150, 250],
-          ['data2', 50, 20, 10, 40, 15, 25]
-      ]
-    }
-  ];*/
-
     //vm.selectedCenter = 6901;
 
     //vm.selectedEndDate_courses = new Date('29 October 2017');
@@ -168,7 +159,11 @@ angular.module('HistoricalCtrl', [])
       top_active_resident: [],
       top_active_resident_xaxis: [],
       bottom_active_resident: [],
-      bottom_active_resident_xaxis: []
+      bottom_active_resident_xaxis: [],
+      top_popular_activities: [],
+      top_popular_activities_xaxis: [],
+      bottom_popular_activities: [],
+      bottom_popular_activities_xaxis: []
     }
     vm.display = {
       centers:[],
@@ -282,9 +277,18 @@ angular.module('HistoricalCtrl', [])
         return r;
       }, Object.create(null));
 
+      vm.data.real_time_activity_reading_by_activity_name = vm.data.real_time_activity_reading.reduce(function (r, a) {
+        r[a.activity_desc] = r[a.activity_desc] || [];
+        r[a.activity_desc].push(a);
+        return r;
+      }, Object.create(null));
+
+      console.log("readings by activity", vm.data.real_time_activity_reading_by_activity_name);
+
       //OVERVIEW TAB
       calendar_heatmap_widget();
-      top_active_resident_widget();
+      top_bottom_active_resident_widget();
+      top_bottom_count_popular_activities_widget();
 
       //COURSES TAB
       day_of_week_widget();
@@ -293,30 +297,6 @@ angular.module('HistoricalCtrl', [])
       //PERSON TAB
 
 
-
-    })
-    .then(function(result){
-      
-
-
-        //return getSensorReadings(center, start_date_time, end_date_time, 500 );
-    })
-    .then(function(result){
-        /*console.log("result attendance: ")
-        console.log(vm.center_attendance);
-
-        console.log("result activities: ");
-        console.log(vm.center_activities);
-        */
-        //vm.selectedActivity = "language"; //temp
-        //update_activity_month_chart(vm.center_attendance,vm.center_activities,vm.selectedActivity);
-        //update_activity_month_chart(result,vm.center_activities,vm.selectedActivity);
-
-
-          //update_heatmap_chart(result);
-          //update_most_active_chart(result);
-          //update_avg_week_heatmap_chart(result);
-          //generateDataForOverview(result);
     })//end when.then
     .then(function(){
       $timeout(function () {
@@ -326,9 +306,8 @@ angular.module('HistoricalCtrl', [])
   }//end callSensorReadings
 
   /***********************
-     CHARTS - OVERVIEW   
+     CHARTS - OVERVIEW
   ***********************/
-
   function calendar_heatmap_widget(){
     var real_time_activity_reading_by_date = vm.data.real_time_activity_reading.reduce(function (r, a) {
       r[a.date] = r[a.date] || [];
@@ -369,18 +348,13 @@ angular.module('HistoricalCtrl', [])
   }
 
   /***********************
-     CHARTS - ACTIVITY   
+     CHARTS - ACTIVITY
   ***********************/
   function day_of_week_widget(){
-    var real_time_activity_reading_by_activity_name = vm.data.real_time_activity_reading.reduce(function (r, a) {
-      r[a.activity_desc] = r[a.activity_desc] || [];
-      r[a.activity_desc].push(a);
-      return r;
-    }, Object.create(null));
 
     var popular_days = []
-    Object.keys(real_time_activity_reading_by_activity_name).forEach(function(key, index){
-      var result = real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
+    Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key, index){
+      var result = vm.data.real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
         r[a.day_of_the_week] = r[a.day_of_the_week] || [];
         r[a.day_of_the_week].push(a);
         return r;
@@ -395,7 +369,6 @@ angular.module('HistoricalCtrl', [])
       popular_days = [];
     })
   }
-  
 
   function box_heatmap_widget(){
 
@@ -450,12 +423,50 @@ angular.module('HistoricalCtrl', [])
 
   }//end box_heatmap_widget
 
-  function top_active_resident_widget(){
+  function top_bottom_count_popular_activities_widget(){
+
+    var activity_attendance_count = [];
+    Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key){
+      var obj = {};
+      obj.name = key;
+      obj.value = vm.data.real_time_activity_reading_by_activity_name[key].length;
+      activity_attendance_count.push(obj);
+    })//end for each macID
+
+    //sorting
+    activity_attendance_count = activity_attendance_count.sort(function(a, b) {
+      return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
+    });
+    var activity_attendance_count_invert = activity_attendance_count.slice().sort(function(a, b) {
+      return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
+    });
+
+    var top_5_activities = [], bottom_5_activities = [];
+    if(activity_attendance_count.length >= 5){
+      top_5_activities = activity_attendance_count.slice(0,5);
+      bottom_5_activities = activity_attendance_count_invert.slice(Math.max(activity_attendance_count_invert.length - 5, 1))
+    }else{
+      top_5_activities = activity_attendance_count.slice(0, activity_attendance_count.length);
+      bottom_5_activities = activity_attendance_count_invert.slice(Math.max(activity_attendance_count_invert.length, 1))
+    }
+
+    vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
+    vm.data.top_popular_activities = ["activities"].concat(angular.copy(top_5_activities.map(a => a.value)))
+
+    vm.data.bottom_popular_activities_xaxis = angular.copy(bottom_5_activities.map(a => a.name))
+    vm.data.bottom_popular_activities = ["activities"].concat(angular.copy(bottom_5_activities.map(a => a.value)))
+    console.log(vm.data.bottom_popular_activities);
+
+  }//end top_bottom_popular_activities_widget
+
+  function top_bottom_active_resident_widget(){
+
+    var format=d3.format(".1f");
     var resident_time_spent_by_device_id = []
     Object.keys(vm.data.real_time_activity_reading_by_device_id).forEach(function(key){
       var obj = {};
       obj.name = key;
-      obj.value = getInstancesTotalTime(vm.data.real_time_activity_reading_by_device_id[key])/(60*60);
+      obj.value = format(getInstancesTotalTime(vm.data.real_time_activity_reading_by_device_id[key])/(60*60));
       resident_time_spent_by_device_id.push(obj);
     })//end for each macID
 
@@ -463,29 +474,31 @@ angular.module('HistoricalCtrl', [])
     resident_time_spent_by_device_id = resident_time_spent_by_device_id.sort(function(a, b) {
       return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
     });
+    console.log(resident_time_spent_by_device_id);
+    var resident_time_spent_by_device_id_invert = resident_time_spent_by_device_id.slice().sort(function(a, b) {
+      return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
+    });
 
     var top_5_resident = [], bottom_5_resident = [];
     if(resident_time_spent_by_device_id.length >= 5){
       top_5_resident = resident_time_spent_by_device_id.slice(0,5);
-      bottom_5_resident = resident_time_spent_by_device_id.slice(Math.max(resident_time_spent_by_device_id.length - 5, 1))
+      bottom_5_resident = resident_time_spent_by_device_id_invert.slice(Math.max(resident_time_spent_by_device_id_invert.length - 5, 1))
     }else{
       top_5_resident = resident_time_spent_by_device_id.slice(0, resident_time_spent_by_device_id.length);
-      bottom_5_resident = resident_time_spent_by_device_id.slice(Math.max(resident_time_spent_by_device_id.length, 1))
+      bottom_5_resident = resident_time_spent_by_device_id_invert.slice(Math.max(resident_time_spent_by_device_id_invert.length, 1))
     }
 
-    console.log(bottom_5_resident)
-
-    vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name))
+    vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.top_active_resident = ["residents"].concat(angular.copy(top_5_resident.map(a => a.value)))
 
-    vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name))
+    vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.bottom_active_resident = ["residents"].concat(angular.copy(bottom_5_resident.map(a => a.value)))
 
-
-  }// top active
+    console.log(  vm.data.bottom_active_resident);
+  }//end top_bottom_active_resident_widget
 
   /***********************
-     CHARTS - PERSON   
+     CHARTS - PERSON
   ***********************/
 
 
