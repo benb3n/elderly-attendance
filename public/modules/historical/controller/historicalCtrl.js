@@ -386,7 +386,7 @@ angular.module('HistoricalCtrl', [])
 
     var week_arr = [];
     for(i=0; i<7; i++){
-      var hour_arr  = new Array(25);
+      var hour_arr  = new Array(21);
       hour_arr.fill(0);
       week_arr.push(hour_arr);
     }
