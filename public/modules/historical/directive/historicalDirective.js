@@ -69,6 +69,7 @@ angular.module('HistoricalDirective', [])
                 types: {
                     residents: 'bar',
                     activities: 'bar',
+                  
                 }
             },
             axis: {
