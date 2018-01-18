@@ -1,6 +1,6 @@
 angular.module('HistoricalDirective', [])
 
-.directive('textDisplay',function(){
+/*.directive('textDisplay',function(){
   return {
     restrict: 'EA',
     scope: {
@@ -38,7 +38,7 @@ angular.module('HistoricalDirective', [])
 
     }
   }
-})
+})*/
 
 .directive('barHorizontalChart',function(){
   return {
@@ -63,6 +63,9 @@ angular.module('HistoricalDirective', [])
         if(data && data.length > 0){
           var chart = c3.generate({
             bindto: Element[0],
+            padding: {
+              left: 85
+            },
             data: {
                 columns: [data],
                 types: {
@@ -70,10 +73,10 @@ angular.module('HistoricalDirective', [])
                 }
             },
             axis: {
-              /*x: {
+              x: {
                   type: 'category',
                   categories: axis_device_id
-              },*/
+              },
               rotated:true
             },
             legend:{

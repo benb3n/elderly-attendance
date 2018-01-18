@@ -268,13 +268,13 @@ angular.module('HistoricalCtrl', [])
       console.log("readings" , vm.data.real_time_activity_reading)
       console.log("total seconds " + total_time_spent_in_sec)
 
-      vm.real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
+      vm.data.real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
         r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
         r[a.resident_display_name + " -" + a.device_id].push(a);
         return r;
       }, Object.create(null));
 
-      vm.real_time_activity_reading_by_activity = vm.data.real_time_activity_reading.reduce(function (r, a) {
+      vm.data.real_time_activity_reading_by_activity = vm.data.real_time_activity_reading.reduce(function (r, a) {
         r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
         r[a.resident_display_name + " -" + a.device_id].push(a);
         return r;
@@ -282,7 +282,6 @@ angular.module('HistoricalCtrl', [])
 
       //OVERVIEW TAB
       calendar_heatmap_widget();
-      text_display_wdiget();
       top_active_resident_widget();
 
       //COURSES TAB
@@ -327,40 +326,7 @@ angular.module('HistoricalCtrl', [])
   /***********************
      CHARTS - OVERVIEW   
   ***********************/
-  function text_display_wdiget(){
-    //Total Count
-    vm.data.text_display_wdiget.total_count = angular.copy(vm.data.real_time_activity_reading.length);
 
-    //Top Resident
-    var current_highest_seconds_spent = 0;
-    var current_top_resident = "";
-    Object.values(vm.real_time_activity_reading_by_device_id).forEach(function(value, index){
-      value.total = 0;
-      var current_resident = "";
-      value.forEach(function(reading, readingIndex){
-        current_resident = reading.resident_display_name
-        value.total +=  reading.time_spent_sec;
-      })
-      if(value.total > current_highest_seconds_spent){
-        current_highest_seconds_spent = value.total;
-        current_top_resident = current_resident
-      }
-    })
-    vm.data.text_display_wdiget.top_resident = angular.copy(current_top_resident)
-
-    var current_highest_activity_count = 0;
-    var current_top_activity = "";
-    Object.values(vm.real_time_activity_reading_by_activity).forEach(function(value, index){
-      if(value.length > current_highest_activity_count){
-        current_highest_activity_count = value.length;
-        current_top_activity = value[0].activity_desc
-      }
-    })
-    vm.data.text_display_wdiget.top_activity_count = angular.copy(current_highest_activity_count)
-    vm.data.text_display_wdiget.top_activity = angular.copy(current_top_activity)
-    
-    
-  }
   function calendar_heatmap_widget(){
     var real_time_activity_reading_by_date = vm.data.real_time_activity_reading.reduce(function (r, a) {
       r[a.date] = r[a.date] || [];
@@ -483,41 +449,25 @@ angular.module('HistoricalCtrl', [])
   }//end box_heatmap_widget
 
   function top_active_resident_widget(){
-    var real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
-      r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
-      r[a.resident_display_name + " -" + a.device_id].push(a);
-      return r;
-    }, Object.create(null));
-
-    Object.keys(real_time_activity_reading_by_device_id).forEach(function(key){
-      real_time_activity_reading_by_device_id[key] = getInstancesTotalTime(real_time_activity_reading_by_device_id[key])/(60*60);
+    var resident_time_spent_by_device_id = []
+    Object.keys(vm.data.real_time_activity_reading_by_device_id).forEach(function(key){
+      var obj = {};
+      obj.name = key;
+      obj.value = getInstancesTotalTime(vm.data.real_time_activity_reading_by_device_id[key])/(60*60);
+      resident_time_spent_by_device_id.push(obj);
     })//end for each macID
 
-    //placing in to array for sorting
-    var active_arr = [];
-    //var key_arr = [];
-    for (var key in real_time_activity_reading_by_device_id) {
-      active_arr.push({
-        name: key,
-        value: real_time_activity_reading_by_device_id[key]
-      });
-    }
-
     //sorting
-    var sorted = active_arr.sort(function(a, b) {
+    resident_time_spent_by_device_id = resident_time_spent_by_device_id.sort(function(a, b) {
       return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
     });
 
-    var data = ["residents"];
-    var xaxis = [];
+    var top_5_resident = resident_time_spent_by_device_id.slice(0,5);
 
-    for (i = 0; i <= 5; i++) {
-      data.push(active_arr[i].value);
-      xaxis.push(active_arr[i].name);
-    }
+    vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name))
+    vm.data.top_active_resident = ["residents"].concat(angular.copy(top_5_resident.map(a => a.value)))
 
-    vm.data.top_active_resident_xaxis = angular.copy(xaxis);
-    vm.data.top_active_resident = angular.copy(data);
+
   }// top active
 
   /***********************
