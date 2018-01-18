@@ -67,7 +67,7 @@
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by attendance</span>
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by average time spent per attendee</span>
             <div class="card-content">
               <bar-Horizontal-Chart id="horizontal" data="historical.data.top_popular_activities" axis="historical.data.top_popular_activities_xaxis" ></bar-Horizontal-Chart>
             </div>
@@ -76,9 +76,49 @@
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by attendance</span>
+            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by average time spent per attendee</span>
             <div class="card-content">
               <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_popular_activities" axis="historical.data.bottom_popular_activities_xaxis" ></bar-Horizontal-Chart>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by # visits</span>
+            <div class="card-content">
+              <bar-Horizontal-Chart id="horizontal" data="historical.data.top_active_resident_count" axis="historical.data.top_active_resident_count_xaxis" ></bar-Horizontal-Chart>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Residents by # visits, excludes those with 0 visits</span>
+            <div class="card-content">
+              <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_active_resident_count" axis="historical.data.bottom_active_resident_count_xaxis" ></bar-Horizontal-Chart>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by attendance </span>
+            <div class="card-content">
+              <bar-Horizontal-Chart id="horizontal" data="historical.data.top_popular_activities_count" axis="historical.data.top_popular_activities_count_xaxis" ></bar-Horizontal-Chart>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by attendance</span>
+            <div class="card-content">
+              <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_popular_activities_count" axis="historical.data.bottom_popular_activities_count_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>

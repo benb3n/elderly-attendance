@@ -158,12 +158,20 @@ angular.module('HistoricalCtrl', [])
       popular_days: [],
       top_active_resident: [],
       top_active_resident_xaxis: [],
+      top_active_resident_count: [],
+      top_active_resident_count_xaxis: [],
       bottom_active_resident: [],
       bottom_active_resident_xaxis: [],
+      bottom_active_resident_count: [],
+      bottom_active_resident_count_xaxis: [],
       top_popular_activities: [],
       top_popular_activities_xaxis: [],
+      top_popular_activities_count: [],
+      top_popular_activities_count_xaxis: [],
       bottom_popular_activities: [],
-      bottom_popular_activities_xaxis: []
+      bottom_popular_activities_xaxis: [],
+      bottom_popular_activities_count: [],
+      bottom_popular_activities_count_xaxis: []
     }
     vm.display = {
       centers:[],
@@ -425,28 +433,47 @@ angular.module('HistoricalCtrl', [])
 
   function top_bottom_count_popular_activities_widget(){
 
-    var activity_attendance_count = [];
+    var format=d3.format(".1f");
+    var activity_attendance = [];
     Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key){
+      var num_instances = vm.data.real_time_activity_reading_by_activity_name[key].length;
       var obj = {};
       obj.name = key;
-      obj.value = vm.data.real_time_activity_reading_by_activity_name[key].length;
-      activity_attendance_count.push(obj);
+      obj.value = format((getInstancesTotalTime(vm.data.real_time_activity_reading_by_activity_name[key])/(60*60))/num_instances); //average time per instance
+      obj.count = num_instances;
+      activity_attendance.push(obj);
     })//end for each macID
 
     //sorting
-    activity_attendance_count = activity_attendance_count.sort(function(a, b) {
+    activity_attendance = activity_attendance.sort(function(a, b) {
       return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
     });
-    var activity_attendance_count_invert = activity_attendance_count.slice().sort(function(a, b) {
+    var activity_attendance_invert = activity_attendance.slice().sort(function(a, b) {
       return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
     });
 
+    var activity_attendance_count = activity_attendance.slice().sort(function(a, b) {
+      return (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0)
+    });
+    var activity_attendance_count_invert = activity_attendance.slice().sort(function(a, b) {
+      return (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0)
+    });
+
     var top_5_activities = [], bottom_5_activities = [];
-    if(activity_attendance_count.length >= 5){
-      top_5_activities = activity_attendance_count.slice(0,5);
-      bottom_5_activities = activity_attendance_count_invert.slice(Math.max(activity_attendance_count_invert.length - 5, 1))
+    var top_5_activities_count = [], bottom_5_activities_count = [];
+    if(activity_attendance.length >= 5){
+      //time spent
+      top_5_activities = activity_attendance.slice(0,5);
+      bottom_5_activities = activity_attendance_invert.slice(Math.max(activity_attendance_invert.length - 5, 1))
+      //count
+      top_5_activities_count = activity_attendance_count.slice(0,5);
+      bottom_5_activities_count = activity_attendance_count_invert.slice(Math.max(activity_attendance_count_invert.length - 5, 1))
     }else{
-      top_5_activities = activity_attendance_count.slice(0, activity_attendance_count.length);
+      //time spent
+      top_5_activities = activity_attendance.slice(0, activity_attendance.length);
+      bottom_5_activities = activity_attendance_invert.slice(Math.max(activity_attendance_invert.length, 1))
+      //count
+      top_5_activities_count = activity_attendance_count.slice(0, activity_attendance_count.length);
       bottom_5_activities = activity_attendance_count_invert.slice(Math.max(activity_attendance_count_invert.length, 1))
     }
 
@@ -455,7 +482,14 @@ angular.module('HistoricalCtrl', [])
 
     vm.data.bottom_popular_activities_xaxis = angular.copy(bottom_5_activities.map(a => a.name))
     vm.data.bottom_popular_activities = ["activities"].concat(angular.copy(bottom_5_activities.map(a => a.value)))
-    console.log(vm.data.bottom_popular_activities);
+
+    //count
+    vm.data.top_popular_activities_count_xaxis = angular.copy(top_5_activities_count.map(a => a.name))
+    vm.data.top_popular_activities_count = ["activities"].concat(angular.copy(top_5_activities_count.map(a => a.count)))
+
+    vm.data.bottom_popular_activities_count_xaxis = angular.copy(bottom_5_activities_count.map(a => a.name))
+    vm.data.bottom_popular_activities_count = ["activities"].concat(angular.copy(bottom_5_activities_count.map(a => a.count)))
+
 
   }//end top_bottom_popular_activities_widget
 
@@ -467,6 +501,7 @@ angular.module('HistoricalCtrl', [])
       var obj = {};
       obj.name = key;
       obj.value = format(getInstancesTotalTime(vm.data.real_time_activity_reading_by_device_id[key])/(60*60));
+      obj.count = vm.data.real_time_activity_reading_by_device_id[key].length;
       resident_time_spent_by_device_id.push(obj);
     })//end for each macID
 
@@ -474,27 +509,49 @@ angular.module('HistoricalCtrl', [])
     resident_time_spent_by_device_id = resident_time_spent_by_device_id.sort(function(a, b) {
       return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
     });
-    console.log(resident_time_spent_by_device_id);
+
     var resident_time_spent_by_device_id_invert = resident_time_spent_by_device_id.slice().sort(function(a, b) {
       return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
     });
 
+    var resident_count_by_device_id = resident_time_spent_by_device_id.slice().sort(function(a, b) {
+      return (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0)
+    });
+
+    var resident_count_by_device_id_invert = resident_time_spent_by_device_id.slice().sort(function(a, b) {
+      return (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0)
+    });
+
+    //
     var top_5_resident = [], bottom_5_resident = [];
+    var top_5_resident_count = [], bottom_5_resident_count = [];
     if(resident_time_spent_by_device_id.length >= 5){
+      //time spent
       top_5_resident = resident_time_spent_by_device_id.slice(0,5);
       bottom_5_resident = resident_time_spent_by_device_id_invert.slice(Math.max(resident_time_spent_by_device_id_invert.length - 5, 1))
+      //count
+      top_5_resident_count = resident_count_by_device_id.slice(0,5);
+      bottom_5_resident_count = resident_count_by_device_id.slice(Math.max(resident_count_by_device_id_invert.length - 5, 1))
     }else{
       top_5_resident = resident_time_spent_by_device_id.slice(0, resident_time_spent_by_device_id.length);
       bottom_5_resident = resident_time_spent_by_device_id_invert.slice(Math.max(resident_time_spent_by_device_id_invert.length, 1))
-    }
 
+      top_5_resident_count = resident_count_by_device_id.slice(0, resident_count_by_device_id.length);
+      bottom_5_resident = resident_count_by_device_id_invert.slice(Math.max(resident_count_by_device_id.length_invert, 1))
+    }
+    //time spent
     vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.top_active_resident = ["residents"].concat(angular.copy(top_5_resident.map(a => a.value)))
 
     vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.bottom_active_resident = ["residents"].concat(angular.copy(bottom_5_resident.map(a => a.value)))
 
-    console.log(  vm.data.bottom_active_resident);
+    //count
+    vm.data.top_active_resident_count_xaxis = angular.copy(top_5_resident_count.map(a => a.name.split(" -")[0]))
+    vm.data.top_active_resident_count = ["residents"].concat(angular.copy(top_5_resident_count.map(a => a.count)))
+    vm.data.bottom_active_resident_count_xaxis = angular.copy(bottom_5_resident_count.map(a => a.name.split(" -")[0]))
+    vm.data.bottom_active_resident_count = ["residents"].concat(angular.copy(bottom_5_resident_count.map(a => a.count)))
+
   }//end top_bottom_active_resident_widget
 
   /***********************
