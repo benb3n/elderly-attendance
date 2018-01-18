@@ -462,7 +462,12 @@ angular.module('HistoricalCtrl', [])
       return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
     });
 
-    var top_5_resident = resident_time_spent_by_device_id.slice(0,5);
+    var top_5_resident = [];
+    if(resident_time_spent_by_device_id.length >= 5){
+      top_5_resident = resident_time_spent_by_device_id.slice(0,5);
+    }else{
+      top_5_resident = resident_time_spent_by_device_id.slice(0, resident_time_spent_by_device_id.length);
+    }
 
     vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name))
     vm.data.top_active_resident = ["residents"].concat(angular.copy(top_5_resident.map(a => a.value)))
