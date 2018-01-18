@@ -46,13 +46,20 @@
     <div id="overview" class="col s12">
       <!-- CONTENT -->
       <div class="row">
-    
-
         <div class="col s12 m6 l3">
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Hours</span>
             <div class="card-content">
               <bar-Horizontal-Chart id="horizontal" data="historical.data.top_active_resident" axis="historical.data.top_active_resident_xaxis" ></bar-Horizontal-Chart>
+            </div>
+          </div>
+        </div>
+
+        <div class="col s12 m6 l3">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Residents by Hours</span>
+            <div class="card-content">
+              <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_active_resident" axis="historical.data.bottom_active_resident_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>

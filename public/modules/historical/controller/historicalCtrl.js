@@ -166,7 +166,9 @@ angular.module('HistoricalCtrl', [])
       calendarheatmap: null,
       popular_days: [],
       top_active_resident: [],
-      top_active_resident_xaxis: []
+      top_active_resident_xaxis: [],
+      bottom_active_resident: [],
+      bottom_active_resident_xaxis: []
     }
     vm.display = {
       centers:[],
@@ -462,15 +464,22 @@ angular.module('HistoricalCtrl', [])
       return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
     });
 
-    var top_5_resident = [];
+    var top_5_resident = [], bottom_5_resident = [];
     if(resident_time_spent_by_device_id.length >= 5){
       top_5_resident = resident_time_spent_by_device_id.slice(0,5);
+      bottom_5_resident = resident_time_spent_by_device_id.slice(Math.max(resident_time_spent_by_device_id.length - 5, 1))
     }else{
       top_5_resident = resident_time_spent_by_device_id.slice(0, resident_time_spent_by_device_id.length);
+      bottom_5_resident = resident_time_spent_by_device_id.slice(Math.max(resident_time_spent_by_device_id.length, 1))
     }
+
+    console.log(bottom_5_resident)
 
     vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name))
     vm.data.top_active_resident = ["residents"].concat(angular.copy(top_5_resident.map(a => a.value)))
+
+    vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name))
+    vm.data.bottom_active_resident = ["residents"].concat(angular.copy(bottom_5_resident.map(a => a.value)))
 
 
   }// top active
