@@ -64,7 +64,7 @@ angular.module('HistoricalDirective', [])
           var chart = c3.generate({
             bindto: Element[0],
             padding: {
-              left: 85
+              left: 120
             },
             data: {
                 columns: [data],
@@ -80,7 +80,7 @@ angular.module('HistoricalDirective', [])
               rotated:true
             },
             legend:{
-              show:true
+              show: false
             },
             transition: {
               duration: 500
@@ -94,7 +94,7 @@ angular.module('HistoricalDirective', [])
             
           });
 
-          chart.flush();
+          
 
           d3.select(window).on("resize", resized);
   
@@ -142,6 +142,7 @@ angular.module('HistoricalDirective', [])
         d3.select(Element[0]).selectAll("*").remove();
 
         if(data && data.length > 0){
+          console.log(document.getElementById("monthly_content").style)
           var chart = c3.generate({
             bindto: Element[0],
             data: {
@@ -150,7 +151,8 @@ angular.module('HistoricalDirective', [])
             axis: {
               x: {
                   type: 'category',
-                  categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                  categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                  tick: {fit: true}
               }
             },
             legend:{
@@ -164,6 +166,11 @@ angular.module('HistoricalDirective', [])
             }
           });
 
+          setTimeout(function () {
+            console.log("RESIZE")
+            $(window).trigger('resize');
+        }, 100);
+
           d3.select(window).on("resize", resized);
 
         }else {
@@ -171,7 +178,7 @@ angular.module('HistoricalDirective', [])
         }
 
         function resized(){
-            chart.resize();
+            chart.flush();
 
         }
 
