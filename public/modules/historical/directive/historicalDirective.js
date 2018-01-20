@@ -870,13 +870,14 @@ angular.module('HistoricalDirective', [])
         scope.heatmapChart =  function(data) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
-            var margin = { top: 40, right: 0, bottom: 20, left: 30 },
+            var margin = { top: 40, right: 0, bottom: 30, left: 30 },
               width = screen.width - margin.left - margin.right,
               gridSize = Math.floor(width / 25),
               height = gridSize*7 + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
-              buckets = 9,
-              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+              buckets = 5,//9
+              rangeDomain = [0,1,4,7,8],
+              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
               times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
               /*times = ["8am", "", "9am", "", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];*/
@@ -907,9 +908,9 @@ angular.module('HistoricalDirective', [])
                 .attr("transform", "translate(" + gridSize / 2 + ", -6)")
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
-              var colorScale = d3.scale.quantile()
-                  .domain([0, buckets - 1, d3.max(data, function (d) {
-                    return d.value; })])
+              var colorScale = d3.scale.linear()
+                  .domain(rangeDomain)
+                  //.domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
                   .range(colors);
 
               var cards = svg.selectAll(".hour")
@@ -931,12 +932,13 @@ angular.module('HistoricalDirective', [])
                   .style("fill", function(d) { return colorScale(d.value); });
 
               cards.enter().append("text")
-                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/3); })
-                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.6); })
-                .attr("rx", 4)
-                .attr("ry", 4)
+                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
+                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
+                //.attr("rx", 4)
+                //.attr("ry", 4)
                 .text(function(d) { return d.value; })
-                .style("fill",'#CBC8B4')
+                .style("fill",'#000000')
+                //.style("fill",'#CBC8B4')
                 .style("font-weight",'bold');
 
               cards.select("title").text(function(d) { return d.value; });
@@ -944,23 +946,24 @@ angular.module('HistoricalDirective', [])
               cards.exit().remove();
 
               var legend = svg.selectAll(".legend")
-                  .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+                  //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
+                  .data(rangeDomain);
 
               legend.enter().append("g")
                   .attr("class", "legend");
 
               legend.append("rect")
                 .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height-30)
+                .attr("y", height-margin.bottom)
                 .attr("width", legendElementWidth)
-                .attr("height", gridSize / 2)
+                .attr("height", gridSize / (2.5))
                 .style("fill", function(d, i) { return colors[i]; })
 
               legend.append("text")
                 .attr("class", "mono")
                 .text(function(d) { return "≥ " + Math.round(d); })
                 .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height + gridSize -30);
+                .attr("y", height + gridSize - margin.bottom);
 
               legend.exit().remove();
             }else {
