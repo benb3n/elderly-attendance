@@ -208,7 +208,7 @@ angular.module('RealTimeCtrl', [])
                         gender: vm.data.all_residents_by_resident_index[value.resident_index].gender,
                         display_name: value.display_name,
                         device_id: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? vm.data.real_time_activity_reading_hash[value.resident_index].device_id : "",
-                        image: (value.profile_picture!= null) ? value.profile_picture : "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
+                        image: (value.profile_picture!= null) ? value.profile_picture : "https://openclipart.org/download/247319/abstract-user-flat-3.svg",
                         status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? "Present And Left" : "Present") : "Absent",
                         recent_status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status : ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status) : "2"
                     }

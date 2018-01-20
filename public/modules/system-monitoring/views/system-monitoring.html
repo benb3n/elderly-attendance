@@ -5,7 +5,16 @@
     <div class="col s12 m2">
       <h5 style="font-weight: 300;">Beacon Battery Status</h5>
     </div>
-
+    <div class="input-field col s12 m2">
+      <i class="material-icons prefix">battery_alert</i>
+      <select multiple ng-model="sm.selectedBatteryLevel">
+        <option value= "" disabled selected>Select Battery Level</option>
+        <option value= "Low">Low</option>
+        <option value= "Medium">Medium</option>
+        <option value= "High">High</option>
+      </select>
+      <label style="font-size: 15px" >Battery Level</label>
+    </div>
       <div class="input-field col s9 m2">
         <i class="material-icons prefix">search</i>
         <input id="search" type="search" ng-model="sm.searchname" ng-keyup="getkeys($event)" required>
@@ -87,7 +96,7 @@
           </div>
           <div class="input-field col s12">
               <i class="material-icons prefix">devices_other</i>
-              <input id="update_device_id" type="text" class="validate" ng-model="sm.update.update_selectedPerson">
+              <input id="update_device_id" type="text" class="validate" ng-model="sm.update.update_selectedDevice">
               <label for="update_device_id" data-error="Kindly enter a beacon ID" data-success="">Beacon Device Id</label>
             </div>
         </div>

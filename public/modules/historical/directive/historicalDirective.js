@@ -27,12 +27,12 @@ angular.module('HistoricalDirective', [])
             return function(t) {
               if(isNaN(data)){
                 d3.select(Element[0]).text( (i(t)) );
-              }else{ 
+              }else{
                 d3.select(Element[0]).text( format(i(t)) );
               }
             };
           });
-              
+
         }
       }
 
@@ -63,14 +63,13 @@ angular.module('HistoricalDirective', [])
         if(data && data.length > 0){
           var chart = c3.generate({
             bindto: Element[0],
-            padding: {
-              left: 120
-            },
             data: {
-                columns: [data],
-                types: {
-                    residents: 'bar',
-                }
+              columns: [data],
+              types: {
+                'Hours': 'bar',
+                'Unique Visit': 'bar',
+                activities: 'bar'
+              }
             },
             axis: {
               x: {
@@ -80,25 +79,22 @@ angular.module('HistoricalDirective', [])
               rotated:true
             },
             legend:{
-              show: false
+              show:true
             },
             transition: {
               duration: 500
             },
             tooltip: {
               position: function (data, width, height, element) {
-                var top = d3.mouse(element)[1] - element.height.baseVal.value
+                var top = d3.mouse(element)[1] - (element.width.baseVal.value + 30)
                 return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
               }
             },
-            
+
           });
 
-          
-
           d3.select(window).on("resize", resized);
-  
-       
+
 
         }else {
           d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
@@ -140,13 +136,18 @@ angular.module('HistoricalDirective', [])
 
       scope.renderChart = function(data){
         d3.select(Element[0]).selectAll("*").remove();
-
+        console.log( (document.documentElement.clientWidth - 100) / 3) 
+        var w = (document.documentElement.clientWidth - 200) / 3;
         if(data && data.length > 0){
-          console.log(document.getElementById("monthly_content").style)
+          console.log("LINEE")
+          console.log(document.getElementById('activity_content').style)
           var chart = c3.generate({
             bindto: Element[0],
             data: {
                 columns: data
+            },
+            size: {
+              width: w
             },
             axis: {
               x: {
@@ -164,12 +165,11 @@ angular.module('HistoricalDirective', [])
                 return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
               }
             }
+
           });
 
-          setTimeout(function () {
-            console.log("RESIZE")
-            $(window).trigger('resize');
-        }, 100);
+     
+  
 
           d3.select(window).on("resize", resized);
 
@@ -179,6 +179,7 @@ angular.module('HistoricalDirective', [])
 
         function resized(){
             chart.flush();
+            chart.resize();
 
         }
 
@@ -878,13 +879,13 @@ angular.module('HistoricalDirective', [])
           if(data && data.length > 0){
             var margin = { top: 40, right: 0, bottom: 20, left: 30 },
               width = screen.width - margin.left - margin.right,
-              gridSize = Math.floor(width / 29),
+              gridSize = Math.floor(width / 25),
               height = gridSize*7 + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
               buckets = 9,
               colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-              times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm", "", "7pm", "","8pm"];
+              times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
               /*times = ["8am", "", "9am", "", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];*/
             var svg = d3.select(Element[0]).append("svg")
               .attr("width", width + margin.left + margin.right)
@@ -1001,7 +1002,7 @@ angular.module('HistoricalDirective', [])
               buckets = 9,
               colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-              times = ["8am","", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm", "", "7pm", "","8pm"],
+              times = ["8am","", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"],
               /*times = ["8am", "8:30am", "9am", "9:30am", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"],*/
               width = screen.width - margin.left - margin.right -72,
               gridSize = Math.floor(width / 7),
