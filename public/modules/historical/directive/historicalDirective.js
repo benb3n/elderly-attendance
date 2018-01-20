@@ -876,7 +876,8 @@ angular.module('HistoricalDirective', [])
               height = gridSize*7 + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
               buckets = 5,//9
-              rangeDomain = [0,1,4,7,8],
+              rangeDomain = [1,3,6,9,15],
+              displayRangeDomain = [0,1,3,6,9],
               colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
               times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
@@ -908,8 +909,8 @@ angular.module('HistoricalDirective', [])
                 .attr("transform", "translate(" + gridSize / 2 + ", -6)")
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
-              var colorScale = d3.scale.linear()
-                  .domain(rangeDomain)
+              var colorScale = d3.scale.threshold()
+                   .domain(rangeDomain)
                   //.domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
                   .range(colors);
 
@@ -947,17 +948,16 @@ angular.module('HistoricalDirective', [])
 
               var legend = svg.selectAll(".legend")
                   //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
-                  .data(rangeDomain);
+                  .data(displayRangeDomain);
 
               legend.enter().append("g")
                   .attr("class", "legend");
-
 
               legend.append("rect")
                 .attr("x", function(d, i) { return legendElementWidth * i; })
                 .attr("y", height-margin.bottom)
                 .attr("width", legendElementWidth)
-                .attr("height", gridSize / (2.5))
+                .attr("height", gridSize / (2))
                 .style("fill", function(d, i) { return colors[i]; })
 
               legend.append("text")
@@ -965,6 +965,7 @@ angular.module('HistoricalDirective', [])
                 .text(function(d) { return "≥ " + Math.round(d); })
                 .attr("x", function(d, i) { return legendElementWidth * i; })
                 .attr("y", height + gridSize - margin.bottom);
+                //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
 
               legend.exit().remove();
             }else {
