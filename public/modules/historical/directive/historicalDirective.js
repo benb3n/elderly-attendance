@@ -952,6 +952,7 @@ angular.module('HistoricalDirective', [])
               legend.enter().append("g")
                   .attr("class", "legend");
 
+
               legend.append("rect")
                 .attr("x", function(d, i) { return legendElementWidth * i; })
                 .attr("y", height-margin.bottom)
