@@ -109,7 +109,7 @@ angular.module('AttendanceCtrl', [])
             result.results.forEach(function(value, index){
                 vm.data.all_centers_by_center_code[value.code_name] = value;
             })
-            $('#center_table').DataTable({
+            /*$('#center_table').DataTable({
                 "destroy": true,
                 "responsive": true,
                 "bAutoWidth": false,
@@ -144,7 +144,7 @@ angular.module('AttendanceCtrl', [])
                 $('#updateCenterModal').modal();
                 $('#updateCenterModal').modal('open');
 
-            } );
+            } );*/
 
             var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
             var start_datetime = moment('2017-12-20').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
@@ -159,9 +159,6 @@ angular.module('AttendanceCtrl', [])
             $('#activity_table').DataTable({
                 "destroy": true,
                 "responsive": true,
-                "bAutoWidth": false,
-                "bScrollCollapse" : true,
-                "sScrollY": "500px",
                 "data": vm.data.all_centers_activity.results,
                 "columns": [
                     { title: "ID" ,data: "id" },
