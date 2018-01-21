@@ -321,6 +321,22 @@ angular.module('AttendanceCtrl', [])
         });
         return _defer.promise;
     }
+    function getAllResidentsAlerts (project_prefix, center_code_name, days) { 
+        var params = {
+            project_prefix: project_prefix,
+            center_code_name: center_code_name,
+            days: days
+        }
+        var _defer = $q.defer();
+        AService.getAllResidentsAlerts(params, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
 
     function getAllDevices (project_prefix, page_size) { //url, _defer, overall
         var _defer = $q.defer();

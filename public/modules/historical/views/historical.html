@@ -1,31 +1,31 @@
 <!-- FILTER BAR -->
 <div class="row">
       <div class ="card">
-          <div class="input-field col s2 m2" ng-model="historical.selectedCenter">
+          <div class="input-field col s12 m2" ng-model="historical.selectedCenter">
               <select>
                   <option value = "" disabled selected>Select Center</option>
                   <option value={{center.value}} ng-repeat="center in historical.display.centers" id="center_courses">{{center.name}}</option>
               </select>
               <label class="filter-label" >Center</label>
           </div>
-          <div class="input-field col s2 m2">
+          <div class="input-field col s12 m2">
             <select>
                 <option value = "" disabled selected>Select Course</option>
                 <option value ={{activity.value}} ng-repeat="activity in historical.display.activity">{{activity.name}}</option>
             </select>
             <label class="filter-label" >Course</label>
           </div>
-          <div class="input-field col s2 m2">
+          <div class="input-field col s12 m2">
             <i class="material-icons prefix">today</i>
             <input ng-model="historical.selectedStartDate_courses" id="start_date_courses" type="date" class="datepicker">
             <label class="filter-label" >Start Date</label>
           </div>
-          <div class="input-field col s2 m2">
+          <div class="input-field col s12 m2">
             <i class="material-icons prefix">today</i>
             <input ng-model="historical.selectedEndDate_courses" id="end_date_courses" type="date" class="datepicker">
             <label class="filter-label" >End Date</label>
           </div>
-        <div class="col s2 m2">
+        <div class="col s12 m2">
           <button ng-click="historical.generateDataCourses()" class="waves-effect waves-light btn">Generate</button>
         </div>
       </div>
@@ -224,52 +224,10 @@
 
     <!-- PERSON TAB -->
     <div id="person" class="col s12">
-      <!-- FILTER BAR -->
-      <div class="row">
-        <div class ="card">
-          <div class="input-field col s2 m2">
-            <select ng-model="historical.selectedCenter">
-                <option value = "" disabled selected>Select Center</option>
-                <option value={{center.value}} ng-repeat="center in historical.centers">{{center.name}}</option>
-            </select>
-            <label class="filter-label" >Course</label>
-          </div>
-          <div class="input-field col s2 m2">
-            <select>
-                <option value = "" disabled selected>Select Course</option>
-                <option value = "1">C1</option>
-                <option value = "2">C2</option>
-                <option value = "3">C3</option>
-            </select>
-            <label class="filter-label" >Course</label>
-          </div>
-          <div class="input-field col s2 m2">
-            <i class="material-icons prefix">today</i>
-            <input ng-model="historical.selectedStartDate_person" type="date" class="datepicker">
-            <label class="filter-label" >Start Date</label>
-          </div>
-          <div class="input-field col s2 m2">
-            <i class="material-icons prefix">today</i>
-            <input ng-model="historical.selectedEndDate_person" id="end_date_person" type="date" class="datepicker">
-            <label class="filter-label" >End Date</label>
-          </div>
-          <div class="col s2 m2">
-            <button ng-click="historical.generateDataPerson()" class="waves-effect waves-light btn">Generate</button>
-          </div>
-        </div>
-     </div>
 
-     <!-- CONTENT -->
-     <div class="row">
-        <div class="col s12">
-          <div class="card">
-            <span class="card-title">Activity Heat Map</span>
-            <div class="card-content">
-              <label id="calendar_error">No Data Available </label>
-              <calendar-heatmap data="historical.calendarheatmapdata" color="'#ff0000'" overview="'year'" handler="print"></calendar-heatmap>
-            </div>
-          </div>
-        </div>
-     </div>
+      <!-- CONTENT -->
+      <div class="row">
+       
+      </div>
     </div>
   </div>

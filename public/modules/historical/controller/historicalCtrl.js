@@ -59,9 +59,11 @@ angular.module('HistoricalCtrl', [])
     if(newStartDate != oldStartDate) {
       vm.selectedStartDate_person = newStartDate;
       var end_date_courses = $('#end_date_person').pickadate('picker');
-      end_date_courses.set('disable', true);
-      end_date_courses.set('enable', true);
-      end_date_courses.set('min', newStartDate)
+      if(typeof end_date_courses != 'undefined'){
+        end_date_courses.set('disable', true);
+        end_date_courses.set('enable', true);
+        end_date_courses.set('min', newStartDate)
+      }
     }
   });
 
@@ -296,9 +298,10 @@ angular.module('HistoricalCtrl', [])
       top_bottom_active_resident_widget();
       top_bottom_count_popular_activities_widget();
 
-      //COURSES TAB
+      //ACTIVITY TAB
       //day_of_week_widget();
       box_heatmap_widget();
+      day_of_week_widget();
 
       //PERSON TAB
 
@@ -520,7 +523,6 @@ angular.module('HistoricalCtrl', [])
   function tab2(){
     console.log("TAB");
     
-    day_of_week_widget();
   }
 
   function update_most_active_chart(result){

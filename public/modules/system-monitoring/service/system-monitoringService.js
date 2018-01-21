@@ -14,7 +14,6 @@ angular.module('SystemMonitoringService', [])
 
     function getAllDevices(params, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        console.log(params)
         $http.get(starlightAPI.url + '/api/v1/manifest_device/device/', params)
         .then(
             function(result){ callback(result.data) },

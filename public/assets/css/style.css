@@ -2,16 +2,17 @@ body{
     font-family: Roboto !important;
     font-weight: 300;
 }
+.calendar-heatmap .label,.calendar-heatmap .label .label-project {
+    width: 200px !important
+}
 .c3 svg {
     width: 100%;
     /*height: 98%;
     min-height: 98%;*/
 }
-
 .card .input-field .filter-label {
   font-size: 20px !important;
 }
-
 .card .card-title {
   font-size: 15px !important;
   font-weight: 200 !important;

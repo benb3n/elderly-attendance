@@ -8,6 +8,7 @@ angular.module('AttendanceService', [])
     service.getAllResidents = getAllResidents;
     service.getAllCenters = getAllCenters;
     service.getAllCentersActivity = getAllCentersActivity;
+    service.getAllResidentsAlerts = getAllResidentsAlerts;
     
     return service;
 
@@ -19,6 +20,15 @@ angular.module('AttendanceService', [])
                 page_size: page_size
             }
         })
+        .then(
+            function(result){ callback(result.data) },
+            function(){ callback(false) }
+        );
+    }
+
+    function getAllResidentsAlerts(params, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerattendee', params)
         .then(
             function(result){ callback(result.data) },
             function(){ callback(false) }

@@ -101,6 +101,7 @@ angular.module('SystemMonitoringCtrl', [])
         vm.update = {};
         vm.searchname = "";
         vm.selectedBatteryLevel = ['Low', 'Medium', 'High']
+        vm.selectedDays = 3;
 
         vm.loading = true;
         generateDataForInit();
@@ -141,7 +142,9 @@ angular.module('SystemMonitoringCtrl', [])
             vm.display.system_monitoring_device.sort(compareCount)
             vm.display.system_monitoring_device_backup = angular.copy(vm.display.system_monitoring_device)            
 
+            
         }).then(function(result){
+            console.log("alerts", result)
             vm.loading = false;
             $timeout(function () {
                 $('select').material_select()
@@ -230,7 +233,6 @@ angular.module('SystemMonitoringCtrl', [])
         });
         return _defer.promise;
     }
-
     function getSystemMonitoringDevice (project_prefix, center_code_name) {
         var _defer = $q.defer();
         var params = {
