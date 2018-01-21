@@ -171,7 +171,8 @@ angular.module('HistoricalCtrl', [])
       bottom_popular_activities: [],
       bottom_popular_activities_xaxis: [],
       bottom_popular_activities_count: [],
-      bottom_popular_activities_count_xaxis: []
+      bottom_popular_activities_count_xaxis: [],
+      activityMonthData: []
     }
     vm.display = {
       centers:[],
@@ -302,6 +303,7 @@ angular.module('HistoricalCtrl', [])
       //day_of_week_widget();
       box_heatmap_widget();
       day_of_week_widget();
+      update_activity_month_chart("Language");
 
       //PERSON TAB
 
@@ -554,7 +556,7 @@ angular.module('HistoricalCtrl', [])
       vm.mostActiveData = angular.copy(time_data);
   }//end update_most_active_chart function
 
-  function update_activity_month_chart(attendance, center_activities, course_type, start_date, end_date){
+  function update_activity_month_chart(course_type){
     //get data related to course
     center_activities = {
         "count": 3,
@@ -625,7 +627,7 @@ angular.module('HistoricalCtrl', [])
     */
     var courses_date_instances = Array(courses_date_list.length);
     //arr[date[course[ins],course[ins,ins]],date[course[ins,ins]]...]
-    temp_arr = insArr_to_dateInsArr(attendance);
+    temp_arr = insArr_to_dateInsArr(real_time_activity_reading_by_activity_name);
     var date_ins_array = temp_arr[1];
     var date_list = temp_arr[0];
 
