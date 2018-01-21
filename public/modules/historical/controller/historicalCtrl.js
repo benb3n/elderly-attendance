@@ -59,9 +59,11 @@ angular.module('HistoricalCtrl', [])
     if(newStartDate != oldStartDate) {
       vm.selectedStartDate_person = newStartDate;
       var end_date_courses = $('#end_date_person').pickadate('picker');
-      end_date_courses.set('disable', true);
-      end_date_courses.set('enable', true);
-      end_date_courses.set('min', newStartDate)
+      if(typeof end_date_courses != 'undefined'){
+        end_date_courses.set('disable', true);
+        end_date_courses.set('enable', true);
+        end_date_courses.set('min', newStartDate)
+      }
     }
   });
 
@@ -296,9 +298,10 @@ angular.module('HistoricalCtrl', [])
       top_bottom_active_resident_widget();
       top_bottom_count_popular_activities_widget();
 
-      //COURSES TAB
+      //ACTIVITY TAB
       //day_of_week_widget();
       box_heatmap_widget();
+      day_of_week_widget();
 
       //PERSON TAB
 
@@ -511,61 +514,7 @@ angular.module('HistoricalCtrl', [])
   /***********************
      CHARTS - PERSON
   ***********************/
-  function person_box_heatmap_widget(String resident_name){
-    //TODO: cut out the data for that resident
-    //vm.data.real_time_activity_reading
-    //var resident_activity_reading
 
-    temp_arr = insArr_to_dateInsArr(resident_activity_reading);
-    var date_ins_array = temp_arr[1];
-    var date_list = temp_arr[0];
-
-    var week_arr = [];
-    for(i=0; i<7; i++){
-      var hour_arr  = new Array(21);
-      hour_arr.fill(0);
-      week_arr.push(hour_arr);
-    }
-
-    var week_instances_count = new Array(7); //counts number of weeks the chosen dataset has of each day
-    week_instances_count.fill(0);
-
-    date_ins_array.forEach(function(date_value,date_index) {
-      //check date
-      var this_date = moment(date_list[date_index]);
-      var day_index = moment(this_date).weekday(); //weekday returns 0-6 where 0 is Monday
-      var time_arr = generate_time_array(this_date,8,20);
-
-      date_value.forEach(function(instance_value){
-        var time_index;
-        var this_start = moment(instance_value.start_timestamp);
-        var this_end = moment(instance_value.end_timestamp);
-        //console.log(instance_value);
-        //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
-        for (i = 0; i < time_arr.length-1; i++) {
-          if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
-            //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
-            week_arr[day_index][i] += 1;
-          };//end if
-        };//end for loop
-      })//end forEach instance
-    })//end for each date
-
-    //add data
-    weekly_activity_data = [];
-    week_arr.forEach(function(day_value,day_index){
-      day_value.forEach(function(value,index){
-        weekly_activity_data.push({
-          "day": day_index+1,
-          "hour":	index+1,
-          "value": value
-        })
-      })//end for each hour
-    })//end for each day
-
-    vm.dayHourBoxHeatmapData=angular.copy(weekly_activity_data);
-
-  }//end person_box_heatmap_widget
 
 
 
@@ -574,7 +523,6 @@ angular.module('HistoricalCtrl', [])
   function tab2(){
     console.log("TAB");
 
-    day_of_week_widget();
   }
 
   function update_most_active_chart(result){

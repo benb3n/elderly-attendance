@@ -1,31 +1,31 @@
 <!-- FILTER BAR -->
 <div class="row">
       <div class ="card">
-          <div class="input-field col s2 m2" ng-model="historical.selectedCenter">
+          <div class="input-field col s12 m2" ng-model="historical.selectedCenter">
               <select>
                   <option value = "" disabled selected>Select Center</option>
                   <option value={{center.value}} ng-repeat="center in historical.display.centers" id="center_courses">{{center.name}}</option>
               </select>
               <label class="filter-label" >Center</label>
           </div>
-          <div class="input-field col s2 m2">
+          <div class="input-field col s12 m2">
             <select>
                 <option value = "" disabled selected>Select Course</option>
                 <option value ={{activity.value}} ng-repeat="activity in historical.display.activity">{{activity.name}}</option>
             </select>
             <label class="filter-label" >Course</label>
           </div>
-          <div class="input-field col s2 m2">
+          <div class="input-field col s12 m2">
             <i class="material-icons prefix">today</i>
             <input ng-model="historical.selectedStartDate_courses" id="start_date_courses" type="date" class="datepicker">
             <label class="filter-label" >Start Date</label>
           </div>
-          <div class="input-field col s2 m2">
+          <div class="input-field col s12 m2">
             <i class="material-icons prefix">today</i>
             <input ng-model="historical.selectedEndDate_courses" id="end_date_courses" type="date" class="datepicker">
             <label class="filter-label" >End Date</label>
           </div>
-        <div class="col s2 m2">
+        <div class="col s12 m2">
           <button ng-click="historical.generateDataCourses()" class="waves-effect waves-light btn">Generate</button>
         </div>
       </div>
@@ -122,7 +122,11 @@
             </div>
           </div>
         </div>
+
       </div>
+
+
+
       <div class="row">
         <div class="col s12">
           <div class="card">
@@ -134,6 +138,10 @@
           </div>
         </div>
       </div>
+
+
+
+
     </div>
     <!-- END OF OVERVIEW TAB -->
 
@@ -153,11 +161,25 @@
             </div>
           </div>
         </div>
+
         <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Best Day of the Week</span>
             <div class="card-content" id="activity_content">
               <weekly-Line-Chart  data="historical.data.popular_days" color="" id="activities_line_chart"></weekly-Line-Chart>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="col s12 m6 l4">
+          <div class="card" >
+            <span class="card-title">Top active</span>
+            <div class="card-content" id="top_active_content" >
+              <div class="g-chart">
+                <responsive-Horizontal-Bar-Chart id="top_active"  data="historical.mostActiveData" color=""></responsive-Horizontal-Bar-Chart>
+              </div>
             </div>
           </div>
         </div>
@@ -169,59 +191,43 @@
             </div>
           </div>
         </div>
+        <div class="col s12">
+          <div class="card">
+            <span class="card-title">Most Active</span>
+            <div class="card-content" style="height: 400px !important;">
+              <label id="active_error">No Data Available </label>
+              <horizontal-bar-chart  data="historical.active_time_Data"></horizontal-bar-chart>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Activity Comparison(TODO)</span>
+            <div class="card-content">
+              <p>Number of unique attendance</p>
+              <line-chart height="250px" data="historical.activity_comparison_data"></line-chart>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title">Best Performing Course Time (TODO)</span>
+            <div class="card-content">
+
+            </div>
+          </div>
+        </div>
       </div> <!--end content container -->
-    </div><!--end ACTIVITY tab-->
+    </div>
 
     <!-- PERSON TAB -->
     <div id="person" class="col s12">
-      <!-- FILTER BAR -->
-      <div class="row">
-        <div class ="card">
-          <div class="input-field col s2 m2">
-            <select ng-model="historical.selectedCenter">
-                <option value = "" disabled selected>Select Center</option>
-                <option value={{center.value}} ng-repeat="center in historical.centers">{{center.name}}</option>
-            </select>
-            <label class="filter-label" >Course</label>
-          </div>
-          <div class="input-field col s2 m2">
-            <select>
-                <option value = "" disabled selected>Select Course</option>
-                <option value = "1">C1</option>
-                <option value = "2">C2</option>
-                <option value = "3">C3</option>
-            </select>
-            <label class="filter-label" >Course</label>
-          </div>
-          <div class="input-field col s2 m2">
-            <i class="material-icons prefix">today</i>
-            <input ng-model="historical.selectedStartDate_person" type="date" class="datepicker">
-            <label class="filter-label" >Start Date</label>
-          </div>
-          <div class="input-field col s2 m2">
-            <i class="material-icons prefix">today</i>
-            <input ng-model="historical.selectedEndDate_person" id="end_date_person" type="date" class="datepicker">
-            <label class="filter-label" >End Date</label>
-          </div>
-          <div class="col s2 m2">
-            <button ng-click="historical.generateDataPerson()" class="waves-effect waves-light btn">Generate</button>
-          </div>
-        </div>
-     </div>
 
-     <!-- CONTENT -->
-     <div class="row">
-       <div class="col s12">
-         <div class="card">
-           <span class="card-title col s12 teal darken-1 white-text">Visit Heatmap</span>
-           <div class="card-content hide-on-small-only">
-             <day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData" style="text-align: center"></day-Hour-Heatmap-Chart>
-           </div>
-           <div class="card-content hide-on-med-and-up">
-             <flip-day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></flip-day-Hour-Heatmap-Chart>
-           </div>
-         </div>
-       </div>
-     </div>
+      <!-- CONTENT -->
+      <div class="row">
+
+      </div>
     </div>
   </div>

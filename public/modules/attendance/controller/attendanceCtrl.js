@@ -22,6 +22,18 @@ angular.module('AttendanceCtrl', [])
         $('select').material_select();
     });
 
+    /*************** 
+        WATCHERS
+    ****************/
+    $scope.$watch(function() {
+        return vm.selectedDays;
+    },function(newDays, oldDays) {
+        if(newDays != oldDays) {
+            vm.selectedDays = newDays;
+            
+        }
+    });
+
     initController();
     function initController(){
         vm.data = {
@@ -36,6 +48,8 @@ angular.module('AttendanceCtrl', [])
         vm.delete = {};
         vm.alertLoading = false;
         vm.loading = true;
+        vm.selectedDays = 3;
+
         generateDataForInit();
     }
 
@@ -247,17 +261,28 @@ angular.module('AttendanceCtrl', [])
                 status:[
                     {name: "Present", value: "Present"},
                     {name: "Absent", value: "Absent"}
-                ],
-                attendance_alert: [
-                    {name: "Alexander Hamilton",
-                    image: "http://demos.creative-tim.com/material-dashboard/assets/img/faces/marc.jpg",
-                    course: "Physical Activities",
-                    last_seen: "2 days ago"}
                 ]
             }
-            
+            return getAllResidentsAlerts(vm.api.project, vm.api.center_code_name, vm.selectedDays, vm.api.all_activity_count)
         })
-        .then(function(){
+        .then(function(result){
+            console.log("alerts", result)
+
+            vm.display.attendance_alert = []
+
+            result.results.forEach(function(value , index){
+                vm.display.attendance_alert.push({
+                    name: value.resident_list,
+                    image: "https://openclipart.org/download/247319/abstract-user-flat-3.svg",
+                    //course: "Physical Activities",
+                    last_seen: moment(new Date()).diff(moment(value.gw_timestamp), 'days') + "days" ,
+                    value: moment(new Date()).diff(moment(value.gw_timestamp), 'days') 
+                })
+            })
+            
+
+            vm.display.attendance_alert.sort(compareCount)
+
             vm.alertLoading = false;
             vm.loading = false;
         });
@@ -321,6 +346,23 @@ angular.module('AttendanceCtrl', [])
         });
         return _defer.promise;
     }
+    function getAllResidentsAlerts (project_prefix, center_code_name, days, page_size) { 
+        var params = {
+            project_prefix: project_prefix,
+            center_code_name: center_code_name,
+            days: days,
+            page_size: page_size
+        }
+        var _defer = $q.defer();
+        AService.getAllResidentsAlerts(params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
 
     function getAllDevices (project_prefix, page_size) { //url, _defer, overall
         var _defer = $q.defer();
@@ -333,5 +375,15 @@ angular.module('AttendanceCtrl', [])
         });
         
         return _defer.promise;
+    }
+
+    /******************** 
+        HELPERS METHOD
+    *********************/
+    function compareCount (a, b) {
+        // DSCENDING ORDER
+        if (a.value > b.value) return -1;
+        if (a.value < b.value) return 1;
+        return 0;
     }
 })

@@ -136,10 +136,10 @@ angular.module('HistoricalDirective', [])
 
       scope.renderChart = function(data){
         d3.select(Element[0]).selectAll("*").remove();
-        //console.log( (document.documentElement.clientWidth - 100) / 3) 
-        var w = (document.documentElement.clientWidth - 200) / 3;
+        var w = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
+
         if(data && data.length > 0){
-          console.log("LINEE")
+
           console.log(document.getElementById('activity_content').style)
           var chart = c3.generate({
             bindto: Element[0],
@@ -148,6 +148,9 @@ angular.module('HistoricalDirective', [])
             },
             size: {
               width: w
+            },
+            padding: {
+              left: 20
             },
             axis: {
               x: {
@@ -167,10 +170,6 @@ angular.module('HistoricalDirective', [])
             }
 
           });
-
-     
-  
-
           d3.select(window).on("resize", resized);
 
         }else {
@@ -877,26 +876,16 @@ angular.module('HistoricalDirective', [])
         scope.heatmapChart =  function(data) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
-<<<<<<< HEAD
             var margin = { top: 40, right: 0, bottom: 30, left: 30 },
-=======
-            var margin = { top: 40, right: 0, bottom: 20, left: 40 },
->>>>>>> ee632f6c487770f90e4c8c62431c9110e33b8c56
               width = screen.width - margin.left - margin.right,
               gridSize = Math.floor(width / 30),
               height = gridSize*7 + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
-<<<<<<< HEAD
               buckets = 5,//9
               rangeDomain = [1,3,6,9,15],
               displayRangeDomain = [0,1,3,6,9],
               colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-=======
-              buckets = 9,
-              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
-              days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
->>>>>>> ee632f6c487770f90e4c8c62431c9110e33b8c56
               times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
               /*times = ["8am", "", "9am", "", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];*/
             var svg = d3.select(Element[0]).append("svg")
@@ -963,7 +952,6 @@ angular.module('HistoricalDirective', [])
 
               cards.exit().remove();
 
-              console.log(colorScale)
               var legend = svg.selectAll(".legend")
                   //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
                   .data(displayRangeDomain);
