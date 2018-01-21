@@ -31,6 +31,14 @@ angular.module('SystemMonitoringCtrl', [])
     /*************** 
         WATCHERS
     ****************/
+    $scope.$watch(function() {
+        return vm.selectedBatteryLevel;
+    },function(newBattery, oldBattery) {
+        if(newBattery != oldBattery) {
+            vm.selectedBatteryLevel = newBattery;
+            applyFilters();
+        }
+    });
     $scope.getkeys = function(event){
         applyFilters();    
     }
@@ -40,7 +48,7 @@ angular.module('SystemMonitoringCtrl', [])
     **********************/
     function applyFilters(){
         result = applySearchFilter();
-        console.log(result.length)
+        result = applyBatteryTypeFilter(result);
         vm.display.system_monitoring_device = angular.copy(result)
     }   
 
@@ -48,13 +56,21 @@ angular.module('SystemMonitoringCtrl', [])
         if(typeof vm.searchname == 'undefined' || vm.searchname == "" ){
             return vm.display.system_monitoring_device_backup;
         }else{
-            if(isNaN(vm.searchname)){
-                return filterByAttr("resident_list", vm.searchname, vm.display.system_monitoring_device_backup);
-            }else{
-                return filterByAttrNum("value", vm.searchname, vm.display.system_monitoring_device_backup);
-            }
+            //if(isNaN(vm.searchname)){
+            return filterByAttr("resident_list", vm.searchname, vm.display.system_monitoring_device_backup);
+            //}else{
+            //    return filterByAttrNum("value", vm.searchname, vm.display.system_monitoring_device_backup);
+            //}
         }
     }
+
+    function applyBatteryTypeFilter(data){
+        var result = [];
+        vm.selectedBatteryLevel.forEach(function(value, index) {
+            result = result.concat(filterByAttr("battery_status", value, data));
+        });
+        return result;
+      }
 
     function filterByAttrNum(attr, value, data) {
         return $.grep(data, function(n, i) {
@@ -84,6 +100,7 @@ angular.module('SystemMonitoringCtrl', [])
         }
         vm.update = {};
         vm.searchname = "";
+        vm.selectedBatteryLevel = ['Low', 'Medium', 'High']
 
         vm.loading = true;
         generateDataForInit();
@@ -159,6 +176,7 @@ angular.module('SystemMonitoringCtrl', [])
     function refresh(id){
         $('.modal').modal();
         vm.update.update_selectedPerson = vm.data.system_monitoring_hash[id].resident_list;
+        vm.update.update_selectedDevice = vm.data.system_monitoring_hash[id].device;
         console.log(vm.update.update_selectedPerson)
         $timeout(function () {
             $('select').material_select()

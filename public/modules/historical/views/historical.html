@@ -33,11 +33,11 @@
 </div>
 
 
-<div class="row">
+<div class="row" style="margin-top: -20px">
     <div class="col s12">
       <ul class="tabs tabs-fixed-width">
         <li class="tab col s3"><a class="active" href="#overview">Overview</a></li>
-        <li class="tab col s3"><a href="#activity">Activity</a></li>
+        <li class="tab col s3"><a href="#activity" ng-click="historical.tab2()">Activity</a></li>
         <li class="tab col s3"><a href="#person">Person</a></li>
       </ul>
     </div>
@@ -51,7 +51,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Hours</span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.top_active_resident" axis="historical.data.top_active_resident_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="top_resident" data="historical.data.top_active_resident" axis="historical.data.top_active_resident_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
@@ -60,25 +60,25 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Residents by Hours</span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_active_resident" axis="historical.data.bottom_active_resident_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="bottom_resident" data="historical.data.bottom_active_resident" axis="historical.data.bottom_active_resident_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by average time spent per attendee</span>
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by Average Time Spent</span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.top_popular_activities" axis="historical.data.top_popular_activities_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="top_activities" data="historical.data.top_popular_activities" axis="historical.data.top_popular_activities_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by average time spent per attendee</span>
+            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by Average Time Spent</span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_popular_activities" axis="historical.data.bottom_popular_activities_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="bottom_activities" data="historical.data.bottom_popular_activities" axis="historical.data.bottom_popular_activities_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
@@ -89,44 +89,40 @@
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by # visits</span>
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Unique Visit Count</span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.top_active_resident_count" axis="historical.data.top_active_resident_count_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="top_resident_count" data="historical.data.top_active_resident_count" axis="historical.data.top_active_resident_count_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Residents by # visits, excludes those with 0 visits</span>
+            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Residents by Unique Visit Count</span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_active_resident_count" axis="historical.data.bottom_active_resident_count_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="bottom_resident_count" data="historical.data.bottom_active_resident_count" axis="historical.data.bottom_active_resident_count_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by attendance </span>
+            <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by Attendnace </span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.top_popular_activities_count" axis="historical.data.top_popular_activities_count_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="top_activities_count" data="historical.data.top_popular_activities_count" axis="historical.data.top_popular_activities_count_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
 
         <div class="col s12 m6 l3">
           <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by attendance</span>
+            <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by Attendnace</span>
             <div class="card-content">
-              <bar-Horizontal-Chart id="horizontal" data="historical.data.bottom_popular_activities_count" axis="historical.data.bottom_popular_activities_count_xaxis" ></bar-Horizontal-Chart>
+              <bar-Horizontal-Chart id="bottom_activities_count" data="historical.data.bottom_popular_activities_count" axis="historical.data.bottom_popular_activities_count_xaxis" ></bar-Horizontal-Chart>
             </div>
           </div>
         </div>
-
       </div>
-
-
-
       <div class="row">
         <div class="col s12">
           <div class="card">
@@ -138,10 +134,6 @@
           </div>
         </div>
       </div>
-
-
-
-
     </div>
     <!-- END OF OVERVIEW TAB -->
 
@@ -154,34 +146,18 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Unique Visitors Heatmap</span>
             <div class="card-content hide-on-small-only">
-              <day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></day-Hour-Heatmap-Chart>
+              <day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData" style="text-align: center"></day-Hour-Heatmap-Chart>
             </div>
             <div class="card-content hide-on-med-and-up">
               <flip-day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></flip-day-Hour-Heatmap-Chart>
             </div>
           </div>
         </div>
-
         <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Best Day of the Week</span>
-            <div class="card-content" id="monthly_content">
-              <div class="g-chart">
-                <weekly-Line-Chart class="chart" data="historical.data.popular_days" color="" id="rlinecharts"></weekly-Line-Chart>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-
-        <div class="col s12 m6 l4">
-          <div class="card" >
-            <span class="card-title">Top active</span>
-            <div class="card-content" id="top_active_content" >
-              <div class="g-chart">
-                <responsive-Horizontal-Bar-Chart id="top_active"  data="historical.mostActiveData" color=""></responsive-Horizontal-Bar-Chart>
-              </div>
+            <div class="card-content" id="activity_content">
+              <weekly-Line-Chart  data="historical.data.popular_days" color="" id="activities_line_chart"></weekly-Line-Chart>
             </div>
           </div>
         </div>
@@ -193,36 +169,8 @@
             </div>
           </div>
         </div>
-        <div class="col s12">
-          <div class="card">
-            <span class="card-title">Most Active</span>
-            <div class="card-content" style="height: 400px !important;">
-              <label id="active_error">No Data Available </label>
-              <horizontal-bar-chart  data="historical.active_time_Data"></horizontal-bar-chart>
-            </div>
-          </div>
-        </div>
-        <div class="col s12 m6 l4">
-          <div class="card">
-            <span class="card-title">Activity Comparison(TODO)</span>
-            <div class="card-content">
-              <p>Number of unique attendance</p>
-              <line-chart height="250px" data="historical.activity_comparison_data"></line-chart>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="col s12 m6 l4">
-          <div class="card">
-            <span class="card-title">Best Performing Course Time (TODO)</span>
-            <div class="card-content">
-
-            </div>
-          </div>
-        </div>
       </div> <!--end content container -->
-    </div>
+    </div><!--end ACTIVITY tab-->
 
     <!-- PERSON TAB -->
     <div id="person" class="col s12">
@@ -263,15 +211,17 @@
 
      <!-- CONTENT -->
      <div class="row">
-        <div class="col s12">
-          <div class="card">
-            <span class="card-title">Activity Heat Map</span>
-            <div class="card-content">
-              <label id="calendar_error">No Data Available </label>
-              <calendar-heatmap data="historical.calendarheatmapdata" color="'#ff0000'" overview="'year'" handler="print"></calendar-heatmap>
-            </div>
-          </div>
-        </div>
+       <div class="col s12">
+         <div class="card">
+           <span class="card-title col s12 teal darken-1 white-text">Visit Heatmap</span>
+           <div class="card-content hide-on-small-only">
+             <day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData" style="text-align: center"></day-Hour-Heatmap-Chart>
+           </div>
+           <div class="card-content hide-on-med-and-up">
+             <flip-day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></flip-day-Hour-Heatmap-Chart>
+           </div>
+         </div>
+       </div>
      </div>
     </div>
   </div>

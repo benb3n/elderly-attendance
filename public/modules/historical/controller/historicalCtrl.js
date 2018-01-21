@@ -10,36 +10,34 @@ angular.module('HistoricalCtrl', [])
     }
 
     $(document).ready(function() {
-        $('ul.tabs').tabs();
-        $('.button-collapse').sideNav({
-            menuWidth: 300, // Default is 240
-            edge: 'left', // Choose the horizontal origin
-            closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-            }
-        );
-        vm.selectedCenter=6901;
-        vm.selectedStartDate_person = new Date(); //moment(new Date()).format("DD MMM, YYYY"); //'9 November, 2017'
-        vm.selectedStartDate_courses = new Date();
+       $('ul.tabs').tabs();
+      $('.button-collapse').sideNav({
+        menuWidth: 300, // Default is 240
+        edge: 'left', // Choose the horizontal origin
+        closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+      });
+      vm.selectedCenter=6901;
+      vm.selectedStartDate_person = new Date(); //moment(new Date()).format("DD MMM, YYYY"); //'9 November, 2017'
+      vm.selectedStartDate_courses = new Date();
 
-        vm.selectedEndDate_person = new Date();
-        vm.selectedEndDate_courses = new Date();
+      vm.selectedEndDate_person = new Date();
+      vm.selectedEndDate_courses = new Date();
 
-        $('.datepicker').pickadate({
-            format: 'yyyy-mm-dd',
-            selectMonths: true, // Creates a dropdown to control month
-            selectYears: 15, // Creates a dropdown of 15 years to control year
-            closeOnSelect: true,
-            today: 'Today',
-            clear: 'Clear',
-            close: 'Ok',
-        });
-        $('#start_date_courses').pickadate('picker').set('select', new Date())
-        $('#end_date_courses').pickadate('picker').set('select', new Date())
+      $('.datepicker').pickadate({
+        format: 'yyyy-mm-dd',
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 15, // Creates a dropdown of 15 years to control year
+        closeOnSelect: true,
+        today: 'Today',
+        clear: 'Clear',
+        close: 'Ok',
+      });
+      $('#start_date_courses').pickadate('picker').set('select', new Date())
+      $('#end_date_courses').pickadate('picker').set('select', new Date())
 
-        $('#center_courses option[value='+vm.selectedCenter+']').attr('selected', true);
-        $('select').material_select();
-        Materialize.updateTextFields();
-
+      $('#center_courses option[value='+vm.selectedCenter+']').attr('selected', true);
+      $('select').material_select();
+      Materialize.updateTextFields();
     });
 
 
@@ -299,7 +297,7 @@ angular.module('HistoricalCtrl', [])
       top_bottom_count_popular_activities_widget();
 
       //COURSES TAB
-      day_of_week_widget();
+      //day_of_week_widget();
       box_heatmap_widget();
 
       //PERSON TAB
@@ -354,6 +352,83 @@ angular.module('HistoricalCtrl', [])
 
     vm.data.calendarheatmap = angular.copy(data)
   }
+
+  // TOP/BOTTOM ACTIVITIES
+  function top_bottom_count_popular_activities_widget(){
+
+    var format=d3.format(".1f");
+    var activity_attendance = [];
+    Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key){
+      var num_instances = vm.data.real_time_activity_reading_by_activity_name[key].length;
+      var obj = {};
+      obj.name = key;
+      obj.value = format((getInstancesTotalTime(vm.data.real_time_activity_reading_by_activity_name[key])/(60*60))/num_instances); //average time per instance
+      obj.count = num_instances;
+      activity_attendance.push(obj);
+    })//end for each macID
+
+    //sorting
+    var activity_attendance_by_hour = angular.copy(activity_attendance.sort(compareValue))
+    var activity_attendance__by_count = angular.copy(activity_attendance.sort(compareCount))
+    console.log(activity_attendance_by_hour)
+    console.log(activity_attendance__by_count)
+    //time spent
+    var top_5_activities = (activity_attendance_by_hour.length >= 5) ? activity_attendance_by_hour.slice(0,5) : activity_attendance_by_hour.slice(0, activity_attendance_by_hour.length);
+    var bottom_5_activities = (activity_attendance_by_hour.length >= 5) ? activity_attendance_by_hour.slice(Math.max(activity_attendance_by_hour.length - 5, 1)) : activity_attendance_by_hour.slice(Math.max(activity_attendance_by_hour.length, 1))
+    //count
+    var top_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count.slice(0,5) : activity_attendance__by_count.slice(0, activity_attendance__by_count.length);;
+    var bottom_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count.slice(Math.max(activity_attendance__by_count.length - 5, 1)) : activity_attendance__by_count.slice(Math.max(activity_attendance__by_count.length, 1))
+
+    //time spent
+    vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
+    vm.data.top_popular_activities = ["Hours"].concat(angular.copy(top_5_activities.map(a => a.value)))
+    vm.data.bottom_popular_activities_xaxis = angular.copy(bottom_5_activities.map(a => a.name))
+    vm.data.bottom_popular_activities = ["Hours"].concat(angular.copy(bottom_5_activities.map(a => a.value)))
+    //count
+    vm.data.top_popular_activities_count_xaxis = angular.copy(top_5_activities_count.map(a => a.name))
+    vm.data.top_popular_activities_count = ["Unique Visit"].concat(angular.copy(top_5_activities_count.map(a => a.count)))
+    vm.data.bottom_popular_activities_count_xaxis = angular.copy(bottom_5_activities_count.map(a => a.name))
+    vm.data.bottom_popular_activities_count = ["Unique Visit"].concat(angular.copy(bottom_5_activities_count.map(a => a.count)))
+
+
+  }//end top_bottom_popular_activities_widget
+
+  // TOP/BOTTOM RESIDENTS
+  function top_bottom_active_resident_widget(){
+    var format=d3.format(".1f");
+    var resident_time_spent_by_device_id = []
+    Object.keys(vm.data.real_time_activity_reading_by_device_id).forEach(function(key){
+      var obj = {};
+      obj.name = key;
+      obj.value = format(getInstancesTotalTime(vm.data.real_time_activity_reading_by_device_id[key])/(60*60));
+      obj.count = vm.data.real_time_activity_reading_by_device_id[key].length;
+      resident_time_spent_by_device_id.push(obj);
+    })//end for each macID
+
+    //sorting
+    var resident_time_spent_by_hour = angular.copy(resident_time_spent_by_device_id.sort(compareValue));
+    var resident_time_spent_by_count = angular.copy(resident_time_spent_by_device_id.sort(compareCount));
+
+    //time spent
+    var top_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(0,5) : resident_time_spent_by_hour.slice(0, resident_time_spent_by_hour.length);
+    var bottom_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(Math.max(resident_time_spent_by_hour.length - 5, 1)) : resident_time_spent_by_hour.slice(Math.max(resident_time_spent_by_hour.length, 1))
+    //count
+    var top_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count.slice(0,5) : resident_time_spent_by_count.slice(0, resident_time_spent_by_count.length);
+    var bottom_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count.slice(Math.max(resident_time_spent_by_count.length - 5, 1))  :  resident_time_spent_by_count.slice(Math.max(resident_time_spent_by_count.length, 1))
+
+    //time spent
+    vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
+    vm.data.top_active_resident = ["Hours"].concat(angular.copy(top_5_resident.map(a => a.value)))
+    vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name.split(" -")[0]))
+    vm.data.bottom_active_resident = ["Hours"].concat(angular.copy(bottom_5_resident.map(a => a.value)))
+    //count
+    vm.data.top_active_resident_count_xaxis = angular.copy(top_5_resident_count.map(a => a.name.split(" -")[0]))
+    vm.data.top_active_resident_count = ["Unique Visit"].concat(angular.copy(top_5_resident_count.map(a => a.count)))
+    vm.data.bottom_active_resident_count_xaxis = angular.copy(bottom_5_resident_count.map(a => a.name.split(" -")[0]))
+    vm.data.bottom_active_resident_count = ["Unique Visit"].concat(angular.copy(bottom_5_resident_count.map(a => a.count)))
+
+
+  }//end top_bottom_active_resident_widget
 
   /***********************
      CHARTS - ACTIVITY
@@ -431,138 +506,76 @@ angular.module('HistoricalCtrl', [])
 
   }//end box_heatmap_widget
 
-  function top_bottom_count_popular_activities_widget(){
 
-    var format=d3.format(".1f");
-    var activity_attendance = [];
-    Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key){
-      var num_instances = vm.data.real_time_activity_reading_by_activity_name[key].length;
-      var obj = {};
-      obj.name = key;
-      obj.value = format((getInstancesTotalTime(vm.data.real_time_activity_reading_by_activity_name[key])/(60*60))/num_instances); //average time per instance
-      obj.count = num_instances;
-      activity_attendance.push(obj);
-    })//end for each macID
-
-    //sorting
-    activity_attendance = activity_attendance.sort(function(a, b) {
-      return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
-    });
-    var activity_attendance_invert = activity_attendance.slice().sort(function(a, b) {
-      return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
-    });
-
-    var activity_attendance_count = activity_attendance.slice().sort(function(a, b) {
-      return (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0)
-    });
-    var activity_attendance_count_invert = activity_attendance.slice().sort(function(a, b) {
-      return (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0)
-    });
-
-    var top_5_activities = [], bottom_5_activities = [];
-    var top_5_activities_count = [], bottom_5_activities_count = [];
-    if(activity_attendance.length >= 5){
-      //time spent
-      top_5_activities = activity_attendance.slice(0,5);
-      bottom_5_activities = activity_attendance_invert.slice(Math.max(activity_attendance_invert.length - 5, 1))
-      //count
-      top_5_activities_count = activity_attendance_count.slice(0,5);
-      bottom_5_activities_count = activity_attendance_count_invert.slice(Math.max(activity_attendance_count_invert.length - 5, 1))
-    }else{
-      //time spent
-      top_5_activities = activity_attendance.slice(0, activity_attendance.length);
-      bottom_5_activities = activity_attendance_invert.slice(Math.max(activity_attendance_invert.length, 1))
-      //count
-      top_5_activities_count = activity_attendance_count.slice(0, activity_attendance_count.length);
-      bottom_5_activities = activity_attendance_count_invert.slice(Math.max(activity_attendance_count_invert.length, 1))
-    }
-
-    vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
-    vm.data.top_popular_activities = ["activities"].concat(angular.copy(top_5_activities.map(a => a.value)))
-
-    vm.data.bottom_popular_activities_xaxis = angular.copy(bottom_5_activities.map(a => a.name))
-    vm.data.bottom_popular_activities = ["activities"].concat(angular.copy(bottom_5_activities.map(a => a.value)))
-
-    //count
-    vm.data.top_popular_activities_count_xaxis = angular.copy(top_5_activities_count.map(a => a.name))
-    vm.data.top_popular_activities_count = ["activities"].concat(angular.copy(top_5_activities_count.map(a => a.count)))
-
-    vm.data.bottom_popular_activities_count_xaxis = angular.copy(bottom_5_activities_count.map(a => a.name))
-    vm.data.bottom_popular_activities_count = ["activities"].concat(angular.copy(bottom_5_activities_count.map(a => a.count)))
-
-
-  }//end top_bottom_popular_activities_widget
-
-  function top_bottom_active_resident_widget(){
-
-    var format=d3.format(".1f");
-    var resident_time_spent_by_device_id = []
-    Object.keys(vm.data.real_time_activity_reading_by_device_id).forEach(function(key){
-      var obj = {};
-      obj.name = key;
-      obj.value = format(getInstancesTotalTime(vm.data.real_time_activity_reading_by_device_id[key])/(60*60));
-      obj.count = vm.data.real_time_activity_reading_by_device_id[key].length;
-      resident_time_spent_by_device_id.push(obj);
-    })//end for each macID
-
-    //sorting
-    resident_time_spent_by_device_id = resident_time_spent_by_device_id.sort(function(a, b) {
-      return (a.value > b.value) ? -1 : ((b.value > a.value) ? 1 : 0)
-    });
-
-    var resident_time_spent_by_device_id_invert = resident_time_spent_by_device_id.slice().sort(function(a, b) {
-      return (a.value > b.value) ? 1 : ((b.value > a.value) ? -1 : 0)
-    });
-
-    var resident_count_by_device_id = resident_time_spent_by_device_id.slice().sort(function(a, b) {
-      return (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0)
-    });
-
-    var resident_count_by_device_id_invert = resident_time_spent_by_device_id.slice().sort(function(a, b) {
-      return (a.count > b.count) ? 1 : ((b.count > a.count) ? -1 : 0)
-    });
-
-    //
-    var top_5_resident = [], bottom_5_resident = [];
-    var top_5_resident_count = [], bottom_5_resident_count = [];
-    if(resident_time_spent_by_device_id.length >= 5){
-      //time spent
-      top_5_resident = resident_time_spent_by_device_id.slice(0,5);
-      bottom_5_resident = resident_time_spent_by_device_id_invert.slice(Math.max(resident_time_spent_by_device_id_invert.length - 5, 1))
-      //count
-      top_5_resident_count = resident_count_by_device_id.slice(0,5);
-      bottom_5_resident_count = resident_count_by_device_id.slice(Math.max(resident_count_by_device_id_invert.length - 5, 1))
-    }else{
-      top_5_resident = resident_time_spent_by_device_id.slice(0, resident_time_spent_by_device_id.length);
-      bottom_5_resident = resident_time_spent_by_device_id_invert.slice(Math.max(resident_time_spent_by_device_id_invert.length, 1))
-
-      top_5_resident_count = resident_count_by_device_id.slice(0, resident_count_by_device_id.length);
-      bottom_5_resident = resident_count_by_device_id_invert.slice(Math.max(resident_count_by_device_id.length_invert, 1))
-    }
-    //time spent
-    vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
-    vm.data.top_active_resident = ["residents"].concat(angular.copy(top_5_resident.map(a => a.value)))
-
-    vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name.split(" -")[0]))
-    vm.data.bottom_active_resident = ["residents"].concat(angular.copy(bottom_5_resident.map(a => a.value)))
-
-    //count
-    vm.data.top_active_resident_count_xaxis = angular.copy(top_5_resident_count.map(a => a.name.split(" -")[0]))
-    vm.data.top_active_resident_count = ["residents"].concat(angular.copy(top_5_resident_count.map(a => a.count)))
-    vm.data.bottom_active_resident_count_xaxis = angular.copy(bottom_5_resident_count.map(a => a.name.split(" -")[0]))
-    vm.data.bottom_active_resident_count = ["residents"].concat(angular.copy(bottom_5_resident_count.map(a => a.count)))
-
-  }//end top_bottom_active_resident_widget
 
   /***********************
      CHARTS - PERSON
   ***********************/
+  function person_box_heatmap_widget(String resident_name){
+    //TODO: cut out the data for that resident
+    //vm.data.real_time_activity_reading
+    //var resident_activity_reading
+
+    temp_arr = insArr_to_dateInsArr(resident_activity_reading);
+    var date_ins_array = temp_arr[1];
+    var date_list = temp_arr[0];
+
+    var week_arr = [];
+    for(i=0; i<7; i++){
+      var hour_arr  = new Array(21);
+      hour_arr.fill(0);
+      week_arr.push(hour_arr);
+    }
+
+    var week_instances_count = new Array(7); //counts number of weeks the chosen dataset has of each day
+    week_instances_count.fill(0);
+
+    date_ins_array.forEach(function(date_value,date_index) {
+      //check date
+      var this_date = moment(date_list[date_index]);
+      var day_index = moment(this_date).weekday(); //weekday returns 0-6 where 0 is Monday
+      var time_arr = generate_time_array(this_date,8,20);
+
+      date_value.forEach(function(instance_value){
+        var time_index;
+        var this_start = moment(instance_value.start_timestamp);
+        var this_end = moment(instance_value.end_timestamp);
+        //console.log(instance_value);
+        //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
+        for (i = 0; i < time_arr.length-1; i++) {
+          if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
+            //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
+            week_arr[day_index][i] += 1;
+          };//end if
+        };//end for loop
+      })//end forEach instance
+    })//end for each date
+
+    //add data
+    weekly_activity_data = [];
+    week_arr.forEach(function(day_value,day_index){
+      day_value.forEach(function(value,index){
+        weekly_activity_data.push({
+          "day": day_index+1,
+          "hour":	index+1,
+          "value": value
+        })
+      })//end for each hour
+    })//end for each day
+
+    vm.dayHourBoxHeatmapData=angular.copy(weekly_activity_data);
+
+  }//end person_box_heatmap_widget
 
 
 
 
+  vm.tab2 = tab2;
+  function tab2(){
+    console.log("TAB");
 
-
+    day_of_week_widget();
+  }
 
   function update_most_active_chart(result){
     if (result.results.length == 0){
@@ -737,6 +750,21 @@ angular.module('HistoricalCtrl', [])
   /********************
     REUSEABLE FUNCTIONS
   *********************/
+
+  function compareValue (a, b) {
+    // DESCENDING ORDER
+    if (parseFloat(a.value) > parseFloat(b.value)) return -1;
+    if (parseFloat(a.value) < parseFloat(b.value)) return 1;
+    return 0;
+  }
+
+  function compareCount (a, b) {
+    // DESCENDING ORDER
+    if (parseFloat(a.count) > parseFloat(b.count)) return -1;
+    if (parseFloat(a.count) < parseFloat(b.count)) return 1;
+    return 0;
+  }
+
   function getInstancesTotalTime(instances_array){
     /*instance = {
           activity_desc:"Karaoke"

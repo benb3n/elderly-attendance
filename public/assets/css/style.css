@@ -13,8 +13,9 @@ body{
 }
 
 .card .card-title {
-  font-size: 20px !important;
+  font-size: 15px !important;
   font-weight: 200 !important;
+  padding: 5px !important
 }
 .card-profile{
     display: inline-block;
@@ -95,6 +96,9 @@ body{
 }
 nav .brand-logo {
     font-weight: 250;
+}
+.row {
+    margin-bottom: 0px !important;
 }
 .select-wrapper input.select-dropdown {
     max-width: 100%;
