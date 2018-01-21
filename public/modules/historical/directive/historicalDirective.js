@@ -566,6 +566,7 @@ angular.module('HistoricalDirective', [])
       }
 
 })//end dir
+
 .directive('horizontalBarChart',function(){
   return {
     restrict: 'EA',
@@ -611,8 +612,6 @@ angular.module('HistoricalDirective', [])
         }
       }
 })//end dir horizontalBarChart
-
-
 
 .directive('responsiveHorizontalBarChart',function(){
   return {
@@ -866,22 +865,17 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-            if(typeof data != 'undefined' && data.length!=0){
-
-            }
             scope.heatmapChart(data);
         },true);
-
 
         scope.heatmapChart =  function(data) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
             var margin = { top: 40, right: 0, bottom: 30, left: 30 },
-              width = screen.width - margin.left - margin.right,
-              gridSize = Math.floor(width / 30),
-              height = gridSize*7 + margin.top + margin.bottom,
+              width = screen.width - margin.left - margin.right -30,
+              gridSize = Math.floor(width / 23),
+              height = (gridSize*7) + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
-              buckets = 5,//9
               rangeDomain = [1,3,6,9,15],
               displayRangeDomain = [0,1,3,6,9],
               colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
@@ -915,9 +909,9 @@ angular.module('HistoricalDirective', [])
                 .attr("transform", "translate(" + gridSize / 2 + ", -6)")
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
-              var colorScale = d3.scale.threshold()
+              var colorScale = d3.scale.th
+              reshold()
                    .domain(rangeDomain)
-                  //.domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
                   .range(colors);
 
               var cards = svg.selectAll(".hour")
