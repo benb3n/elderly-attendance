@@ -101,7 +101,6 @@ angular.module('SystemMonitoringCtrl', [])
         vm.update = {};
         vm.searchname = "";
         vm.selectedBatteryLevel = ['Low', 'Medium', 'High']
-        vm.selectedDays = 3;
 
         vm.loading = true;
         generateDataForInit();
@@ -144,7 +143,7 @@ angular.module('SystemMonitoringCtrl', [])
 
             
         }).then(function(result){
-            console.log("alerts", result)
+            
             vm.loading = false;
             $timeout(function () {
                 $('select').material_select()
