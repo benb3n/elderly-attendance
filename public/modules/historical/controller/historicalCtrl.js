@@ -511,15 +511,56 @@ angular.module('HistoricalCtrl', [])
 
   }//end box_heatmap_widget
 
+  function update_activity_month_chart(course_type){
+    /*
+    var course_activity_array = vm.data.real_time_activity_reading_by_activity_name["Karaoke"];
+    console.log(course_activity_array);
 
+    var month_list = [];
+    var months_array = [];
+    course_activity_array.forEach(function(value){
+      var yearmonth = moment(value.start_timestamp).format("YYYY-MM");
+      if (month_list.indexOf(yearmonth) == -1){
+        month_list.push(yearmonth);
+        months_array.push([]);
+      }
+      months_array[month_list.indexOf(yearmonth)].push(value);
+    })
+
+    var activity_month_data = [];
+    month_list.forEach(function(value,index){
+      activity_month_data.push({
+        "date": '' + value,
+        "num": months_array[index].length
+      })//end obj
+    })//end for each month in month list
+    activity_month_data.push({
+      "date": '2017-11',
+      "num": 14
+    })//end obj
+    console.log(activity_month_data);
+    vm.data.activityMonthData=angular.copy(activity_month_data);
+    */
+
+    activityMonthData = [];
+    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
+    test_values = [1,3,2,5,6,7,4,6,2];
+    test_dates.forEach(function(value,index){
+      activityMonthData.push({
+        "date": value,
+        "num": test_values[index]
+      })//end obj
+    });
+    vm.data.activityMonthData=angular.copy(activityMonthData);
+    console.log(activityMonthData);
+
+
+    //{"date": '2011-03', "num" : 9}
+  }// end func update_activity_month_chart
 
   /***********************
      CHARTS - PERSON
   ***********************/
-
-
-
-
 
   vm.tab2 = tab2;
   function tab2(){
@@ -556,145 +597,6 @@ angular.module('HistoricalCtrl', [])
       vm.mostActiveData = angular.copy(time_data);
   }//end update_most_active_chart function
 
-  function update_activity_month_chart(course_type){
-    var course_activity_array = vm.data.real_time_activity_reading_by_activity_name[0];
-
-    //get data related to course
-    center_activities = {
-        "count": 3,
-        "next": null,
-        "previous": null,
-        "results": [
-          {
-              "id": 15,
-              "project_prefix": "MP",
-              "project_desc": "Marine Parade",
-              "center_id": 2,
-              "center_code_name": "gl52",
-              "activity_desc": "activity desc",
-              "activity_type_list": "music; sports",
-              "start_date": "2017-11-01",
-              "end_date": "2017-11-01",
-              "start_time": "10:00:00",
-              "end_time": "11:00:00",
-              "repeat_params": {
-                  "days_of_week": [1, 2, 3]
-                }
-          },{
-              "id": 20,
-              "project_prefix": "MP",
-              "project_desc": "Marine Parade",
-              "center_id": 2,
-              "center_code_name": "gl52",
-              "activity_desc": "Hokkien",
-              "activity_type_list": "language",
-              "start_date": "2017-10-30",
-              "end_date": "2017-11-03",
-              "start_time": "10:00:00",
-              "end_time": "11:00:00",
-              "repeat_params": {
-                  "days_of_week": [2,3,4]
-                }
-          },{
-              "id": 30,
-              "project_prefix": "MP",
-              "project_desc": "Marine Parade",
-              "center_id": 2,
-              "center_code_name": "gl52",
-              "activity_desc": "English",
-              "activity_type_list": "language",
-              "start_date": "2017-11-01",
-              "end_date": "2017-11-30",
-              "start_time": "12:00:00",
-              "end_time": "14:00:00",
-              "repeat_params": {
-                  "days_of_week": [1,3,5]
-                }
-          }
-        ]
-      }//end obj
-
-      /*
-    var temp_arr = courseObj_to_courseArr(center_activities.results,course_type,start_date,end_date);
-    var courses_date_array = temp_arr[1]; // arr[date[course,course],date[course]..]
-    var courses_date_list = temp_arr[0];
-    */
-    /*courses_array.sort(function(a,b){
-      a_date = moment(a[0]);
-      b_date = moment(b[0]);
-      if(a_date.isBefore(b_date)){
-        return -1;
-      } else{
-        return 1;
-      }
-    });
-    */
-    /*
-    var courses_date_instances = Array(courses_date_list.length);
-    //arr[date[course[ins],course[ins,ins]],date[course[ins,ins]]...]
-    temp_arr = insArr_to_dateInsArr(real_time_activity_reading_by_activity_name);
-    var date_ins_array = temp_arr[1];
-    var date_list = temp_arr[0];
-
-    date_ins_array.forEach(function(date_value,date_index){
-      var course_date_index = courses_date_list.indexOf(date_list[date_index]);
-      if(course_date_index==-1) return; //no courses that date
-      var focus_courses = courses_date_array[course_date_index];//courses in a specific date
-      courses_date_instances[course_date_index] = insArray_to_coursesInsArr(date_value,focus_courses);
-    })//end for each day
-
-    var month_list = [];
-
-    var curr_month = moment(courses_date_list[0]).set('date', 1);
-    var end_month = moment(courses_date_list[courses_date_list.length-1]).set('date', 1);
-    while(curr_month.isSameOrBefore(end_month)){
-      month_list.push(moment(curr_month).format('YYYY-MM'));
-      curr_month = moment(curr_month).add(1, 'month');
-    }//end while
-
-    var month_count = Array(month_list.length);
-    month_count.fill(0);
-    courses_date_instances.forEach(function(date_value,date_index){
-      var this_month = moment(courses_date_list[date_index]).format('YYYY-MM');
-      if (month_list.indexOf(this_month) == -1){
-        console.log("error in update_activity_month_chart");
-      };//end if
-      date_value.forEach(function(course_value){
-        month_count[month_list.indexOf(this_month)] += uniqueId_from_instanceArr(course_value).length;
-      })//for each course
-    })//for each date
-
-    var activity_month_data = [];
-    month_list.forEach(function(value,index){
-      activity_month_data.push({
-        "date": '' + value,
-        "num": month_count[index]
-      })//end obj
-    })//end for each month in month list
-    activity_month_data.push({
-      "date": '2017-12',
-      "num": 2
-    })//end obj
-    /*
-    activity_month_data.push({
-      "date": '2018-01',
-      "num": 3
-    })//end obj*/
-
-    activityMonthData = [];
-    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
-    test_values = [1,3,2,5,6,7,4,6,2];
-    test_dates.forEach(function(value,index){
-      activityMonthData.push({
-        "date": value,
-        "num": test_values[index]
-      })//end obj
-    });
-    vm.data.activityMonthData=angular.copy(activityMonthData);
-    //vm.activityMonthData=angular.copy(activity_month_data);
-    console.log(activityMonthData);
-    //{"date": '2011-03', "num" : 9}
-  }// end func update_activity_month_chart
 
   function update_course_time_chart(result){
     //TODO:
