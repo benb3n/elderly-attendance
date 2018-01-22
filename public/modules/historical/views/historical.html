@@ -154,10 +154,20 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Unique Visitors Heatmap</span>
             <div class="card-content hide-on-small-only">
-              <day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData" style="text-align: center"></day-Hour-Heatmap-Chart>
+              <box-Heatmap-Chart data="historical.dayHourBoxHeatmapData" style="text-align: center"></box-Heatmap-Chart>
             </div>
             <div class="card-content hide-on-med-and-up">
               <flip-day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></flip-day-Hour-Heatmap-Chart>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l4">
+          <div class="card">
+            <span class="card-title col s12 teal darken-1 white-text">Monthly Attendance</span>
+            <div class="card-content" id="monthly_content">
+              <div class="g-chart">
+                <responsive-Line-Chart data="historical.data.activityMonthData" color="" id="rlinecharts"></responsive-Line-Chart>
+              </div>
             </div>
           </div>
         </div>
@@ -169,14 +179,7 @@
             </div>
           </div>
         </div>
-        <div class="col s12 m6 l4">
-          <div class="card">
-            <span class="card-title col s12 teal darken-1 white-text">Best Day of the Week</span>
-            <div class="card-content" id="activity_content">
-              <weekly-Line-Chart  data="historical.data.activityMonthData" color="" id="activities_line_chart"></weekly-Line-Chart>
-            </div>
-          </div>
-        </div>
+
         <div class="col s12 m6 l4">
           <div class="card">
             <span class="card-title">Attendance per Time Slot</span>
@@ -189,7 +192,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Unique Visitors Heatmap</span>
             <div class="card-content hide-on-small-only">
-              <box-Heatmap-Chart data="historical.dayHourBoxHeatmapData" style="text-align: center"></box-Heatmap-Chart>
+              <day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData" style="text-align: center"></day-Hour-Heatmap-Chart>
             </div>
             <div class="card-content hide-on-med-and-up">
               <flip-day-Hour-Heatmap-Chart data="historical.dayHourBoxHeatmapData"></flip-day-Hour-Heatmap-Chart>

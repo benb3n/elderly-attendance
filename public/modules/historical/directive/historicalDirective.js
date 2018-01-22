@@ -79,7 +79,7 @@ angular.module('HistoricalDirective', [])
               rotated:true
             },
             legend:{
-              show:true
+              show:false
             },
             transition: {
               duration: 500
@@ -95,16 +95,13 @@ angular.module('HistoricalDirective', [])
 
           d3.select(window).on("resize", resized);
 
-
         }else {
           d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
         }
 
         function resized(){
             chart.resize();
-
         }
-
 
       }
     }
@@ -199,8 +196,8 @@ angular.module('HistoricalDirective', [])
         scope.$watch('data', function(data) {
           if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
             var parseData = data
+            console.log(parseData);
           }
-
           scope.renderChart(parseData);
         },true);
 
@@ -211,7 +208,9 @@ angular.module('HistoricalDirective', [])
 
             //Margin conventions
             var margin = {top: 20, right: 70, bottom: 50, left: 35};
-            var widther = window.outerWidth;
+            //var widther = window.outerWidth;
+            var widther = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
+            console.log(widther);
             var width = widther - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
 
@@ -363,8 +362,7 @@ angular.module('HistoricalDirective', [])
               var num_months = data.length;
             //RESPONSIVENESS
             d3.select(window).on("resize", resized);
-            resized();
-
+            resized();resized();
           }else {
             d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
           }
@@ -806,6 +804,7 @@ angular.module('HistoricalDirective', [])
                 .attr("y", y0.rangeBand()/1.7 )
                 .attr("class", "g-labels");
 
+                /*
               //Appends chart source
               d3.select(".g-source-bold")
                 .text("SOURCE: ")
@@ -814,7 +813,7 @@ angular.module('HistoricalDirective', [])
               d3.select(".g-source-reg")
                 .text("Chart source info goes here")
                 .attr("class", "g-source-reg");
-
+                */
 
               //RESPONSIVENESS
               d3.select(window).on("resize", resized);

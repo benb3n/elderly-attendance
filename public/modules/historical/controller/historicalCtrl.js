@@ -557,6 +557,8 @@ angular.module('HistoricalCtrl', [])
   }//end update_most_active_chart function
 
   function update_activity_month_chart(course_type){
+    var course_activity_array = vm.data.real_time_activity_reading_by_activity_name[0];
+
     //get data related to course
     center_activities = {
         "count": 3,
@@ -612,9 +614,11 @@ angular.module('HistoricalCtrl', [])
         ]
       }//end obj
 
+      /*
     var temp_arr = courseObj_to_courseArr(center_activities.results,course_type,start_date,end_date);
     var courses_date_array = temp_arr[1]; // arr[date[course,course],date[course]..]
     var courses_date_list = temp_arr[0];
+    */
     /*courses_array.sort(function(a,b){
       a_date = moment(a[0]);
       b_date = moment(b[0]);
@@ -625,6 +629,7 @@ angular.module('HistoricalCtrl', [])
       }
     });
     */
+    /*
     var courses_date_instances = Array(courses_date_list.length);
     //arr[date[course[ins],course[ins,ins]],date[course[ins,ins]]...]
     temp_arr = insArr_to_dateInsArr(real_time_activity_reading_by_activity_name);
@@ -638,9 +643,6 @@ angular.module('HistoricalCtrl', [])
       courses_date_instances[course_date_index] = insArray_to_coursesInsArr(date_value,focus_courses);
     })//end for each day
 
-    /*
-    todo: average out the activity?
-    */
     var month_list = [];
 
     var curr_month = moment(courses_date_list[0]).set('date', 1);
@@ -678,6 +680,7 @@ angular.module('HistoricalCtrl', [])
       "date": '2018-01',
       "num": 3
     })//end obj*/
+
     activityMonthData = [];
     test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
     test_values = [1,3,2,5,6,7,4,6,2];
@@ -687,9 +690,9 @@ angular.module('HistoricalCtrl', [])
         "num": test_values[index]
       })//end obj
     });
-    //vm.activityMonthData=angular.copy(activityMonthData);
-    vm.activityMonthData=angular.copy(activity_month_data);
-
+    vm.data.activityMonthData=angular.copy(activityMonthData);
+    //vm.activityMonthData=angular.copy(activity_month_data);
+    console.log(activityMonthData);
     //{"date": '2011-03', "num" : 9}
   }// end func update_activity_month_chart
 
