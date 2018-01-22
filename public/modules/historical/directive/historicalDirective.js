@@ -1230,7 +1230,7 @@ directive('residentBoxHeatmapChart',function(){
     scope: {
         data: "=",
         color: "=",
-        date_list: "="
+        dateList: "="
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
@@ -1258,7 +1258,7 @@ directive('residentBoxHeatmapChart',function(){
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             var dayLabels = svg.selectAll(".dayLabel")
-              .data(days)
+              .data(scope.dateList)
               .enter().append("text")
                 .text(function (d) { return d; })
                 .attr("x", 0)

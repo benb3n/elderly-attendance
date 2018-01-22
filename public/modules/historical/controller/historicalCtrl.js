@@ -172,7 +172,9 @@ angular.module('HistoricalCtrl', [])
       bottom_popular_activities_xaxis: [],
       bottom_popular_activities_count: [],
       bottom_popular_activities_count_xaxis: [],
-      activityMonthData: []
+      activityMonthData: [],
+      residentBoxHeatmapData: []
+      residentBoxHeatmapData_date: []
     }
     vm.display = {
       centers:[],
@@ -306,7 +308,7 @@ angular.module('HistoricalCtrl', [])
       update_activity_month_chart("Language");
 
       //PERSON TAB
-
+      resident_heatmap_widget();
 
     })//end when.then
     .then(function(){
@@ -568,6 +570,18 @@ angular.module('HistoricalCtrl', [])
 
   }
 
+  function resident_heatmap_widget(){
+
+    var residentBoxHeatmapData = [
+      
+    ];
+    var residentBoxHeatmapData_date = ['24 Dec 17','25 Dec 17','26 Dec 17','27 Dec 17','28 Dec 17','29 Dec 17','31 Dec 17','2 Jan 18'];
+
+    vm.data.residentBoxHeatmapData = angular.copy(residentBoxHeatmapData)
+    vm.data.residentBoxHeatmapData_date =angular.copy(residentBoxHeatmapData_date)
+
+  }//end resident_heatmap_widget
+
   function update_most_active_chart(result){
     if (result.results.length == 0){
       document.getElementById("active_error").style.visibility='visible';
@@ -596,7 +610,6 @@ angular.module('HistoricalCtrl', [])
 
       vm.mostActiveData = angular.copy(time_data);
   }//end update_most_active_chart function
-
 
   function update_course_time_chart(result){
     //TODO:
