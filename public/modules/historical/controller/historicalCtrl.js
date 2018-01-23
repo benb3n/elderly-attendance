@@ -573,9 +573,218 @@ angular.module('HistoricalCtrl', [])
   function resident_heatmap_widget(){
 
     var residentBoxHeatmapData = [
-
+    {      "day": 1,      "hour":	1,      "value": 0    },
+    {      "day": 1,      "hour": 2,      "value": 0    },
+    {      "day": 1,      "hour": 3,      "value": 0    },
+    {      "day": 1,      "hour": 4,      "value": 1    },
+    {      "day": 1,      "hour": 5,      "value": 1    },
+    {      "day": 1,      "hour": 6,      "value": 1    },
+    {      "day": 1,      "hour": 7,      "value": 1    },
+    {      "day": 1,      "hour": 8,      "value": 1    },
+    {      "day": 1,      "hour": 9,      "value": 1    },
+    {      "day": 1,      "hour": 10,      "value": 1    },
+    {      "day": 1,      "hour": 11,      "value": 1    },
+    {      "day": 1,      "hour": 12,      "value": 1    },
+    {      "day": 1,      "hour": 13,      "value": 1    },
+    {      "day": 1,      "hour": 14,      "value": 1    },
+    {      "day": 1,      "hour": 15,      "value": 1    },
+    {      "day": 1,      "hour": 16,      "value": 1    },
+    {      "day": 1,      "hour": 17,      "value": 1    },
+    {      "day": 1,      "hour": 18,      "value": 1    },
+    {      "day": 1,      "hour": 19,      "value": 1    },
+    {      "day": 1,      "hour": 20,      "value": 0    },
+    {      "day": 1,      "hour": 21,      "value": 0    },
+    {      "day": 1,      "hour": 22,      "value": 0    },
+    {      "day": 2,      "hour":	1,      "value": 0    },
+    {      "day": 2,      "hour": 2,      "value": 0    },
+    {      "day": 2,      "hour": 3,      "value": 0    },
+    {      "day": 2,      "hour": 4,      "value": 0    },
+    {      "day": 2,      "hour": 5,      "value": 0    },
+    {      "day": 2,      "hour": 6,      "value": 0    },
+    {      "day": 2,      "hour": 7,      "value": 0    },
+    {      "day": 2,      "hour": 8,      "value": 1    },
+    {      "day": 2,      "hour": 9,      "value": 1    },
+    {      "day": 2,      "hour": 10,      "value": 1    },
+    {      "day": 2,      "hour": 11,      "value": 1    },
+    {      "day": 2,      "hour": 12,      "value": 1    },
+    {      "day": 2,      "hour": 13,      "value": 0    },
+    {      "day": 2,      "hour": 14,      "value": 0    },
+    {      "day": 2,      "hour": 15,      "value": 0    },
+    {      "day": 2,      "hour": 16,      "value": 0    },
+    {      "day": 2,      "hour": 17,      "value": 0    },
+    {      "day": 2,      "hour": 18,      "value": 0    },
+    {      "day": 2,      "hour": 19,      "value": 0    },
+    {      "day": 2,      "hour": 20,      "value": 0    },
+    {      "day": 2,      "hour": 21,      "value": 0    },
+    {      "day": 2,      "hour": 22,      "value": 0    },
+    {      "day": 3,      "hour":	1,      "value": 0    },
+    {      "day": 3,      "hour": 2,      "value": 0    },
+    {      "day": 3,      "hour": 3,      "value": 1    },
+    {      "day": 3,      "hour": 4,      "value": 1    },
+    {      "day": 3,      "hour": 5,      "value": 1    },
+    {      "day": 3,      "hour": 6,      "value": 1    },
+    {      "day": 3,      "hour": 7,      "value": 1    },
+    {      "day": 3,      "hour": 8,      "value": 1    },
+    {      "day": 3,      "hour": 9,      "value": 1    },
+    {      "day": 3,      "hour": 10,      "value": 0    },
+    {      "day": 3,      "hour": 11,      "value": 0    },
+    {      "day": 3,      "hour": 12,      "value": 0    },
+    {      "day": 3,      "hour": 13,      "value": 0    },
+    {      "day": 3,      "hour": 14,      "value": 0    },
+    {      "day": 3,      "hour": 15,      "value": 0    },
+    {      "day": 3,      "hour": 16,      "value": 0    },
+    {      "day": 3,      "hour": 17,      "value": 0    },
+    {      "day": 3,      "hour": 18,      "value": 0    },
+    {      "day": 3,      "hour": 19,      "value": 0    },
+    {      "day": 3,      "hour": 20,      "value": 0    },
+    {      "day": 3,      "hour": 21,      "value": 0    },
+    {      "day": 3,      "hour": 22,      "value": 0    },
+    {      "day": 4,      "hour":	1,      "value": 0    },
+    {      "day": 4,      "hour": 2,      "value": 0    },
+    {      "day": 4,      "hour": 3,      "value": 0    },
+    {      "day": 4,      "hour": 4,      "value": 1    },
+    {      "day": 4,      "hour": 5,      "value": 1    },
+    {      "day": 4,      "hour": 6,      "value": 1    },
+    {      "day": 4,      "hour": 7,      "value": 1    },
+    {      "day": 4,      "hour": 8,      "value": 1    },
+    {      "day": 4,      "hour": 9,      "value": 1    },
+    {      "day": 4,      "hour": 10,      "value": 1    },
+    {      "day": 4,      "hour": 11,      "value": 0    },
+    {      "day": 4,      "hour": 12,      "value": 0    },
+    {      "day": 4,      "hour": 13,      "value": 0    },
+    {      "day": 4,      "hour": 14,      "value": 0    },
+    {      "day": 4,      "hour": 15,      "value": 0    },
+    {      "day": 4,      "hour": 16,      "value": 0    },
+    {      "day": 4,      "hour": 17,      "value": 0    },
+    {      "day": 4,      "hour": 18,      "value": 0    },
+    {      "day": 4,      "hour": 19,      "value": 0    },
+    {      "day": 4,      "hour": 20,      "value": 0    },
+    {      "day": 4,      "hour": 21,      "value": 0    },
+    {      "day": 4,      "hour": 22,      "value": 0    },
+    {      "day": 5,      "hour":	1,      "value": 0    },
+    {      "day": 5,      "hour": 2,      "value": 0    },
+    {      "day": 5,      "hour": 3,      "value": 0    },
+    {      "day": 5,      "hour": 4,      "value": 0    },
+    {      "day": 5,      "hour": 5,      "value": 0    },
+    {      "day": 5,      "hour": 6,      "value": 1    },
+    {      "day": 5,      "hour": 7,      "value": 1    },
+    {      "day": 5,      "hour": 8,      "value": 1    },
+    {      "day": 5,      "hour": 9,      "value": 1    },
+    {      "day": 5,      "hour": 10,      "value": 1    },
+    {      "day": 5,      "hour": 11,      "value": 1    },
+    {      "day": 5,      "hour": 12,      "value": 1    },
+    {      "day": 5,      "hour": 13,      "value": 1    },
+    {      "day": 5,      "hour": 14,      "value": 1    },
+    {      "day": 5,      "hour": 15,      "value": 1    },
+    {      "day": 5,      "hour": 16,      "value": 1    },
+    {      "day": 5,      "hour": 17,      "value": 1    },
+    {      "day": 5,      "hour": 18,      "value": 0    },
+    {      "day": 5,      "hour": 19,      "value": 0    },
+    {      "day": 5,      "hour": 20,      "value": 0    },
+    {      "day": 5,      "hour": 21,      "value": 0    },
+    {      "day": 5,      "hour": 22,      "value": 0    },
+    {      "day": 6,      "hour":	1,      "value": 0    },
+    {      "day": 6,      "hour": 2,      "value": 0    },
+    {      "day": 6,      "hour": 3,      "value": 0    },
+    {      "day": 6,      "hour": 4,      "value": 0    },
+    {      "day": 6,      "hour": 5,      "value": 1    },
+    {      "day": 6,      "hour": 6,      "value": 1    },
+    {      "day": 6,      "hour": 7,      "value": 1    },
+    {      "day": 6,      "hour": 8,      "value": 1    },
+    {      "day": 6,      "hour": 9,      "value": 1    },
+    {      "day": 6,      "hour": 10,      "value": 1    },
+    {      "day": 6,      "hour": 11,      "value": 1    },
+    {      "day": 6,      "hour": 12,      "value": 1    },
+    {      "day": 6,      "hour": 13,      "value": 0    },
+    {      "day": 6,      "hour": 14,      "value": 0    },
+    {      "day": 6,      "hour": 15,      "value": 0    },
+    {      "day": 6,      "hour": 16,      "value": 0    },
+    {      "day": 6,      "hour": 17,      "value": 0    },
+    {      "day": 6,      "hour": 18,      "value": 0    },
+    {      "day": 6,      "hour": 19,      "value": 0    },
+    {      "day": 6,      "hour": 20,      "value": 0    },
+    {      "day": 6,      "hour": 21,      "value": 0    },
+    {      "day": 6,      "hour": 22,      "value": 0    },
+    {      "day": 7,      "hour":	1,      "value": 0    },
+    {      "day": 7,      "hour": 2,      "value": 0    },
+    {      "day": 7,      "hour": 3,      "value": 0    },
+    {      "day": 7,      "hour": 4,      "value": 0    },
+    {      "day": 7,      "hour": 5,      "value": 0    },
+    {      "day": 7,      "hour": 6,      "value": 0    },
+    {      "day": 7,      "hour": 7,      "value": 0    },
+    {      "day": 7,      "hour": 8,      "value": 0    },
+    {      "day": 7,      "hour": 9,      "value": 0    },
+    {      "day": 7,      "hour": 10,      "value": 0    },
+    {      "day": 7,      "hour": 11,      "value": 0    },
+    {      "day": 7,      "hour": 12,      "value": 0    },
+    {      "day": 7,      "hour": 13,      "value": 0    },
+    {      "day": 7,      "hour": 14,      "value": 0    },
+    {      "day": 7,      "hour": 15,      "value": 0    },
+    {      "day": 7,      "hour": 16,      "value": 0    },
+    {      "day": 7,      "hour": 17,      "value": 0    },
+    {      "day": 7,      "hour": 18,      "value": 0    },
+    {      "day": 7,      "hour": 19,      "value": 0    },
+    {      "day": 7,      "hour": 20,      "value": 0    },
+    {      "day": 7,      "hour": 21,      "value": 0    },
+    {      "day": 7,      "hour": 22,      "value": 0    } ,
+    {      "day": 8,      "hour":	1,      "value": 0    },
+    {      "day": 8,      "hour": 2,      "value": 0    },
+    {      "day": 8,      "hour": 3,      "value": 0    },
+    {      "day": 8,      "hour": 4,      "value": 1    },
+    {      "day": 8,      "hour": 5,      "value": 1    },
+    {      "day": 8,      "hour": 6,      "value": 1    },
+    {      "day": 8,      "hour": 7,      "value": 1    },
+    {      "day": 8,      "hour": 8,      "value": 1    },
+    {      "day": 8,      "hour": 9,      "value": 0    },
+    {      "day": 8,      "hour": 10,      "value": 0    },
+    {      "day": 8,      "hour": 11,      "value": 0    },
+    {      "day": 8,      "hour": 12,      "value": 0    },
+    {      "day": 8,      "hour": 13,      "value": 0    },
+    {      "day": 8,      "hour": 14,      "value": 0    },
+    {      "day": 8,      "hour": 15,      "value": 0    },
+    {      "day": 8,      "hour": 16,      "value": 0    },
+    {      "day": 8,      "hour": 17,      "value": 0    },
+    {      "day": 8,      "hour": 18,      "value": 0    },
+    {      "day": 8,      "hour": 19,      "value": 0    },
+    {      "day": 8,      "hour": 20,      "value": 0    },
+    {      "day": 8,      "hour": 21,      "value": 0    },
+    {      "day": 8,      "hour": 22,      "value": 0    },
+    {      "day": 9,      "hour":	1,      "value": 0    },
+    {      "day": 9,      "hour": 2,      "value": 0    },
+    {      "day": 9,      "hour": 3,      "value": 1    },
+    {      "day": 9,      "hour": 4,      "value": 1    },
+    {      "day": 9,      "hour": 5,      "value": 1    },
+    {      "day": 9,      "hour": 6,      "value": 1    },
+    {      "day": 9,      "hour": 7,      "value": 1    },
+    {      "day": 9,      "hour": 8,      "value": 1    },
+    {      "day": 9,      "hour": 9,      "value": 1    },
+    {      "day": 9,      "hour": 10,      "value": 1    },
+    {      "day": 9,      "hour": 11,      "value": 1    },
+    {      "day": 9,      "hour": 12,      "value": 1    },
+    {      "day": 9,      "hour": 13,      "value": 1    },
+    {      "day": 9,      "hour": 14,      "value": 1    },
+    {      "day": 9,      "hour": 15,      "value": 1    },
+    {      "day": 9,      "hour": 16,      "value": 1    },
+    {      "day": 9,      "hour": 17,      "value": 1    },
+    {      "day": 9,      "hour": 18,      "value": 0     },
+    {      "day": 9,      "hour": 19,      "value": 0    },
+    {      "day": 9,      "hour": 20,      "value": 0    },
+    {      "day": 9,      "hour": 21,      "value": 0    },
+    {      "day": 9,      "hour": 22,      "value": 0    }
     ];
-    var residentBoxHeatmapData_date = ['24 Dec 17','25 Dec 17','26 Dec 17','27 Dec 17','28 Dec 17','29 Dec 17','31 Dec 17','2 Jan 18'];
+    /*
+    weekly_activity_data = [];
+    week_arr.forEach(function(day_value,day_index){
+      day_value.forEach(function(value,index){
+        weekly_activity_data.push({
+          "day": day_index+1,
+          "hour":	index+1,
+          "value": value
+        })
+      })//end for each hour
+    })//end for each day
+    */
+    var residentBoxHeatmapData_date = ['26 Dec 17','27 Dec 17','28 Dec 17','29 Dec 17','30 Dec 17','31 Dec 17','1 Jan 18','2 Jan 18','3 Jan 18'];
 
     vm.data.residentBoxHeatmapData = angular.copy(residentBoxHeatmapData)
     vm.data.residentBoxHeatmapData_date =angular.copy(residentBoxHeatmapData_date)
@@ -1184,7 +1393,7 @@ angular.module('HistoricalCtrl', [])
 
 //seperate data by day
 
-  /*vm.dayHourHeatmapData = [
+/*  vm.dayHourHeatmapData = [
 {
   "day": 1,
   "hour":	1,
@@ -1228,7 +1437,7 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 1,
   "hour": 9,
-  "value": 25
+  "value": 20
 },
 {
   "day": 1,
@@ -1238,17 +1447,17 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 1,
   "hour": 11,
-  "value": 25
+  "value": 20
 },
 {
   "day": 1,
   "hour": 12,
-  "value": 25
+  "value": 20
 },
 {
   "day": 1,
   "hour": 13,
-  "value": 25
+  "value": 20
 },
 {
   "day": 1,
@@ -1353,7 +1562,7 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 2,
   "hour": 9,
-  "value": 25
+  "value": 20
 },
 {
   "day": 2,
@@ -1363,17 +1572,17 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 2,
   "hour": 11,
-  "value": 25
+  "value": 20
 },
 {
   "day": 2,
   "hour": 12,
-  "value": 25
+  "value": 20
 },
 {
   "day": 2,
   "hour": 13,
-  "value": 25
+  "value": 20
 },
 {
   "day": 2,
@@ -1478,7 +1687,7 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 3,
   "hour": 9,
-  "value": 25
+  "value": 20
 },
 {
   "day": 3,
@@ -1488,17 +1697,17 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 3,
   "hour": 11,
-  "value": 25
+  "value": 20
 },
 {
   "day": 3,
   "hour": 12,
-  "value": 25
+  "value": 20
 },
 {
   "day": 3,
   "hour": 13,
-  "value": 25
+  "value": 20
 },
 {
   "day": 3,
@@ -1603,7 +1812,7 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 4,
   "hour": 9,
-  "value": 25
+  "value": 20
 },
 {
   "day": 4,
@@ -1613,17 +1822,17 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 4,
   "hour": 11,
-  "value": 25
+  "value": 20
 },
 {
   "day": 4,
   "hour": 12,
-  "value": 25
+  "value": 20
 },
 {
   "day": 4,
   "hour": 13,
-  "value": 25
+  "value": 20
 },
 {
   "day": 4,
@@ -1728,7 +1937,7 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 5,
   "hour": 9,
-  "value": 25
+  "value": 20
 },
 {
   "day": 5,
@@ -1738,17 +1947,17 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 5,
   "hour": 11,
-  "value": 25
+  "value": 20
 },
 {
   "day": 5,
   "hour": 12,
-  "value": 25
+  "value": 20
 },
 {
   "day": 5,
   "hour": 13,
-  "value": 25
+  "value": 20
 },
 {
   "day": 5,
@@ -1853,7 +2062,7 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 6,
   "hour": 9,
-  "value": 25
+  "value": 20
 },
 {
   "day": 6,
@@ -1863,17 +2072,17 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 6,
   "hour": 11,
-  "value": 25
+  "value": 20
 },
 {
   "day": 6,
   "hour": 12,
-  "value": 25
+  "value": 20
 },
 {
   "day": 6,
   "hour": 13,
-  "value": 25
+  "value": 20
 },
 {
   "day": 6,
@@ -1978,7 +2187,7 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 7,
   "hour": 9,
-  "value": 25
+  "value": 20
 },
 {
   "day": 7,
@@ -1988,17 +2197,17 @@ angular.module('HistoricalCtrl', [])
 {
   "day": 7,
   "hour": 11,
-  "value": 25
+  "value": 20
 },
 {
   "day": 7,
   "hour": 12,
-  "value": 25
+  "value": 20
 },
 {
   "day": 7,
   "hour": 13,
-  "value": 25
+  "value": 20
 },
 {
   "day": 7,
@@ -2061,7 +2270,7 @@ angular.module('HistoricalCtrl', [])
   "value": 10
 }
 ];
-/*
+*/
 /*vm.active_time_Data = [
     {
       "key": "Series 1",

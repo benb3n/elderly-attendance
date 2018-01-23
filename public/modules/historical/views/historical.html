@@ -205,13 +205,24 @@
     <!-- PERSON TAB -->
     <div id="person" class="col s12">
 
+      <div class="row">
+        <div class="col s11" ng-model="historical.SOMETHING">
+            <div class="input-field col s12 m2">
+              <i class="material-icons prefix">search</i>
+              <input value="Rajesh Akib" id="resident_search" type="search" required>
+              <label for="search">Input Name</label>
+              <i class="material-icons">close</i>
+            </div>
+        </div>
+      </div>
+
       <!-- CONTENT -->
       <div class="row">
         <div class="col s12">
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Resident Heatmap</span>
             <div class="card-content hide-on-small-only">
-              <resident-Box-Heatmap-Chart data="historical.data.residentBoxHeatmapData" dateList="historical.data.residentBoxHeatmapData_date" style="text-align: center"></resident-Box-Heatmap-Chart>
+              <resident-Box-Heatmap-Chart data="historical.data.residentBoxHeatmapData" datelist="historical.data.residentBoxHeatmapData_date" style="text-align: center"></resident-Box-Heatmap-Chart>
             </div>
           </div>
         </div>

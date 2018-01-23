@@ -1226,32 +1226,35 @@ angular.module('HistoricalDirective', [])
   }
 })//end dayHourHeatmapChart
 
-/*
 .directive('residentBoxHeatmapChart',function(){
   return {
     restrict: 'EA',
     scope: {
         data: "=",
         color: "=",
-        dateList: "="
+        datelist: "="
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-            scope.heatmapChart(data);
+            console.log(data);
+            scope.heatmapChart(data,scope.datelist);
         },true);
 
-        scope.heatmapChart =  function(data) {
+        scope.heatmapChart =  function(data, date_list) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
-            var margin = { top: 40, right: 0, bottom: 30, left: 30 },
+            var margin = { top: 40, right: 0, bottom: 30, left: 80 },
               width = screen.width - margin.left - margin.right -30,
-              gridSize = Math.floor(width / 23),
-              height = (gridSize*7) + margin.top + margin.bottom,
+              gridSize = Math.floor(width / 25),
+              height = (gridSize*(data.length/22)) + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
-              rangeDomain = [1,3,6,9,15],
-              displayRangeDomain = [0,1,3,6,9],
-              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
-              days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+              legend_text = ["Absent","Present"],
+              index = [0,1],
+              colors = ["#ffffd9","#edf8b1"],
+              //rangeDomain = [1,5,10,15,25],
+              //displayRangeDomain = [0,1,5,10,15],
+              //colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+              //days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
               times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
 
             var svg = d3.select(Element[0]).append("svg")
@@ -1261,7 +1264,7 @@ angular.module('HistoricalDirective', [])
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             var dayLabels = svg.selectAll(".dayLabel")
-              .data(scope.dateList)
+              .data(date_list)
               .enter().append("text")
                 .text(function (d) { return d; })
                 .attr("x", 0)
@@ -1281,10 +1284,6 @@ angular.module('HistoricalDirective', [])
                 .attr("transform", "translate(" + gridSize / 2 + ", -6)")
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
-              var colorScale = d3.scale.threshold()
-                   .domain(rangeDomain)
-                  .range(colors);
-
               var cards = svg.selectAll(".hour")
                   .data(data, function(d) {return d.day+':'+d.hour;});
 
@@ -1301,9 +1300,9 @@ angular.module('HistoricalDirective', [])
                   .style("color", colors[0]);
 
               cards.transition().duration(1000)
-                  .style("fill", function(d) { return colorScale(d.value); });
+                  .style("fill", function(d) { return ((d.value==0)? colors[0]:colors[1]); });
 
-              cards.enter().append("text")
+              /*cards.enter().append("text")
                 .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
                 .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
                 //.attr("rx", 4)
@@ -1312,14 +1311,14 @@ angular.module('HistoricalDirective', [])
                 .style("fill",'#000000')
                 //.style("fill",'#CBC8B4')
                 .style("font-weight",'bold');
-
+                */
               cards.select("title").text(function(d) { return d.value; });
 
               cards.exit().remove();
 
               var legend = svg.selectAll(".legend")
                   //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
-                  .data(displayRangeDomain);
+                  .data(index);
 
               legend.enter().append("g")
                   .attr("class", "legend");
@@ -1333,7 +1332,7 @@ angular.module('HistoricalDirective', [])
 
               legend.append("text")
                 .attr("class", "mono")
-                .text(function(d) { return "≥ " + Math.round(d); })
+                .text(function(d,i) { return legend_text[i]; })
                 .attr("x", function(d, i) { return legendElementWidth * i; })
                 .attr("y", height + gridSize - margin.bottom);
                 //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
@@ -1346,4 +1345,3 @@ angular.module('HistoricalDirective', [])
     }
   }
 })//end dayHourHeatmapChart
-*/
