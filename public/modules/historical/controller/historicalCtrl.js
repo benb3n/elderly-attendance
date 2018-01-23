@@ -101,7 +101,7 @@ angular.module('HistoricalCtrl', [])
   initController();
   function initController(){
     document.getElementById("calendar_error").style.visibility='hidden';
-
+/*
     //testing data
     vm.activity_comparison_data =[
       {
@@ -133,7 +133,7 @@ angular.module('HistoricalCtrl', [])
                 {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
         }
       ]; //end data
-
+*/
     //vm.selectedCenter = 6901;
 
     //vm.selectedEndDate_courses = new Date('29 October 2017');
@@ -173,7 +173,7 @@ angular.module('HistoricalCtrl', [])
       bottom_popular_activities_count: [],
       bottom_popular_activities_count_xaxis: [],
       activityMonthData: [],
-      residentBoxHeatmapData: []
+      residentBoxHeatmapData: [],
       residentBoxHeatmapData_date: []
     }
     vm.display = {
@@ -573,7 +573,7 @@ angular.module('HistoricalCtrl', [])
   function resident_heatmap_widget(){
 
     var residentBoxHeatmapData = [
-      
+
     ];
     var residentBoxHeatmapData_date = ['24 Dec 17','25 Dec 17','26 Dec 17','27 Dec 17','28 Dec 17','29 Dec 17','31 Dec 17','2 Jan 18'];
 

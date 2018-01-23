@@ -439,6 +439,7 @@ angular.module('HistoricalDirective', [])
   }
 })//end dir responsiveLineChart
 
+/*
 .directive('barChart', function() {
     return {
         restrict: 'EA',
@@ -475,9 +476,9 @@ angular.module('HistoricalDirective', [])
 
                     chart.update();
                 });
-                /*}else {
+                }else {
                     d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
-                }*/
+                }
 
 
 
@@ -486,6 +487,7 @@ angular.module('HistoricalDirective', [])
     }
 })
 
+*/
 .directive('cumulativeLineChart',function(){
   return {
     restrict: 'EA',
@@ -1224,7 +1226,8 @@ angular.module('HistoricalDirective', [])
   }
 })//end dayHourHeatmapChart
 
-directive('residentBoxHeatmapChart',function(){
+/*
+.directive('residentBoxHeatmapChart',function(){
   return {
     restrict: 'EA',
     scope: {
@@ -1250,7 +1253,7 @@ directive('residentBoxHeatmapChart',function(){
               colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
               times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
-              /*times = ["8am", "", "9am", "", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];*/
+
             var svg = d3.select(Element[0]).append("svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
@@ -1343,3 +1346,4 @@ directive('residentBoxHeatmapChart',function(){
     }
   }
 })//end dayHourHeatmapChart
+*/
