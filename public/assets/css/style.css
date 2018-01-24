@@ -10,8 +10,12 @@ body{
     /*height: 98%;
     min-height: 98%;*/
 }
+.c3 text{
+  word-wrap: break-word !important;
+}
+
 .card .input-field .filter-label {
-  font-size: 20px !important;
+  font-size: 15px !important;
 }
 .card .card-title {
   font-size: 15px !important;
@@ -162,7 +166,7 @@ nav .brand-logo {
 }
 
 
-  .g-hed {
+ /* .g-hed {
   	text-align: left;
   	text-transform: uppercase;
   	font-weight: bold;
@@ -239,4 +243,4 @@ nav .brand-logo {
 
   .focus circle {
     fill: #5e8dc9;
-  }
+  }*/
