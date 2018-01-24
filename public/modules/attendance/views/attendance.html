@@ -76,15 +76,25 @@
     <div class="row">
         <div class="col s12" >
             <!--<table id="attendance_table" class="table responsive-table display responsive nowrap" width:"100%" cellspacing="0"></table> -->
-            
+
             <!-- Update Resident Modal -->
             <div id="updateResidentModal" class="modal modal-fixed-footer ">
                 <div class="modal-content">
-                    <h4>Update Elderly Attendace</h4>
+                    <h4>Update Resident Details</h4>
+                    <div class="input-field col s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input placeholder="First Name" id="update_resident_name_first" ng-model="attendance.update.resident.name_first" type="text" class="validate">
+                            <label for="update_resident_name_first">First Name</label>
+                        </div>
                     <div class="input-field col s12">
                         <i class="material-icons prefix">account_circle</i>
-                        <input id="update_address" ng-model="attendance.update.resident.address" type="text" class="validate">
-                        <label for="update_address">Address</label>
+                        <input placeholder="Last Name" id="update_resident_name_last" ng-model="attendance.update.resident.name_last" type="text" class="validate">
+                        <label for="update_resident_name_last">Last Name</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">home</i>
+                        <input placeholder="Address" id="update_resident_address" ng-model="attendance.update.resident.address" type="text" class="validate">
+                        <label for="update_resident_address">Address</label>
                     </div>
                     <div class="input-field col s12">
                         <i class="material-icons prefix">info</i>
@@ -102,15 +112,15 @@
                     <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="attendance.updateAttendance()">Submit</button>
                 </div>
             </div>
-
+            
             <!-- Update Center Activites Modal -->
             <div id="updateCenterActivityModal" class="modal modal-fixed-footer ">
                 <div class="modal-content">
-                    <h4>Update Center</h4>
+                    <h4>Update Center Activity</h4>
                     <div class="input-field col s12">
                         <i class="material-icons prefix">account_circle</i>
-                        <input id="update_address" ng-model="attendance.update.activity.address" type="text" class="validate">
-                        <label for="update_address">Address</label>
+                        <input id="update_activity_address" ng-model="attendance.update.activity.address" type="text" class="validate">
+                        <label for="update_activity_address">Address</label>
                     </div>
                     <div class="input-field col s12">
                         <i class="material-icons prefix">info</i>

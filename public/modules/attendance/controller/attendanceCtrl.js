@@ -20,6 +20,7 @@ angular.module('AttendanceCtrl', [])
             });
 
         $('select').material_select();
+        $('.modal').modal();
     });
 
     /*************** 
@@ -90,11 +91,12 @@ angular.module('AttendanceCtrl', [])
                     //{ title: "Language", data: "language_list"},
                     //{ title: "Active", data: "active"},
                     {
-                        title: "Edit / Delete",
+                        title: "Edit",
                         data: null,
                         className: "center",
                         defaultContent: 
-                            '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' //+
+                            '<a class="btn-floating waves-effect waves-light btn modal-trigger" data-target="updateResidentModal"><i class="material-icons">edit</i></a>' //+
+                            //<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>   
                             //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
                     }
                 ],
@@ -105,18 +107,24 @@ angular.module('AttendanceCtrl', [])
             })
             var resident_table = $('#resident_table').DataTable();
             //Edit Button
-            $('#resident_table tbody').on( 'click', 'button', function () {
-                var data = resident_table.row( $(this).parents('tr') ).data();
-                console.log(data)
-                vm.update.resident.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + "-" + data.address_unit
-                console.log(vm.update.resident.address)
-                Materialize.updateTextFields();
-                $('select').material_select();
-                $('#updateResidentModal').modal();
-                Materialize.updateTextFields();
-                $('#updateResidentModal').modal('open');
+            $('#resident_table tbody').on( 'click', 'a', function (e) {
 
-            } );
+                var data = resident_table.row( $(this).parents('tr') ).data();
+                vm.update.resident.name_first = data.name_first;
+                vm.update.resident.name_last = data.name_last;
+                vm.update.resident.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + "-" + data.address_unit
+                console.log(data)
+                console.log(vm.update.resident.address)
+                //$('select').material_select();
+                //Materialize.updateTextFields();
+                $timeout(function () {
+                    $('select').material_select();
+                    Materialize.updateTextFields();
+                });
+                //$('#updateResidentModal').modal();
+                //$('#updateResidentModal').modal('open');
+ 
+            });
 
 
             return getAllCenters(vm.api.project, vm.api.all_device_count)
@@ -206,7 +214,7 @@ angular.module('AttendanceCtrl', [])
             $('#activity_table tbody').on( 'click', 'button', function () {
                 var data = activity_table.row( $(this).parents('tr') ).data();
                 console.log(data)
-                //vm.update.activity.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + data.address_unit
+                vm.update.activity.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + data.address_unit
                 Materialize.updateTextFields();
                 $('select').material_select();
                 $('#updateCenterActivityModal').modal();
@@ -241,7 +249,7 @@ angular.module('AttendanceCtrl', [])
                     { title: "Resident Index", data: "resident_index_list" },
                     { title: "Device ID", data: "beacon_id" },
                     {
-                        title: "Edit / Delete",
+                        title: "Edit",
                         data: null,
                         className: "center",
                         defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' +
@@ -254,6 +262,7 @@ angular.module('AttendanceCtrl', [])
                 }
             });
 
+            //vm.update.resident.address = ""
             //vm.update.name = "Test";
             vm.update.status = "Present";
             

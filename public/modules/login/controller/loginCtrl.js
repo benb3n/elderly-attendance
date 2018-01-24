@@ -11,8 +11,8 @@ angular.module('LoginCtrl', [])
     //vm.username = "benedict"
     //vm.password = "qwerty123456"
     //CM
-    vm.username = "hxtest"
-    vm.password = "qwerty123456"
+    //vm.username = "hxtest"
+    //vm.password = "qwerty123456"
 
     initController();
     function initController(){
