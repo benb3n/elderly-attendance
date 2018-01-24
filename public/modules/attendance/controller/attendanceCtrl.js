@@ -44,7 +44,10 @@ angular.module('AttendanceCtrl', [])
             all_centers_activity: [],
             all_centers_activity_by_id: {}
         };
-        vm.update = {};
+        vm.update = {
+            activity:{},
+            resident: {}
+        };
         vm.delete = {};
         vm.alertLoading = false;
         vm.loading = true;
@@ -91,7 +94,7 @@ angular.module('AttendanceCtrl', [])
                         data: null,
                         className: "center",
                         defaultContent: 
-                            '<button  class="btn-x   waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' //+
+                            '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>  ' //+
                             //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
                     }
                 ],
@@ -105,9 +108,12 @@ angular.module('AttendanceCtrl', [])
             $('#resident_table tbody').on( 'click', 'button', function () {
                 var data = resident_table.row( $(this).parents('tr') ).data();
                 console.log(data)
+                vm.update.resident.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + "-" + data.address_unit
+                console.log(vm.update.resident.address)
                 Materialize.updateTextFields();
                 $('select').material_select();
                 $('#updateResidentModal').modal();
+                Materialize.updateTextFields();
                 $('#updateResidentModal').modal('open');
 
             } );
@@ -194,6 +200,19 @@ angular.module('AttendanceCtrl', [])
                     "emptyTable": "No Data Available"
                 }
             });
+
+            var activity_table = $('#activity_table').DataTable();
+            //Edit Button
+            $('#activity_table tbody').on( 'click', 'button', function () {
+                var data = activity_table.row( $(this).parents('tr') ).data();
+                console.log(data)
+                //vm.update.activity.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + data.address_unit
+                Materialize.updateTextFields();
+                $('select').material_select();
+                $('#updateCenterActivityModal').modal();
+                $('#updateCenterActivityModal').modal('open');
+
+            } );
             
 
             return getAllDevices(vm.api.project, vm.api.all_device_count)
@@ -235,7 +254,7 @@ angular.module('AttendanceCtrl', [])
                 }
             });
 
-            vm.update.name = "Test";
+            //vm.update.name = "Test";
             vm.update.status = "Present";
             
             $('select').material_select();

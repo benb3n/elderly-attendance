@@ -376,15 +376,16 @@ angular.module('HistoricalCtrl', [])
 
     //sorting
     var activity_attendance_by_hour = angular.copy(activity_attendance.sort(compareValue))
+    var activity_attendance_by_hour_asc = angular.copy(activity_attendance.sort(compareValueAsc))
     var activity_attendance__by_count = angular.copy(activity_attendance.sort(compareCount))
-    console.log(activity_attendance_by_hour)
-    console.log(activity_attendance__by_count)
+    var activity_attendance__by_count_asc = angular.copy(activity_attendance.sort(compareCountAsc))
+
     //time spent
     var top_5_activities = (activity_attendance_by_hour.length >= 5) ? activity_attendance_by_hour.slice(0,5) : activity_attendance_by_hour.slice(0, activity_attendance_by_hour.length);
-    var bottom_5_activities = (activity_attendance_by_hour.length >= 5) ? activity_attendance_by_hour.slice(Math.max(activity_attendance_by_hour.length - 5, 1)) : activity_attendance_by_hour.slice(Math.max(activity_attendance_by_hour.length, 1))
+    var bottom_5_activities = (activity_attendance_by_hour.length >= 5) ? activity_attendance_by_hour_asc.slice(0,5) : activity_attendance_by_hour_asc.slice(0, activity_attendance_by_hour_asc.length);
     //count
-    var top_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count.slice(0,5) : activity_attendance__by_count.slice(0, activity_attendance__by_count.length);;
-    var bottom_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count.slice(Math.max(activity_attendance__by_count.length - 5, 1)) : activity_attendance__by_count.slice(Math.max(activity_attendance__by_count.length, 1))
+    var top_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count.slice(0,5) : activity_attendance__by_count.slice(0, activity_attendance__by_count.length);
+    var bottom_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count_asc.slice(0,5) : activity_attendance__by_count_asc.slice(0, activity_attendance__by_count_asc.length);;
 
     //time spent
     vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
@@ -414,14 +415,16 @@ angular.module('HistoricalCtrl', [])
 
     //sorting
     var resident_time_spent_by_hour = angular.copy(resident_time_spent_by_device_id.sort(compareValue));
+    var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
     var resident_time_spent_by_count = angular.copy(resident_time_spent_by_device_id.sort(compareCount));
+    var resident_time_spent_by_count_asc = angular.copy(resident_time_spent_by_device_id.sort(compareCountAsc));
 
     //time spent
     var top_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(0,5) : resident_time_spent_by_hour.slice(0, resident_time_spent_by_hour.length);
-    var bottom_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(Math.max(resident_time_spent_by_hour.length - 5, 1)) : resident_time_spent_by_hour.slice(Math.max(resident_time_spent_by_hour.length, 1))
+    var bottom_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour_asc.slice(0,5) : resident_time_spent_by_hour_asc.slice(0, resident_time_spent_by_hour_asc.length);
     //count
     var top_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count.slice(0,5) : resident_time_spent_by_count.slice(0, resident_time_spent_by_count.length);
-    var bottom_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count.slice(Math.max(resident_time_spent_by_count.length - 5, 1))  :  resident_time_spent_by_count.slice(Math.max(resident_time_spent_by_count.length, 1))
+    var bottom_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count_asc.slice(Math.max(resident_time_spent_by_count_asc.length - 5, 1))  :  resident_time_spent_by_count_asc.slice(Math.max(resident_time_spent_by_count_asc.length, 1))
 
     //time spent
     vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
@@ -835,10 +838,23 @@ angular.module('HistoricalCtrl', [])
     return 0;
   }
 
+  function compareValueAsc (a, b) {
+    // ASESCENDING ORDER
+    if (parseFloat(a.value) > parseFloat(b.value)) return 1;
+    if (parseFloat(a.value) < parseFloat(b.value)) return -1;
+    return 0;
+  }
+
   function compareCount (a, b) {
     // DESCENDING ORDER
     if (parseFloat(a.count) > parseFloat(b.count)) return -1;
     if (parseFloat(a.count) < parseFloat(b.count)) return 1;
+    return 0;
+  }
+  function compareCountAsc (a, b) {
+    // DESCENDING ORDER
+    if (parseFloat(a.count) > parseFloat(b.count)) return 1;
+    if (parseFloat(a.count) < parseFloat(b.count)) return -1;
     return 0;
   }
 

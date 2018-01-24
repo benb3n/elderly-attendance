@@ -71,6 +71,10 @@ angular.module('HistoricalDirective', [])
                 activities: 'bar'
               }
             },
+            padding: {
+              left: 100,
+              right: 15
+            },
             axis: {
               x: {
                   type: 'category',
@@ -96,12 +100,7 @@ angular.module('HistoricalDirective', [])
                 var top = d3.mouse(element)[1] - (element.width.baseVal.value + 30)
                 return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
               }
-            },
-            padding: {
-              right: 10,
-              left: 120
-            },
-
+            }
           });
 
           d3.select(window).on("resize", resized);
@@ -111,7 +110,8 @@ angular.module('HistoricalDirective', [])
         }
 
         function resized(){
-            chart.resize();
+            chart.flush();
+            //chart.resize();
         }
 
 
