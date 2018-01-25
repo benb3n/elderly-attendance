@@ -1205,7 +1205,7 @@ angular.module('HistoricalDirective', [])
 
               legend.append("rect")
                 .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height-margin.bottom)
+                .attr("y", height-margin.bottom -30)
                 .attr("width", legendElementWidth)
                 .attr("height", gridSize / (2))
                 .style("fill", function(d, i) { return colors[i]; })
@@ -1214,7 +1214,7 @@ angular.module('HistoricalDirective', [])
                 .attr("class", "mono")
                 .text(function(d) { return "≥ " + Math.round(d); })
                 .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height + gridSize - margin.bottom);
+                .attr("y", height + gridSize - margin.bottom -30);
                 //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
 
               legend.exit().remove();
