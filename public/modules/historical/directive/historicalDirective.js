@@ -587,42 +587,88 @@ angular.module('HistoricalDirective', [])
         color: "="
     },
     link: function(scope, Element, Attrs) {
-        scope.$watch('data', function(data) {
-          if(typeof data != 'undefined' && data.length>0){
-            scope.renderChart(data, "");
-          };
-        },true);
-
-        scope.renderChart = function(parsedData, color){
-            d3.select(Element[0]).selectAll("*").remove();
-
-            var chart = nv.models.multiBarHorizontalChart()
-                    //.height(500)
-                    .x(function(d) { return d.label })
-                    .y(function(d) { return d.value })
-                    .margin({top: 40, right: 20, bottom: 50, left: 50})
-                    .showValues(true)           //Show bar value next to each bar.
-                    //.tooltips(true)             //Show tooltips on hover.
-                    //.transitionDuration(350)
-                    .showControls(false) //Allow user to switch between "Grouped" and "Stacked" mode.
-                    .stacked(true)
-                    .showLegend(false)
-                    .groupSpacing(0.1)
-                    .valuePadding(50);
-
-
-            d3.select(Element[0])
-                .append("svg")
-                .datum(parsedData)
-                .call(chart);
-
-            chart.xAxis
-              .tickFormat(d3.format(',.2f'));
-
-            nv.utils.windowResize(chart.update);
+      scope.$watch('data', function(data) {
+        if(typeof data != 'undefined' && data.length>0){
+          var parsedData = data;
+          parsedData = {
+            "key": "Series 1",
+            "color": "#d67777",
+            "values": [
+              { 
+                "label" : "Group A" ,
+                "value" : -1.8746444827653
+              } , 
+              { 
+                "label" : "Group B" ,
+                "value" : -8.0961543492239
+              } , 
+              { 
+                "label" : "Group C" ,
+                "value" : -0.57072943117674
+              } , 
+              { 
+                "label" : "Group D" ,
+                "value" : -2.4174010336624
+              } , 
+              {
+                "label" : "Group E" ,
+                "value" : -0.72009071426284
+              } , 
+              { 
+                "label" : "Group F" ,
+                "value" : -0.77154485523777
+              } , 
+              { 
+                "label" : "Group G" ,
+                "value" : -0.90152097798131
+              } , 
+              {
+                "label" : "Group H" ,
+                "value" : -0.91445417330854
+              } , 
+              { 
+                "label" : "Group I" ,
+                "value" : -0.055746319141851
+              }
+            ]
           }
+        };
+        scope.renderChart(parsedData, "");
+      },true);
+
+      scope.renderChart = function(parsedData, color){    
+        if(typeof parsedData != "undefined"){
+          d3.select(Element[0]).selectAll("*").remove();
+          console.log(parsedData)
+          var chart = nv.models.multiBarHorizontalChart()
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value })
+            .margin({top: 40, right: 20, bottom: 50, left: 50})
+            .showValues(true)           //Show bar value next to each bar.
+            //.tooltips(true)             //Show tooltips on hover.
+            .transitionDuration(350)
+            .showControls(false) //Allow user to switch between "Grouped" and "Stacked" mode.
+            //.stacked(true)
+            .showLegend(false)
+            //.groupSpacing(0.1)
+            //.valuePadding(50);
+
+          chart.xAxis
+            .tickFormat(d3.format(',.2f'));
+
+          d3.select(Element[0])
+            .append("svg")
+            .datum(parsedData)
+            .call(chart);
+
+          nv.utils.windowResize(chart.update);
+        }else {
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
         }
+
       }
+    }
+  }
 })//end dir horizontalBarChart
 
 .directive('responsiveHorizontalBarChart',function(){
@@ -1325,7 +1371,7 @@ angular.module('HistoricalDirective', [])
 
               legend.append("rect")
                 .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height-margin.bottom)
+                .attr("y", height-margin.bottom - 30)
                 .attr("width", legendElementWidth)
                 .attr("height", gridSize / (2))
                 .style("fill", function(d, i) { return colors[i]; })
@@ -1334,7 +1380,7 @@ angular.module('HistoricalDirective', [])
                 .attr("class", "mono")
                 .text(function(d,i) { return legend_text[i]; })
                 .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height + gridSize - margin.bottom);
+                .attr("y", height + gridSize - margin.bottom - 30);
                 //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
 
               legend.exit().remove();
