@@ -131,12 +131,6 @@ angular.module('HistoricalDirective', [])
     link: function(scope, Element, Attrs) {
       scope.$watch('data', function(data) {
         if(typeof data != 'undefined' && data.length!=0 ){
-
-          /*SAMPLE DATA FORMAT
-          var parsedData = [
-            ['data1', 30, 200, 100, 400, 150, 250],
-            ['data2', 50, 20, 10, 40, 15, 25]
-          ]*/
           var parsedData = data
           console.log(data);
         }
@@ -146,10 +140,7 @@ angular.module('HistoricalDirective', [])
 
       scope.renderChart = function(data,axis_labels){
         d3.select(Element[0]).selectAll("*").remove();
-        var w = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth - 200) / 2;
-
-
-        // (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
+        var w = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
 
         if(data && data.length > 0){
 
@@ -1205,7 +1196,7 @@ angular.module('HistoricalDirective', [])
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
             var margin = { top: 40, right: 0, bottom: 30, left: 30 },
-              width = screen.width - margin.left - margin.right -30,
+              width = window.innerWidth - margin.left - margin.right -30,
               gridSize = Math.floor(width / 23),
               height = (gridSize*7) + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
@@ -1303,8 +1294,109 @@ angular.module('HistoricalDirective', [])
                 //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
 
               legend.exit().remove();
+              //RESPONSIVENESS
+              d3.select(window).on("resize", resized);
+
             }else {
               d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+            }
+
+            function resized() {
+              d3.select(Element[0]).select("svg").remove();
+              console.log(window.innerWidth);
+              var margin = { top: 40, right: 0, bottom: 30, left: 30 },
+                width = window.innerWidth - margin.left - margin.right -30,
+                gridSize = Math.floor(width / 23),
+                height = (gridSize*7) + margin.top + margin.bottom;
+
+                var svg = d3.select(Element[0]).append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                var dayLabels = svg.selectAll(".dayLabel")
+                  .data(days)
+                  .enter().append("text")
+                    .text(function (d) { return d; })
+                    .attr("x", 0)
+                    .attr("y", function (d, i) { return i * gridSize; })
+                    .style("text-anchor", "end")
+                    .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+                    .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+                var timeLabels = svg.selectAll(".timeLabel")
+                  .data(times)
+                  .enter().append("text")
+                    .text(function(d) { return d; })
+                    .attr("x", function(d, i) { return i * gridSize; })
+                    .attr("y", 0)
+                    .style("text-anchor", "middle")
+                    //.style("font-size",'10px')
+                    .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+                    .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+                  var colorScale = d3.scale.threshold()
+                       .domain(rangeDomain)
+                      .range(colors);
+
+                  var cards = svg.selectAll(".hour")
+                      .data(data, function(d) {return d.day+':'+d.hour;});
+
+                  cards.append("title");
+
+                  cards.enter().append("rect")
+                      .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+                      .attr("y", function(d) { return (d.day - 1) * gridSize; })
+                      .attr("rx", 4)
+                      .attr("ry", 4)
+                      .attr("stroke", "#E6E6E6")
+                      .attr("stroke-width", "1.5px")
+                      .attr("class", "hour bordered")
+                      .attr("width", gridSize)
+                      .attr("height", gridSize)
+                      .style("color", colors[0]);
+
+                  cards.transition().duration(1000)
+                      .style("fill", function(d) { return colorScale(d.value); });
+
+                  cards.enter().append("text")
+                    .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2); })
+                    .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/2); })//height
+                    .text(function(d) { return(d.value==0)? null:d.value ; })
+                    .style("fill",'#000000')
+                    //.style("font-size",'20px')
+                    .attr("text-anchor","middle")
+                    .attr("alignment-baseline","middle")
+                    //.style("fill",'#CBC8B4')
+                    .style("font-weight",'bold');
+
+                  cards.select("title").text(function(d) { return d.value; });
+
+                  cards.exit().remove();
+
+                  var legend = svg.selectAll(".legend")
+                      //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
+                      .data(displayRangeDomain);
+
+                  legend.enter().append("g")
+                      .attr("class", "legend");
+
+                  legend.append("rect")
+                    .attr("x", function(d, i) { return legendElementWidth * i; })
+                    .attr("y", height-margin.bottom -30)
+                    .attr("width", legendElementWidth)
+                    .attr("height", gridSize / (2))
+                    .style("fill", function(d, i) { return colors[i]; })
+
+                  legend.append("text")
+                    .attr("class", "mono")
+                    .text(function(d) { return "≥ " + Math.round(d); })
+                    .attr("x", function(d, i) { return legendElementWidth * i; })
+                    .attr("y", height + gridSize - margin.bottom -30);
+                    //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
+
+                  legend.exit().remove();
             }
         };
     }
@@ -1378,6 +1470,8 @@ angular.module('HistoricalDirective', [])
                   .attr("y", function(d) { return (d.day - 1) * gridSize; })
                   .attr("rx", 4)
                   .attr("ry", 4)
+                  .attr("stroke", "#E6E6E6")
+                  .attr("stroke-width", "1.5px")
                   .attr("class", "hour bordered")
                   .attr("width", gridSize)
                   .attr("height", gridSize)
@@ -1386,16 +1480,6 @@ angular.module('HistoricalDirective', [])
               cards.transition().duration(1000)
                   .style("fill", function(d) { return ((d.value==0)? colors[0]:colors[1]); });
 
-              /*cards.enter().append("text")
-                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
-                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
-                //.attr("rx", 4)
-                //.attr("ry", 4)
-                .text(function(d) { return(d.value==0)? null:d.value ; })
-                .style("fill",'#000000')
-                //.style("fill",'#CBC8B4')
-                .style("font-weight",'bold');
-                */
               cards.select("title").text(function(d) { return d.value; });
 
               cards.exit().remove();
