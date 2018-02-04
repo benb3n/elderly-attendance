@@ -120,6 +120,88 @@ angular.module('HistoricalDirective', [])
   }
 })//end dir barHorizontalChart
 
+.directive('monthlyLineChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "=",
+        axis: "="
+    },
+    link: function(scope, Element, Attrs) {
+      scope.$watch('data', function(data) {
+        if(typeof data != 'undefined' && data.length!=0 ){
+
+          /*SAMPLE DATA FORMAT
+          var parsedData = [
+            ['data1', 30, 200, 100, 400, 150, 250],
+            ['data2', 50, 20, 10, 40, 15, 25]
+          ]*/
+          var parsedData = data
+          console.log(data);
+        }
+
+        scope.renderChart(parsedData, scope.axis);
+      },true);
+
+      scope.renderChart = function(data,axis_labels){
+        d3.select(Element[0]).selectAll("*").remove();
+        var w = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth - 200) / 2;
+
+
+        // (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
+
+        if(data && data.length > 0){
+
+          //console.log(document.getElementById('activity_content').style)
+          var chart = c3.generate({
+            bindto: Element[0],
+            data: {
+                columns: data
+            },
+            size: {
+              width: w
+            },
+            padding: {
+              left: 25
+            },
+            axis: {
+              x: {
+                  type: 'category',
+                  categories: axis_labels,
+                  tick: {fit: true}
+              }
+            },
+            legend:{
+              show:true
+            },
+            tooltip: {
+              position: function (data, width, height, element) {
+                var top = d3.mouse(element)[1] - element.height.baseVal.value
+                return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
+              }
+            }
+
+          });
+          d3.select(window).on("resize", resized);
+
+        }else {
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+        }
+
+        function resized(){
+            chart.flush();
+            chart.resize();
+
+        }
+
+
+      }
+    }
+  }
+})//end dir weeklyLineChart
+
+
 .directive('weeklyLineChart',function(){
   return {
     restrict: 'EA',
@@ -1237,7 +1319,6 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-            console.log(data);
             scope.heatmapChart(data,scope.datelist);
         },true);
 

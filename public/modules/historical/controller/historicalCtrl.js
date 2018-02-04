@@ -173,6 +173,7 @@ angular.module('HistoricalCtrl', [])
       bottom_popular_activities_count: [],
       bottom_popular_activities_count_xaxis: [],
       activityMonthData: [],
+      activityMonthDatalabel:[],
       residentBoxHeatmapData: [],
       residentBoxHeatmapData_date: []
     }
@@ -211,7 +212,7 @@ angular.module('HistoricalCtrl', [])
         vm.display.centers.push({name: value.code_name, value: value.code_name})
       })
 
-      callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-01-14') //'2017-12-01'
+      callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-02-04') //'2017-12-01'
     })
 
   }
@@ -305,7 +306,7 @@ angular.module('HistoricalCtrl', [])
       //day_of_week_widget();
       box_heatmap_widget();
       day_of_week_widget();
-      update_activity_month_chart("Language");
+      update_activity_month_chart(start_date_time,end_date_time);
 
       //PERSON TAB
       resident_heatmap_widget();
@@ -516,52 +517,54 @@ angular.module('HistoricalCtrl', [])
 
   }//end box_heatmap_widget
 
-  function update_activity_month_chart(course_type){
-    /*
-    var course_activity_array = vm.data.real_time_activity_reading_by_activity_name["Karaoke"];
-    console.log(course_activity_array);
+  function update_activity_month_chart(start_date_time,end_date_time){
 
     var month_list = [];
-    var months_array = [];
-    course_activity_array.forEach(function(value){
-      var yearmonth = moment(value.start_timestamp).format("YYYY-MM");
-      if (month_list.indexOf(yearmonth) == -1){
-        month_list.push(yearmonth);
-        months_array.push([]);
-      }
-      months_array[month_list.indexOf(yearmonth)].push(value);
+
+    var curr_month = moment(moment(start_date_time).startOf('month').format("YYYY-MM-DD hh:mm:ss"));
+    var end_month = moment( moment(end_date_time).endOf('month').format("YYYY-MM-DD hh:mm:ss"));
+    while (curr_month.isSameOrBefore(end_month)){
+      month_list.push(curr_month.format("YYYY-MMM"));
+      curr_month = moment(curr_month.add(1, 'months').format("YYYY-MM-DD hh:mm:ss"));
+    }
+
+    var month_data = [];
+    Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key, index){
+      var result = vm.data.real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
+        var month_slot = month_list.indexOf(moment(a).format("YYYY-MMM"));
+        r[month_slot] = r[month_slot] || [];
+        r[month_slot].push(a);
+        return r;
+      }, Object.create(null));
+
+      month_data.push(key)
+      month_list.forEach(function(value, index){
+        month_data.push((result[index])? result[index].length:0);
+      })
+      console.log(month_data);
+      vm.data.activityMonthData.push(month_data);
+      month_data = [];
     })
+    vm.data.activityMonthDatalabel=angular.copy(month_list);
 
-    var activity_month_data = [];
-    month_list.forEach(function(value,index){
-      activity_month_data.push({
-        "date": '' + value,
-        "num": months_array[index].length
-      })//end obj
-    })//end for each month in month list
-    activity_month_data.push({
-      "date": '2017-11',
-      "num": 14
-    })//end obj
-    console.log(activity_month_data);
-    vm.data.activityMonthData=angular.copy(activity_month_data);
-    */
-
+    /*
     activityMonthData = [];
-    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
-    test_values = [1,3,2,5,6,7,4,6,2];
+    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04'];//,'2018-05','2018-06'];
+    test_values = [1,3,2,5,6,7,4];//,6,2];
+
+    //test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
+    //test_values = [1,3,2,5,6,7,4,6,2];
     test_dates.forEach(function(value,index){
       activityMonthData.push({
         "date": value,
         "num": test_values[index]
       })//end obj
     });
+
+    vm.data.activityMonthDatalabel=angular.copy(test_dates);
     vm.data.activityMonthData=angular.copy(activityMonthData);
-    console.log(activityMonthData);
-
-
-    //{"date": '2011-03', "num" : 9}
-  }// end func update_activity_month_chart
+    */
+}// end func update_activity_month_chart
 
   /***********************
      CHARTS - PERSON
