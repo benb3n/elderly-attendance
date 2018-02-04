@@ -28,7 +28,7 @@ angular.module('AttendanceService', [])
 
     function getAllResidentsAlerts(params, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerattendee', {
+        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerattendee/', {
             params: params
         })
         .then(
