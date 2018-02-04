@@ -6,24 +6,24 @@ angular.module('LoginCtrl', [])
     var vm = this;
 
     vm.login = login;
-    
+
     //Director
     //vm.username = "benedict"
     //vm.password = "qwerty123456"
     //CM
-    //vm.username = "hxtest"
-    //vm.password = "qwerty123456"
+    vm.username = "hxtest"
+    vm.password = "qwerty123456"
 
     initController();
     function initController(){
         Materialize.updateTextFields();
         LService.logout();
-        
+
     }
 
     function login() {
         vm.loading = true;
-        
+
         //$location.path("/home");
         var params = {
             username: vm.username,
@@ -37,15 +37,15 @@ angular.module('LoginCtrl', [])
                 LService.getUserRole(function (role) {
                     document.getElementById("body_content").setAttribute('class', '');
                     document.getElementById("navbar").style.visibility = "visible";
-                    
+
                     localStorage.currentUserToken = 'Token ' + result.token;
                     localStorage.currentUser =  vm.username,
                     localStorage.currentCenterCode = 'gl15',
                     localStorage.currentRole = role;
-       
-                    //console.log(localStorage.currentUser + " , " + localStorage.currentUserToken + " , " + 
+
+                    //console.log(localStorage.currentUser + " , " + localStorage.currentUserToken + " , " +
                     //localStorage.currentCenterCode + " , " + localStorage.currentRole)
-                    
+
                     Materialize.toast('Login Successful', 3000, 'rounded green');
                     $location.path('/home');
                 })
@@ -60,5 +60,5 @@ angular.module('LoginCtrl', [])
 
 
 
-    
+
 })

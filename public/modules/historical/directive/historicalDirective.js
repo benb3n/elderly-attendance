@@ -1183,12 +1183,13 @@ angular.module('HistoricalDirective', [])
                   .style("fill", function(d) { return colorScale(d.value); });
 
               cards.enter().append("text")
-                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
-                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
-                //.attr("rx", 4)
-                //.attr("ry", 4)
+                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2); })
+                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/2); })//height
                 .text(function(d) { return(d.value==0)? null:d.value ; })
                 .style("fill",'#000000')
+                //.style("font-size",'20px')
+                .attr("text-anchor","middle")
+                .attr("alignment-baseline","middle")
                 //.style("fill",'#CBC8B4')
                 .style("font-weight",'bold');
 
