@@ -111,7 +111,7 @@ angular.module('HistoricalDirective', [])
 
         function resized(){
             chart.flush();
-            //chart.resize();
+            chart.resize();
         }
 
 
