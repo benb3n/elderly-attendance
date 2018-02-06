@@ -132,7 +132,6 @@ angular.module('HistoricalDirective', [])
       scope.$watch('data', function(data) {
         if(typeof data != 'undefined' && data.length!=0 ){
           var parsedData = data
-          console.log(data);
         }
 
         scope.renderChart(parsedData, scope.axis);
@@ -221,8 +220,6 @@ angular.module('HistoricalDirective', [])
         var w = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
 
         if(data && data.length > 0){
-
-          console.log(document.getElementById('activity_content').style)
           var chart = c3.generate({
             bindto: Element[0],
             data: {
@@ -667,39 +664,39 @@ angular.module('HistoricalDirective', [])
             "key": "Series 1",
             "color": "#d67777",
             "values": [
-              { 
+              {
                 "label" : "Group A" ,
                 "value" : -1.8746444827653
-              } , 
-              { 
+              } ,
+              {
                 "label" : "Group B" ,
                 "value" : -8.0961543492239
-              } , 
-              { 
+              } ,
+              {
                 "label" : "Group C" ,
                 "value" : -0.57072943117674
-              } , 
-              { 
+              } ,
+              {
                 "label" : "Group D" ,
                 "value" : -2.4174010336624
-              } , 
+              } ,
               {
                 "label" : "Group E" ,
                 "value" : -0.72009071426284
-              } , 
-              { 
+              } ,
+              {
                 "label" : "Group F" ,
                 "value" : -0.77154485523777
-              } , 
-              { 
+              } ,
+              {
                 "label" : "Group G" ,
                 "value" : -0.90152097798131
-              } , 
+              } ,
               {
                 "label" : "Group H" ,
                 "value" : -0.91445417330854
-              } , 
-              { 
+              } ,
+              {
                 "label" : "Group I" ,
                 "value" : -0.055746319141851
               }
@@ -709,17 +706,16 @@ angular.module('HistoricalDirective', [])
         scope.renderChart(parsedData, "");
       },true);
 
-      scope.renderChart = function(parsedData, color){    
+      scope.renderChart = function(parsedData, color){
         if(typeof parsedData != "undefined"){
           d3.select(Element[0]).selectAll("*").remove();
-          console.log(parsedData)
           var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d.label })
             .y(function(d) { return d.value })
             .margin({top: 40, right: 20, bottom: 50, left: 50})
             .showValues(true)           //Show bar value next to each bar.
             //.tooltips(true)             //Show tooltips on hover.
-            .transitionDuration(350)
+            //.transitionDuration(350)
             .showControls(false) //Allow user to switch between "Grouped" and "Stacked" mode.
             //.stacked(true)
             .showLegend(false)

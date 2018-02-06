@@ -509,7 +509,6 @@ angular.module('HistoricalCtrl', [])
       month_list.forEach(function(value, index){
         month_data.push((result[index])? result[index].length:0);
       })
-      console.log(month_data);
       vm.data.activityMonthData.push(month_data);
       month_data = [];
     })
