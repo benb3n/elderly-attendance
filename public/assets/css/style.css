@@ -93,11 +93,11 @@ body{
   top: -11px !important; /* previously 1px; */
  }
 .login{
-    background: url('../img/bg_5.jpg') no-repeat;
-    background-position: center center;
-    background-repeat:  no-repeat;
+  background: url('../img/bg_5.jpg') no-repeat;
+  background-position: center center;
+  background-repeat:  no-repeat;
 	background-attachment: fixed;
-    background-size: cover;
+  background-size: cover;
 }
 nav .brand-logo {
     font-weight: 250;

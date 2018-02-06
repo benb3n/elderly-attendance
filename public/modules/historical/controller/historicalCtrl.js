@@ -77,7 +77,8 @@ angular.module('HistoricalCtrl', [])
       end_date_courses.set('enable', true);
       end_date_courses.set('min', newStartDate);
       //end_date_courses.start();
-      //console.log("start date changed!");
+      console.log("start date changed!");
+
     }
   });
 
@@ -101,43 +102,9 @@ angular.module('HistoricalCtrl', [])
   initController();
   function initController(){
     document.getElementById("calendar_error").style.visibility='hidden';
-/*
-    //testing data
-    vm.activity_comparison_data =[
-      {
-        key: 'language lesson',
-        values: [
-          {x: 0,y: 3},
-          {x: 1,y: 7},
-          {x: 2,y: 7},
-          {x: 3,y: 8},
-          {x: 4,y: 11},
-          {x: 5,y: 17}
-        ]
-      },
-      {
-        key: 'physical exercise',
-        values: [
-          {x: 0,y: 9},
-          {x: 1,y: 5},
-          {x: 2,y: 10},
-          {x: 3,y: 15},
-          {x: 4,y: 3},
-          {x: 5,y: 8}
-        ]
-      }];
-    vm.barData = [
-        {
-            key: "Cumulative Return",
-            values: [
-                {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
-        }
-      ]; //end data
-*/
-    //vm.selectedCenter = 6901;
 
-    //vm.selectedEndDate_courses = new Date('29 October 2017');
-    //vm.selectedStartDate_courses = new Date('5 November 2017');
+    vm.selectedEndDate_courses = new Date();
+    vm.selectedStartDate_courses = new Date();
 
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
@@ -211,8 +178,9 @@ angular.module('HistoricalCtrl', [])
         vm.data.all_centers_by_center_code[value.code_name] = value;
         vm.display.centers.push({name: value.code_name, value: value.code_name})
       })
-
-      callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-02-04') //'2017-12-01'
+      vm.selectedStartDate_courses = '2017-12-01';
+      vm.selectedEndDate_courses = '2018-02-04';
+      callSensorReadings(vm.selectedCenter, vm.selectedStartDate_courses, vm.selectedEndDate_courses) //'2017-12-01'
     })
 
   }
@@ -796,7 +764,7 @@ angular.module('HistoricalCtrl', [])
     vm.data.residentBoxHeatmapData_date =angular.copy(residentBoxHeatmapData_date)
 
   }//end resident_heatmap_widget
-
+/*
   function update_most_active_chart(result){
     if (result.results.length == 0){
       document.getElementById("active_error").style.visibility='visible';
@@ -825,10 +793,8 @@ angular.module('HistoricalCtrl', [])
 
       vm.mostActiveData = angular.copy(time_data);
   }//end update_most_active_chart function
+*/
 
-  function update_course_time_chart(result){
-    //TODO:
-  }// end func update_course_time_chart
 
   /********************
     REUSEABLE FUNCTIONS
@@ -1274,7 +1240,7 @@ angular.module('HistoricalCtrl', [])
   }
 
   function generateDataCourses(){
-    //console.log("updating courses data");
+    console.log("updating courses data");
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
   }
 
