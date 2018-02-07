@@ -22,7 +22,7 @@ angular.module('HistoricalCtrl', [])
 
       vm.selectedEndDate_person = new Date();
       vm.selectedEndDate_courses = new Date();
-
+      
       $('.datepicker').pickadate({
         format: 'yyyy-mm-dd',
         selectMonths: true, // Creates a dropdown to control month
@@ -212,6 +212,8 @@ angular.module('HistoricalCtrl', [])
         vm.display.centers.push({name: value.code_name, value: value.code_name})
       })
 
+      
+
       callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-02-04') //'2017-12-01'
     })
 
@@ -223,7 +225,7 @@ angular.module('HistoricalCtrl', [])
     var start_date = moment(start_date_time).subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
     var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD")
 
-    console.log("start date " + start_datetime + " end date" + end_datetime)
+
     $q.when()
     .then(function(){
       return getCenterActivities(vm.api.project, vm.api.center_code_name, start_date, end_date);
@@ -588,7 +590,7 @@ angular.module('HistoricalCtrl', [])
 
   vm.tab2 = tab2;
   function tab2(){
-    console.log("TAB");
+    //console.log("TAB");
 
   }
 

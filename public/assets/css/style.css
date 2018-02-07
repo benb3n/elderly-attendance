@@ -13,7 +13,9 @@ body{
 .c3 text{
   word-wrap: break-word !important;
 }
-
+.card .card-content{
+  padding: 5px !important;
+}
 .card .input-field .filter-label {
   font-size: 15px !important;
 }

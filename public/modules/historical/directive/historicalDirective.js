@@ -132,7 +132,6 @@ angular.module('HistoricalDirective', [])
       scope.$watch('data', function(data) {
         if(typeof data != 'undefined' && data.length!=0 ){
           var parsedData = data
-          console.log(data);
         }
 
         scope.renderChart(parsedData, scope.axis);
@@ -222,7 +221,6 @@ angular.module('HistoricalDirective', [])
 
         if(data && data.length > 0){
 
-          console.log(document.getElementById('activity_content').style)
           var chart = c3.generate({
             bindto: Element[0],
             data: {
@@ -281,7 +279,7 @@ angular.module('HistoricalDirective', [])
         scope.$watch('data', function(data) {
           if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
             var parseData = data
-            console.log(parseData);
+
           }
           scope.renderChart(parseData);
         },true);
@@ -295,7 +293,7 @@ angular.module('HistoricalDirective', [])
             var margin = {top: 20, right: 70, bottom: 50, left: 35};
             //var widther = window.outerWidth;
             var widther = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
-            console.log(widther);
+
             var width = widther - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
 
@@ -672,8 +670,8 @@ angular.module('HistoricalDirective', [])
       },true);
 
       scope.renderChart = function(parsedData, color){  
-        if(typeof parsedData != "undefined"){
-          d3.select(Element[0]).selectAll("*").remove();
+        d3.select(Element[0]).selectAll("*").remove();
+        if(typeof parsedData != "undefined" && parsedData[0].values.length > 0){
           var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d.name })
             .y(function(d) { return parseFloat(d.value) })
@@ -682,7 +680,7 @@ angular.module('HistoricalDirective', [])
             .showControls(false); 
          
           chart.yAxis
-            .tickFormat(d3.format(",.2f"));
+            .tickFormat(d3.format(",.0f"));
 
           d3.select(Element[0])
             .append("svg")
@@ -692,7 +690,7 @@ angular.module('HistoricalDirective', [])
 
           nv.utils.windowResize(chart.update);
         }else {
-          d3.select(Element[0]).html('<div style="text-align: center; margin:0px; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
         }
       }
     }
@@ -713,18 +711,17 @@ angular.module('HistoricalDirective', [])
             key: "Count",
             values: data
           }]
-
+          
         };
         scope.renderChart(parsedData, "");
       },true);
 
-      scope.renderChart = function(parsedData, color){  
-        if(typeof parsedData != "undefined"){
-          console.log(parsedData)
-          d3.select(Element[0]).selectAll("*").remove();
+      scope.renderChart = function(parsedData, color){
+        d3.select(Element[0]).selectAll("*").remove();  
+        if(parsedData && typeof parsedData != "undefined" && parsedData[0].values.length > 0){
           var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d.name })
-            .y(function(d) { return parseFloat(d.count) })
+            .y(function(d) { return parseInt(d.count) })
             .margin({top: 0, right: 0, bottom: 20, left: 140})
             .showValues(true)           //Show bar value next to each bar.
             .showControls(false); 
@@ -740,7 +737,7 @@ angular.module('HistoricalDirective', [])
 
           nv.utils.windowResize(chart.update);
         }else {
-          d3.select(Element[0]).html('<div style="text-align: center; margin:0px; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
         }
       }
     }
@@ -1352,7 +1349,6 @@ angular.module('HistoricalDirective', [])
 
             function resized() {
               d3.select(Element[0]).select("svg").remove();
-              console.log(window.innerWidth);
               var margin = { top: 40, right: 0, bottom: 30, left: 30 },
                 width = window.innerWidth - margin.left - margin.right -30,
                 gridSize = Math.floor(width / 23),
