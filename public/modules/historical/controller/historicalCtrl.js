@@ -191,7 +191,7 @@ angular.module('HistoricalCtrl', [])
     var start_date = moment(start_date_time).subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
     var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD")
 
-    console.log("start date " + start_datetime + " end date" + end_datetime)
+
     $q.when()
     .then(function(){
       return getCenterActivities(vm.api.project, vm.api.center_code_name, start_date, end_date);
@@ -246,14 +246,18 @@ angular.module('HistoricalCtrl', [])
       console.log("total seconds " + total_time_spent_in_sec)
 
       vm.data.real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
-        r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
-        r[a.resident_display_name + " -" + a.device_id].push(a);
+        r[a.resident_display_name] = r[a.resident_display_name] || []
+        r[a.resident_display_name].push(a);
+        //r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name] + " -" + a.device_id] || [];
+        //r[a.resident_display_name + " -" + a.device_id].push(a);
         return r;
       }, Object.create(null));
 
       vm.data.real_time_activity_reading_by_activity = vm.data.real_time_activity_reading.reduce(function (r, a) {
-        r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
-        r[a.resident_display_name + " -" + a.device_id].push(a);
+        r[a.resident_display_name] = r[a.resident_display_name] || [];
+        r[a.resident_display_name].push(a);
+        //r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name] + " -" + a.device_id] || [];
+        //r[a.resident_display_name + " -" + a.device_id].push(a);
         return r;
       }, Object.create(null));
 
@@ -356,8 +360,14 @@ angular.module('HistoricalCtrl', [])
     var top_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count.slice(0,5) : activity_attendance__by_count.slice(0, activity_attendance__by_count.length);
     var bottom_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count_asc.slice(0,5) : activity_attendance__by_count_asc.slice(0, activity_attendance__by_count_asc.length);;
 
+    vm.data.top_popular_activities = angular.copy(top_5_activities)
+    vm.data.top_popular_activities_count = angular.copy(top_5_activities_count)
+
+    vm.data.bottom_popular_activities = angular.copy(bottom_5_activities)
+    vm.data.bottom_popular_activities_count = angular.copy(bottom_5_activities_count)
+    console.log(vm.data.bottom_popular_activities_count)
     //time spent
-    vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
+    /*vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
     vm.data.top_popular_activities = ["Hours"].concat(angular.copy(top_5_activities.map(a => a.value)))
     vm.data.bottom_popular_activities_xaxis = angular.copy(bottom_5_activities.map(a => a.name))
     vm.data.bottom_popular_activities = ["Hours"].concat(angular.copy(bottom_5_activities.map(a => a.value)))
@@ -366,7 +376,7 @@ angular.module('HistoricalCtrl', [])
     vm.data.top_popular_activities_count = ["Unique Visit"].concat(angular.copy(top_5_activities_count.map(a => a.count)))
     vm.data.bottom_popular_activities_count_xaxis = angular.copy(bottom_5_activities_count.map(a => a.name))
     vm.data.bottom_popular_activities_count = ["Unique Visit"].concat(angular.copy(bottom_5_activities_count.map(a => a.count)))
-
+    */
 
   }//end top_bottom_popular_activities_widget
 
@@ -387,16 +397,22 @@ angular.module('HistoricalCtrl', [])
     var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
     var resident_time_spent_by_count = angular.copy(resident_time_spent_by_device_id.sort(compareCount));
     var resident_time_spent_by_count_asc = angular.copy(resident_time_spent_by_device_id.sort(compareCountAsc));
-
+    console.log(resident_time_spent_by_count_asc)
     //time spent
     var top_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(0,5) : resident_time_spent_by_hour.slice(0, resident_time_spent_by_hour.length);
     var bottom_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour_asc.slice(0,5) : resident_time_spent_by_hour_asc.slice(0, resident_time_spent_by_hour_asc.length);
     //count
     var top_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count.slice(0,5) : resident_time_spent_by_count.slice(0, resident_time_spent_by_count.length);
-    var bottom_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count_asc.slice(Math.max(resident_time_spent_by_count_asc.length - 5, 1))  :  resident_time_spent_by_count_asc.slice(Math.max(resident_time_spent_by_count_asc.length, 1))
+    var bottom_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count_asc.slice(0,5)  :  resident_time_spent_by_count_asc.slice(0, resident_time_spent_by_count_asc.length)
+
+    vm.data.top_active_resident = angular.copy(top_5_resident)
+    vm.data.top_active_resident_count = angular.copy(top_5_resident_count)
+
+    vm.data.bottom_active_resident = angular.copy(bottom_5_resident)
+    vm.data.bottom_active_resident_count = angular.copy(bottom_5_resident_count)
 
     //time spent
-    vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
+    /*vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.top_active_resident = ["Hours"].concat(angular.copy(top_5_resident.map(a => a.value)))
     vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.bottom_active_resident = ["Hours"].concat(angular.copy(bottom_5_resident.map(a => a.value)))
@@ -404,7 +420,7 @@ angular.module('HistoricalCtrl', [])
     vm.data.top_active_resident_count_xaxis = angular.copy(top_5_resident_count.map(a => a.name.split(" -")[0]))
     vm.data.top_active_resident_count = ["Unique Visit"].concat(angular.copy(top_5_resident_count.map(a => a.count)))
     vm.data.bottom_active_resident_count_xaxis = angular.copy(bottom_5_resident_count.map(a => a.name.split(" -")[0]))
-    vm.data.bottom_active_resident_count = ["Unique Visit"].concat(angular.copy(bottom_5_resident_count.map(a => a.count)))
+    vm.data.bottom_active_resident_count = ["Unique Visit"].concat(angular.copy(bottom_5_resident_count.map(a => a.count)))*/
 
 
   }//end top_bottom_active_resident_widget
@@ -539,7 +555,7 @@ angular.module('HistoricalCtrl', [])
 
   vm.tab2 = tab2;
   function tab2(){
-    console.log("TAB");
+    //console.log("TAB");
 
   }
 

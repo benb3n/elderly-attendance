@@ -278,7 +278,7 @@ angular.module('HistoricalDirective', [])
         scope.$watch('data', function(data) {
           if(typeof data != 'undefined' && data.length!=0 && data[0].date != null){
             var parseData = data
-            console.log(parseData);
+
           }
           scope.renderChart(parseData);
         },true);
@@ -292,7 +292,7 @@ angular.module('HistoricalDirective', [])
             var margin = {top: 20, right: 70, bottom: 50, left: 35};
             //var widther = window.outerWidth;
             var widther = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
-            console.log(widther);
+
             var width = widther - margin.left - margin.right,
                 height = 400 - margin.top - margin.bottom;
 
@@ -658,83 +658,88 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
       scope.$watch('data', function(data) {
-        if(typeof data != 'undefined' && data.length>0){
-          var parsedData = data;
-          parsedData = {
-            "key": "Series 1",
-            "color": "#d67777",
-            "values": [
-              {
-                "label" : "Group A" ,
-                "value" : -1.8746444827653
-              } ,
-              {
-                "label" : "Group B" ,
-                "value" : -8.0961543492239
-              } ,
-              {
-                "label" : "Group C" ,
-                "value" : -0.57072943117674
-              } ,
-              {
-                "label" : "Group D" ,
-                "value" : -2.4174010336624
-              } ,
-              {
-                "label" : "Group E" ,
-                "value" : -0.72009071426284
-              } ,
-              {
-                "label" : "Group F" ,
-                "value" : -0.77154485523777
-              } ,
-              {
-                "label" : "Group G" ,
-                "value" : -0.90152097798131
-              } ,
-              {
-                "label" : "Group H" ,
-                "value" : -0.91445417330854
-              } ,
-              {
-                "label" : "Group I" ,
-                "value" : -0.055746319141851
-              }
-            ]
-          }
+
+        if(typeof data != 'undefined' ){
+          var parsedData = [{
+            key: "Hours",
+            values: data
+          }]
+
+        };
+        scope.renderChart(parsedData, "");
+      },true);
+
+
+      scope.renderChart = function(parsedData, color){
+        d3.select(Element[0]).selectAll("*").remove();
+        if(typeof parsedData != "undefined" && parsedData[0].values.length > 0){
+          var chart = nv.models.multiBarHorizontalChart()
+            .x(function(d) { return d.name })
+            .y(function(d) { return parseFloat(d.value) })
+            .margin({top: 0, right: 0, bottom: 20, left: 140})
+            .showValues(true)           //Show bar value next to each bar.
+            .showControls(false);
+
+          chart.yAxis
+            .tickFormat(d3.format(",.0f"));
+
+          d3.select(Element[0])
+            .append("svg")
+            .datum(parsedData)
+            .transition().duration(500)
+            .call(chart);
+
+          nv.utils.windowResize(chart.update);
+        }else {
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
+        }
+      }
+    }
+  }
+})//end dir horizontalBarChart
+
+.directive('horizontalBarChartCount',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+      scope.$watch('data', function(data) {
+        if(typeof data != 'undefined' ){
+          var parsedData = [{
+            key: "Count",
+            values: data
+          }]
+
         };
         scope.renderChart(parsedData, "");
       },true);
 
       scope.renderChart = function(parsedData, color){
-        if(typeof parsedData != "undefined"){
-          d3.select(Element[0]).selectAll("*").remove();
+        d3.select(Element[0]).selectAll("*").remove();
+        if(parsedData && typeof parsedData != "undefined" && parsedData[0].values.length > 0){
           var chart = nv.models.multiBarHorizontalChart()
-            .x(function(d) { return d.label })
-            .y(function(d) { return d.value })
-            .margin({top: 40, right: 20, bottom: 50, left: 50})
+            .x(function(d) { return d.name })
+            .y(function(d) { return parseInt(d.count) })
+            .margin({top: 0, right: 0, bottom: 20, left: 140})
             .showValues(true)           //Show bar value next to each bar.
-            //.tooltips(true)             //Show tooltips on hover.
-            //.transitionDuration(350)
-            .showControls(false) //Allow user to switch between "Grouped" and "Stacked" mode.
-            //.stacked(true)
-            .showLegend(false)
-            //.groupSpacing(0.1)
-            //.valuePadding(50);
+            .showControls(false);
 
-          chart.xAxis
-            .tickFormat(d3.format(',.2f'));
+          chart.yAxis
+            .tickFormat(d3.format(",.0f"));
 
           d3.select(Element[0])
             .append("svg")
             .datum(parsedData)
+            .transition().duration(500)
             .call(chart);
 
           nv.utils.windowResize(chart.update);
         }else {
-          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
         }
-
       }
     }
   }
@@ -1345,7 +1350,6 @@ angular.module('HistoricalDirective', [])
 
             function resized() {
               d3.select(Element[0]).select("svg").remove();
-              console.log(window.innerWidth);
               var margin = { top: 40, right: 0, bottom: 30, left: 30 },
                 width = window.innerWidth - margin.left - margin.right -30,
                 gridSize = Math.floor(width / 23),
