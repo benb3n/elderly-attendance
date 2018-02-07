@@ -16,8 +16,11 @@ body{
 .card .card-content{
   padding: 5px !important;
 }
-.card .input-field .filter-label {
+.card-filter-label{
   font-size: 15px !important;
+}
+.card-filter-label-date {
+  font-size: 18px !important;
 }
 .card .card-title {
   font-size: 15px !important;

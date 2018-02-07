@@ -6,24 +6,24 @@
                   <option value = "" disabled selected>Select Center</option>
                   <option value={{center.value}} ng-repeat="center in historical.display.centers" id="center_courses">{{center.name}}</option>
               </select>
-              <label class="filter-label" >Center</label>
+              <label class="card-filter-label{" >Center</label>
           </div>
           <div class="input-field col s12 m2">
             <select>
                 <option value = "" disabled selected>Select Course</option>
                 <option value ={{activity.value}} ng-repeat="activity in historical.display.activity">{{activity.name}}</option>
             </select>
-            <label class="filter-label" >Course</label>
+            <label class="card-filter-label" >Course</label>
           </div>
           <div class="input-field col s12 m2">
             <i class="material-icons prefix">today</i>
             <input ng-model="historical.selectedStartDate_courses" id="start_date_courses" type="date" class="datepicker">
-            <label class="filter-label" for="start_date_courses">Start Date</label>
+            <label  class="card-filter-label-date active" for="start_date_courses">Start Date</label>
           </div>
           <div class="input-field col s12 m2">
             <i class="material-icons prefix">today</i>
             <input ng-model="historical.selectedEndDate_courses" id="end_date_courses" type="date" class="datepicker">
-            <label class="filter-label" for="end_date_courses">End Date</label>
+            <label  class="card-filter-label-date  active" for="end_date_courses">End Date</label>
           </div>
         <div class="col s12 m2">
           <button ng-click="historical.generateDataCourses()" class="waves-effect waves-light btn">Generate</button>
