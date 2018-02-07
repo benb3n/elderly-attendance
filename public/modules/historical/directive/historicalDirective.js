@@ -120,6 +120,79 @@ angular.module('HistoricalDirective', [])
   }
 })//end dir barHorizontalChart
 
+.directive('monthlyLineChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "=",
+        axis: "="
+    },
+    link: function(scope, Element, Attrs) {
+      scope.$watch('data', function(data) {
+        if(typeof data != 'undefined' && data.length!=0 ){
+          var parsedData = data
+          console.log(data);
+        }
+
+        scope.renderChart(parsedData, scope.axis);
+      },true);
+
+      scope.renderChart = function(data,axis_labels){
+        d3.select(Element[0]).selectAll("*").remove();
+        var w = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
+
+        if(data && data.length > 0){
+
+          //console.log(document.getElementById('activity_content').style)
+          var chart = c3.generate({
+            bindto: Element[0],
+            data: {
+                columns: data
+            },
+            size: {
+              width: w
+            },
+            padding: {
+              left: 25
+            },
+            axis: {
+              x: {
+                  type: 'category',
+                  categories: axis_labels,
+                  tick: {fit: true}
+              }
+            },
+            legend:{
+              show:true
+            },
+            tooltip: {
+              position: function (data, width, height, element) {
+                var top = d3.mouse(element)[1] - element.height.baseVal.value
+                return {top: top, left: parseInt(element.getAttribute('x')) + parseInt(element.getAttribute('width'))}
+              }
+            }
+
+          });
+          d3.select(window).on("resize", resized);
+
+        }else {
+          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+        }
+
+        function resized(){
+            chart.flush();
+            chart.resize();
+
+        }
+
+
+      }
+    }
+  }
+})//end dir weeklyLineChart
+
+
 .directive('weeklyLineChart',function(){
   return {
     restrict: 'EA',
@@ -588,84 +661,87 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
       scope.$watch('data', function(data) {
-        if(typeof data != 'undefined' && data.length>0){
-          var parsedData = data;
-          parsedData = {
-            "key": "Series 1",
-            "color": "#d67777",
-            "values": [
-              { 
-                "label" : "Group A" ,
-                "value" : -1.8746444827653
-              } , 
-              { 
-                "label" : "Group B" ,
-                "value" : -8.0961543492239
-              } , 
-              { 
-                "label" : "Group C" ,
-                "value" : -0.57072943117674
-              } , 
-              { 
-                "label" : "Group D" ,
-                "value" : -2.4174010336624
-              } , 
-              {
-                "label" : "Group E" ,
-                "value" : -0.72009071426284
-              } , 
-              { 
-                "label" : "Group F" ,
-                "value" : -0.77154485523777
-              } , 
-              { 
-                "label" : "Group G" ,
-                "value" : -0.90152097798131
-              } , 
-              {
-                "label" : "Group H" ,
-                "value" : -0.91445417330854
-              } , 
-              { 
-                "label" : "Group I" ,
-                "value" : -0.055746319141851
-              }
-            ]
-          }
+        if(typeof data != 'undefined' ){
+          var parsedData = [{
+            key: "Hours",
+            values: data
+          }]
+
         };
         scope.renderChart(parsedData, "");
       },true);
 
-      scope.renderChart = function(parsedData, color){    
+      scope.renderChart = function(parsedData, color){  
         if(typeof parsedData != "undefined"){
           d3.select(Element[0]).selectAll("*").remove();
-          console.log(parsedData)
           var chart = nv.models.multiBarHorizontalChart()
-            .x(function(d) { return d.label })
-            .y(function(d) { return d.value })
-            .margin({top: 40, right: 20, bottom: 50, left: 50})
+            .x(function(d) { return d.name })
+            .y(function(d) { return parseFloat(d.value) })
+            .margin({top: 0, right: 0, bottom: 20, left: 140})
             .showValues(true)           //Show bar value next to each bar.
-            //.tooltips(true)             //Show tooltips on hover.
-            .transitionDuration(350)
-            .showControls(false) //Allow user to switch between "Grouped" and "Stacked" mode.
-            //.stacked(true)
-            .showLegend(false)
-            //.groupSpacing(0.1)
-            //.valuePadding(50);
-
-          chart.xAxis
-            .tickFormat(d3.format(',.2f'));
+            .showControls(false); 
+         
+          chart.yAxis
+            .tickFormat(d3.format(",.2f"));
 
           d3.select(Element[0])
             .append("svg")
             .datum(parsedData)
+            .transition().duration(500)
             .call(chart);
 
           nv.utils.windowResize(chart.update);
         }else {
-          d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+          d3.select(Element[0]).html('<div style="text-align: center; margin:0px; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
         }
+      }
+    }
+  }
+})//end dir horizontalBarChart
 
+.directive('horizontalBarChartCount',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+      scope.$watch('data', function(data) {
+        if(typeof data != 'undefined' ){
+          var parsedData = [{
+            key: "Count",
+            values: data
+          }]
+
+        };
+        scope.renderChart(parsedData, "");
+      },true);
+
+      scope.renderChart = function(parsedData, color){  
+        if(typeof parsedData != "undefined"){
+          console.log(parsedData)
+          d3.select(Element[0]).selectAll("*").remove();
+          var chart = nv.models.multiBarHorizontalChart()
+            .x(function(d) { return d.name })
+            .y(function(d) { return parseFloat(d.count) })
+            .margin({top: 0, right: 0, bottom: 20, left: 140})
+            .showValues(true)           //Show bar value next to each bar.
+            .showControls(false); 
+         
+          chart.yAxis
+            .tickFormat(d3.format(",.0f"));
+
+          d3.select(Element[0])
+            .append("svg")
+            .datum(parsedData)
+            .transition().duration(500)
+            .call(chart);
+
+          nv.utils.windowResize(chart.update);
+        }else {
+          d3.select(Element[0]).html('<div style="text-align: center; margin:0px; line-height: 115px;"><span style="font-size: 18px;font-weight: 500;">No Data Available.</span></div>');
+        }
       }
     }
   }
@@ -1169,7 +1245,7 @@ angular.module('HistoricalDirective', [])
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
             var margin = { top: 40, right: 0, bottom: 30, left: 30 },
-              width = screen.width - margin.left - margin.right -30,
+              width = window.innerWidth - margin.left - margin.right -30,
               gridSize = Math.floor(width / 23),
               height = (gridSize*7) + margin.top + margin.bottom,
               legendElementWidth = gridSize*2,
@@ -1220,6 +1296,8 @@ angular.module('HistoricalDirective', [])
                   .attr("y", function(d) { return (d.day - 1) * gridSize; })
                   .attr("rx", 4)
                   .attr("ry", 4)
+                  .attr("stroke", "#E6E6E6")
+                  .attr("stroke-width", "1.5px")
                   .attr("class", "hour bordered")
                   .attr("width", gridSize)
                   .attr("height", gridSize)
@@ -1229,12 +1307,13 @@ angular.module('HistoricalDirective', [])
                   .style("fill", function(d) { return colorScale(d.value); });
 
               cards.enter().append("text")
-                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
-                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
-                //.attr("rx", 4)
-                //.attr("ry", 4)
+                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2); })
+                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/2); })//height
                 .text(function(d) { return(d.value==0)? null:d.value ; })
                 .style("fill",'#000000')
+                //.style("font-size",'20px')
+                .attr("text-anchor","middle")
+                .attr("alignment-baseline","middle")
                 //.style("fill",'#CBC8B4')
                 .style("font-weight",'bold');
 
@@ -1264,8 +1343,109 @@ angular.module('HistoricalDirective', [])
                 //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
 
               legend.exit().remove();
+              //RESPONSIVENESS
+              d3.select(window).on("resize", resized);
+
             }else {
               d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+            }
+
+            function resized() {
+              d3.select(Element[0]).select("svg").remove();
+              console.log(window.innerWidth);
+              var margin = { top: 40, right: 0, bottom: 30, left: 30 },
+                width = window.innerWidth - margin.left - margin.right -30,
+                gridSize = Math.floor(width / 23),
+                height = (gridSize*7) + margin.top + margin.bottom;
+
+                var svg = d3.select(Element[0]).append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                var dayLabels = svg.selectAll(".dayLabel")
+                  .data(days)
+                  .enter().append("text")
+                    .text(function (d) { return d; })
+                    .attr("x", 0)
+                    .attr("y", function (d, i) { return i * gridSize; })
+                    .style("text-anchor", "end")
+                    .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+                    .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+                var timeLabels = svg.selectAll(".timeLabel")
+                  .data(times)
+                  .enter().append("text")
+                    .text(function(d) { return d; })
+                    .attr("x", function(d, i) { return i * gridSize; })
+                    .attr("y", 0)
+                    .style("text-anchor", "middle")
+                    //.style("font-size",'10px')
+                    .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+                    .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+                  var colorScale = d3.scale.threshold()
+                       .domain(rangeDomain)
+                      .range(colors);
+
+                  var cards = svg.selectAll(".hour")
+                      .data(data, function(d) {return d.day+':'+d.hour;});
+
+                  cards.append("title");
+
+                  cards.enter().append("rect")
+                      .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+                      .attr("y", function(d) { return (d.day - 1) * gridSize; })
+                      .attr("rx", 4)
+                      .attr("ry", 4)
+                      .attr("stroke", "#E6E6E6")
+                      .attr("stroke-width", "1.5px")
+                      .attr("class", "hour bordered")
+                      .attr("width", gridSize)
+                      .attr("height", gridSize)
+                      .style("color", colors[0]);
+
+                  cards.transition().duration(1000)
+                      .style("fill", function(d) { return colorScale(d.value); });
+
+                  cards.enter().append("text")
+                    .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2); })
+                    .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/2); })//height
+                    .text(function(d) { return(d.value==0)? null:d.value ; })
+                    .style("fill",'#000000')
+                    //.style("font-size",'20px')
+                    .attr("text-anchor","middle")
+                    .attr("alignment-baseline","middle")
+                    //.style("fill",'#CBC8B4')
+                    .style("font-weight",'bold');
+
+                  cards.select("title").text(function(d) { return d.value; });
+
+                  cards.exit().remove();
+
+                  var legend = svg.selectAll(".legend")
+                      //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
+                      .data(displayRangeDomain);
+
+                  legend.enter().append("g")
+                      .attr("class", "legend");
+
+                  legend.append("rect")
+                    .attr("x", function(d, i) { return legendElementWidth * i; })
+                    .attr("y", height-margin.bottom -30)
+                    .attr("width", legendElementWidth)
+                    .attr("height", gridSize / (2))
+                    .style("fill", function(d, i) { return colors[i]; })
+
+                  legend.append("text")
+                    .attr("class", "mono")
+                    .text(function(d) { return "≥ " + Math.round(d); })
+                    .attr("x", function(d, i) { return legendElementWidth * i; })
+                    .attr("y", height + gridSize - margin.bottom -30);
+                    //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
+
+                  legend.exit().remove();
             }
         };
     }
@@ -1282,7 +1462,6 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-            console.log(data);
             scope.heatmapChart(data,scope.datelist);
         },true);
 
@@ -1296,7 +1475,7 @@ angular.module('HistoricalDirective', [])
               legendElementWidth = gridSize*2,
               legend_text = ["Absent","Present"],
               index = [0,1],
-              colors = ["#ffffd9","#edf8b1"],
+              colors = ["#ffffd9","#9EFA6B"],
               //rangeDomain = [1,5,10,15,25],
               //displayRangeDomain = [0,1,5,10,15],
               //colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
@@ -1340,6 +1519,8 @@ angular.module('HistoricalDirective', [])
                   .attr("y", function(d) { return (d.day - 1) * gridSize; })
                   .attr("rx", 4)
                   .attr("ry", 4)
+                  .attr("stroke", "#E6E6E6")
+                  .attr("stroke-width", "1.5px")
                   .attr("class", "hour bordered")
                   .attr("width", gridSize)
                   .attr("height", gridSize)
@@ -1348,16 +1529,6 @@ angular.module('HistoricalDirective', [])
               cards.transition().duration(1000)
                   .style("fill", function(d) { return ((d.value==0)? colors[0]:colors[1]); });
 
-              /*cards.enter().append("text")
-                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
-                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
-                //.attr("rx", 4)
-                //.attr("ry", 4)
-                .text(function(d) { return(d.value==0)? null:d.value ; })
-                .style("fill",'#000000')
-                //.style("fill",'#CBC8B4')
-                .style("font-weight",'bold');
-                */
               cards.select("title").text(function(d) { return d.value; });
 
               cards.exit().remove();

@@ -173,6 +173,7 @@ angular.module('HistoricalCtrl', [])
       bottom_popular_activities_count: [],
       bottom_popular_activities_count_xaxis: [],
       activityMonthData: [],
+      activityMonthDatalabel:[],
       residentBoxHeatmapData: [],
       residentBoxHeatmapData_date: []
     }
@@ -211,7 +212,7 @@ angular.module('HistoricalCtrl', [])
         vm.display.centers.push({name: value.code_name, value: value.code_name})
       })
 
-      callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-01-14') //'2017-12-01'
+      callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-02-04') //'2017-12-01'
     })
 
   }
@@ -277,14 +278,18 @@ angular.module('HistoricalCtrl', [])
       console.log("total seconds " + total_time_spent_in_sec)
 
       vm.data.real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
-        r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
-        r[a.resident_display_name + " -" + a.device_id].push(a);
+        r[a.resident_display_name] = r[a.resident_display_name] || []
+        r[a.resident_display_name].push(a);
+        //r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name] + " -" + a.device_id] || [];
+        //r[a.resident_display_name + " -" + a.device_id].push(a);
         return r;
       }, Object.create(null));
 
       vm.data.real_time_activity_reading_by_activity = vm.data.real_time_activity_reading.reduce(function (r, a) {
-        r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name + " -" + a.device_id] || [];
-        r[a.resident_display_name + " -" + a.device_id].push(a);
+        r[a.resident_display_name] = r[a.resident_display_name] || []; 
+        r[a.resident_display_name].push(a);
+        //r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name] + " -" + a.device_id] || [];
+        //r[a.resident_display_name + " -" + a.device_id].push(a);
         return r;
       }, Object.create(null));
 
@@ -305,7 +310,7 @@ angular.module('HistoricalCtrl', [])
       //day_of_week_widget();
       box_heatmap_widget();
       day_of_week_widget();
-      update_activity_month_chart("Language");
+      update_activity_month_chart(start_date_time,end_date_time);
 
       //PERSON TAB
       resident_heatmap_widget();
@@ -387,8 +392,14 @@ angular.module('HistoricalCtrl', [])
     var top_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count.slice(0,5) : activity_attendance__by_count.slice(0, activity_attendance__by_count.length);
     var bottom_5_activities_count = (activity_attendance__by_count.length >= 5) ? activity_attendance__by_count_asc.slice(0,5) : activity_attendance__by_count_asc.slice(0, activity_attendance__by_count_asc.length);;
 
+    vm.data.top_popular_activities = angular.copy(top_5_activities)
+    vm.data.top_popular_activities_count = angular.copy(top_5_activities_count)
+
+    vm.data.bottom_popular_activities = angular.copy(bottom_5_activities)
+    vm.data.bottom_popular_activities_count = angular.copy(bottom_5_activities_count)
+    console.log(vm.data.bottom_popular_activities_count)
     //time spent
-    vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
+    /*vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
     vm.data.top_popular_activities = ["Hours"].concat(angular.copy(top_5_activities.map(a => a.value)))
     vm.data.bottom_popular_activities_xaxis = angular.copy(bottom_5_activities.map(a => a.name))
     vm.data.bottom_popular_activities = ["Hours"].concat(angular.copy(bottom_5_activities.map(a => a.value)))
@@ -397,7 +408,7 @@ angular.module('HistoricalCtrl', [])
     vm.data.top_popular_activities_count = ["Unique Visit"].concat(angular.copy(top_5_activities_count.map(a => a.count)))
     vm.data.bottom_popular_activities_count_xaxis = angular.copy(bottom_5_activities_count.map(a => a.name))
     vm.data.bottom_popular_activities_count = ["Unique Visit"].concat(angular.copy(bottom_5_activities_count.map(a => a.count)))
-
+    */
 
   }//end top_bottom_popular_activities_widget
 
@@ -418,16 +429,22 @@ angular.module('HistoricalCtrl', [])
     var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
     var resident_time_spent_by_count = angular.copy(resident_time_spent_by_device_id.sort(compareCount));
     var resident_time_spent_by_count_asc = angular.copy(resident_time_spent_by_device_id.sort(compareCountAsc));
-
+    console.log(resident_time_spent_by_count_asc)
     //time spent
     var top_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(0,5) : resident_time_spent_by_hour.slice(0, resident_time_spent_by_hour.length);
     var bottom_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour_asc.slice(0,5) : resident_time_spent_by_hour_asc.slice(0, resident_time_spent_by_hour_asc.length);
     //count
     var top_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count.slice(0,5) : resident_time_spent_by_count.slice(0, resident_time_spent_by_count.length);
-    var bottom_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count_asc.slice(Math.max(resident_time_spent_by_count_asc.length - 5, 1))  :  resident_time_spent_by_count_asc.slice(Math.max(resident_time_spent_by_count_asc.length, 1))
+    var bottom_5_resident_count = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_count_asc.slice(0,5)  :  resident_time_spent_by_count_asc.slice(0, resident_time_spent_by_count_asc.length)
+
+    vm.data.top_active_resident = angular.copy(top_5_resident)
+    vm.data.top_active_resident_count = angular.copy(top_5_resident_count)
+    
+    vm.data.bottom_active_resident = angular.copy(bottom_5_resident)
+    vm.data.bottom_active_resident_count = angular.copy(bottom_5_resident_count)
 
     //time spent
-    vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
+    /*vm.data.top_active_resident_xaxis = angular.copy(top_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.top_active_resident = ["Hours"].concat(angular.copy(top_5_resident.map(a => a.value)))
     vm.data.bottom_active_resident_xaxis = angular.copy(bottom_5_resident.map(a => a.name.split(" -")[0]))
     vm.data.bottom_active_resident = ["Hours"].concat(angular.copy(bottom_5_resident.map(a => a.value)))
@@ -435,7 +452,7 @@ angular.module('HistoricalCtrl', [])
     vm.data.top_active_resident_count_xaxis = angular.copy(top_5_resident_count.map(a => a.name.split(" -")[0]))
     vm.data.top_active_resident_count = ["Unique Visit"].concat(angular.copy(top_5_resident_count.map(a => a.count)))
     vm.data.bottom_active_resident_count_xaxis = angular.copy(bottom_5_resident_count.map(a => a.name.split(" -")[0]))
-    vm.data.bottom_active_resident_count = ["Unique Visit"].concat(angular.copy(bottom_5_resident_count.map(a => a.count)))
+    vm.data.bottom_active_resident_count = ["Unique Visit"].concat(angular.copy(bottom_5_resident_count.map(a => a.count)))*/
 
 
   }//end top_bottom_active_resident_widget
@@ -516,52 +533,54 @@ angular.module('HistoricalCtrl', [])
 
   }//end box_heatmap_widget
 
-  function update_activity_month_chart(course_type){
-    /*
-    var course_activity_array = vm.data.real_time_activity_reading_by_activity_name["Karaoke"];
-    console.log(course_activity_array);
+  function update_activity_month_chart(start_date_time,end_date_time){
 
     var month_list = [];
-    var months_array = [];
-    course_activity_array.forEach(function(value){
-      var yearmonth = moment(value.start_timestamp).format("YYYY-MM");
-      if (month_list.indexOf(yearmonth) == -1){
-        month_list.push(yearmonth);
-        months_array.push([]);
-      }
-      months_array[month_list.indexOf(yearmonth)].push(value);
+
+    var curr_month = moment(moment(start_date_time).startOf('month').format("YYYY-MM-DD hh:mm:ss"));
+    var end_month = moment( moment(end_date_time).endOf('month').format("YYYY-MM-DD hh:mm:ss"));
+    while (curr_month.isSameOrBefore(end_month)){
+      month_list.push(curr_month.format("YYYY-MMM"));
+      curr_month = moment(curr_month.add(1, 'months').format("YYYY-MM-DD hh:mm:ss"));
+    }
+
+    var month_data = [];
+    Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key, index){
+      var result = vm.data.real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
+        var month_slot = month_list.indexOf(moment(a).format("YYYY-MMM"));
+        r[month_slot] = r[month_slot] || [];
+        r[month_slot].push(a);
+        return r;
+      }, Object.create(null));
+
+      month_data.push(key)
+      month_list.forEach(function(value, index){
+        month_data.push((result[index])? result[index].length:0);
+      })
+      //console.log(month_data);
+      vm.data.activityMonthData.push(month_data);
+      month_data = [];
     })
+    vm.data.activityMonthDatalabel=angular.copy(month_list);
 
-    var activity_month_data = [];
-    month_list.forEach(function(value,index){
-      activity_month_data.push({
-        "date": '' + value,
-        "num": months_array[index].length
-      })//end obj
-    })//end for each month in month list
-    activity_month_data.push({
-      "date": '2017-11',
-      "num": 14
-    })//end obj
-    console.log(activity_month_data);
-    vm.data.activityMonthData=angular.copy(activity_month_data);
-    */
-
+    /*
     activityMonthData = [];
-    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
-    test_values = [1,3,2,5,6,7,4,6,2];
+    test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04'];//,'2018-05','2018-06'];
+    test_values = [1,3,2,5,6,7,4];//,6,2];
+
+    //test_dates = ['2017-10','2017-11','2017-12','2018-01','2018-02','2018-03','2018-04','2018-05','2018-06'];
+    //test_values = [1,3,2,5,6,7,4,6,2];
     test_dates.forEach(function(value,index){
       activityMonthData.push({
         "date": value,
         "num": test_values[index]
       })//end obj
     });
+
+    vm.data.activityMonthDatalabel=angular.copy(test_dates);
     vm.data.activityMonthData=angular.copy(activityMonthData);
-    console.log(activityMonthData);
-
-
-    //{"date": '2011-03', "num" : 9}
-  }// end func update_activity_month_chart
+    */
+}// end func update_activity_month_chart
 
   /***********************
      CHARTS - PERSON
