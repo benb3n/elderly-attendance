@@ -1,5 +1,5 @@
 angular.module('HistoricalCtrl', [])
-.controller('HistoricalController', function ($scope, $q, $timeout, HService) {
+.controller('HistoricalController', function ($scope, $q, $timeout, HService, FileSaver, Blob) {
     var vm = this;
     vm.api = {
         project: 'mp',
@@ -399,7 +399,7 @@ angular.module('HistoricalCtrl', [])
 
     vm.data.bottom_popular_activities = angular.copy(bottom_5_activities)
     vm.data.bottom_popular_activities_count = angular.copy(bottom_5_activities_count)
-    console.log(vm.data.bottom_popular_activities_count)
+
     //time spent
     /*vm.data.top_popular_activities_xaxis = angular.copy(top_5_activities.map(a => a.name))
     vm.data.top_popular_activities = ["Hours"].concat(angular.copy(top_5_activities.map(a => a.value)))
@@ -431,7 +431,7 @@ angular.module('HistoricalCtrl', [])
     var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
     var resident_time_spent_by_count = angular.copy(resident_time_spent_by_device_id.sort(compareCount));
     var resident_time_spent_by_count_asc = angular.copy(resident_time_spent_by_device_id.sort(compareCountAsc));
-    console.log(resident_time_spent_by_count_asc)
+      
     //time spent
     var top_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(0,5) : resident_time_spent_by_hour.slice(0, resident_time_spent_by_hour.length);
     var bottom_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour_asc.slice(0,5) : resident_time_spent_by_hour_asc.slice(0, resident_time_spent_by_hour_asc.length);
@@ -1283,6 +1283,127 @@ angular.module('HistoricalCtrl', [])
   *********************/
   vm.generateDataPerson = generateDataPerson;
   vm.generateDataCourses = generateDataCourses;
+  vm.generateReport = generateReport;
+
+  function generateReport(){
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    //var wb = XLSX.utils.book_new();
+
+    var today = new Date();
+    var report_month = months[today.getMonth()];
+
+    $q.when()
+    .then(function(){
+      return getReport();
+    })
+    .then(function(data){
+      var element = document.createElement('a');
+      element.setAttribute('href', "/report/Attendance Reporting.xlsx")  //"/assets/reports/sample_output.pptx") //"/assets/img/flags.png")
+      element.setAttribute('download', 'Attendace.xlsx');
+      element.click();
+      //let blob = new Blob([data], {type: 'vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
+      //FileSaver.saveAs(blob, 'Attendance.xlsx');
+    })
+    
+
+    /*var excelCell = {
+      v: "ASDDD",
+      t: "s",
+      s: {
+        fill: { 
+          fgColor: { rgb: "FF0000"}, 
+        } //here you can define the color you want to use
+      }
+      };
+
+
+    wb = {
+      SheetNames:["Monthly Attendance Reporting"],
+      Sheets:{
+        "Monthly Attendance Reporting": {
+          "!ref": "A1:Z1000",
+          A1:{t:'s', v:"Monthly Attendance Reporting: " + report_month + " " + today.getFullYear()},
+          A4:{t:'s', v: "Month : " + report_month.toLocaleUpperCase() + " " + today.getFullYear()},
+          
+          A5:{t:'s', v: "No"},
+          B5:{t:'s', v: "Blk"},
+          C5:{t:'s', v: "Unit No."},
+          D5:{t:'s', v: "Name of Registered Elderly"},
+          E5:{t:'s', v: "Gender"},
+          
+          F5:{t:'s', v: "hehe"},
+
+          D10:{t:'s', v: "test", s: {
+              'fill': {
+                patternType: "none",
+                'fgColor': {rgb: "FF0000"},
+                'bgColor': {rgb: "FF0000"}
+              }
+            } 
+          },
+          D9:{t:'s', v: "test1", s: {
+              'fill': {          
+                patternType: "none",
+                'fgColor': {rgb: "fff00000"},
+                'bgColor': {rgb: "fff00000"}
+              }
+            } 
+          },
+          D8:{t:'s', v: "test2", s: 
+            { patternType: 'solid',
+              fgColor: { rgb: "fff00000" },
+              bgColor: { rgb: "fff00000"} }  
+          },
+      
+
+
+          B6: excelCell,
+
+          "!merges":[
+            {s:{r:3,c:0},e:{r:3,c:2}} 
+          ]
+        }
+      }
+    }
+    XLSX.writeFile(wb, "Attendance Report.xlsx")*/
+  
+   
+
+    /* make worksheet */
+    /*var ws_data = [
+      ["Monthly Attendance Reporting: " + report_month + " " + today.getFullYear()], [], [], [],
+      [ "Month : " + report_month.toLocaleUpperCase() + " " + today.getFullYear(), "h", "e", "e", "t", "J", "S" ],
+      [  1 ,  2 ,  3 ,  4 ,  5 ]
+    ];
+    var ws = XLSX.utils.aoa_to_sheet(ws_data);*/
+
+    /* Add the sheet name to the list */
+    //wb.SheetNames.push(ws_name);
+    /* Load the worksheet object */
+    //wb.Sheets[ws_name] = ws;
+
+
+    
+
+
+    /*var workbook = new Excel.Workbook();
+    workbook.creator = 'iCityLab';
+    workbook.lastModifiedBy = 'Admin';
+    workbook.created = new Date();
+    workbook.modified = new Date();
+    workbook.lastPrinted = new Date();
+    workbook.properties.date1904 = true;
+
+    workbook = createAndFillWorkbook();
+    var sheet = workbook.addWorksheet('Report');
+
+    sheet.getCell('A1').value = ("Monthly Attendance Reporting for Jan 2018");
+
+    sheet.getCell('A2').fill = {
+      fgColor:{argb:'FFFF00'}
+    }*/
+
+  }
 
   function generateDataPerson(){
     //console.log(vm.selectedCenter +"\n"+ vm.selectedStartDate_person +"\n"+ vm.selectedEndDate_person);
@@ -1299,6 +1420,17 @@ angular.module('HistoricalCtrl', [])
   /********************
       WEB SERVICES
   *********************/
+  function getReport (){
+    var _defer = $q.defer();
+    HService.generateReport(function (result) {
+      if (result) {
+        _defer.resolve(result);
+      } else {
+        _defer.reject();
+      }
+    });
+    return _defer.promise;
+  }
   function getSensorReadings (gw_device, start_date, end_date, page_size) {
     var _defer = $q.defer();
     HService.getSensorReadings(gw_device, start_date, end_date, page_size, function (result) {

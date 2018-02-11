@@ -14,7 +14,9 @@ angular.module('iCityLab', [
     'AttendanceCtrl',
     'AttendanceService',
     'nvd3',
-    'g1b.calendar-heatmap'
+    'g1b.calendar-heatmap',
+    'ngFileSaver'
+    
 
 ]).run(function($rootScope, $http, $location) {
     // redirect to login page if not logged in and trying to access a restricted page

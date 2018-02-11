@@ -4,6 +4,7 @@ var app            = express();
 var path           = require('path');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
+var Excel = require('exceljs');
 
 app.set('env', 'development');
 
@@ -33,6 +34,34 @@ require('./app/routes')(app); // pass our application into our routes
 
 app.get('/*', function(req, res) {
 	res.sendFile('index.html', { root: __dirname + '/public' });
+});
+
+app.post('/report', (req, res) => {
+	var workbook = new Excel.Workbook();
+	workbook.creator = 'iCity';
+	workbook.lastModifiedBy = 'iCity';
+	workbook.created = new Date();
+	workbook.modified = new Date();
+	workbook.lastPrinted = new Date();
+
+	var worksheet = workbook.addWorksheet('My Sheet');
+
+	worksheet.getCell('A1').value = 'Report';
+	worksheet.mergeCells('A4:C4');
+	worksheet.getCell('A4').value = 'Month';
+
+	worksheet.getCell('A1').fill = {
+		type: 'pattern',
+		pattern:'solid',
+		fgColor:{argb:'FFFF0000'}
+	};
+
+	workbook.xlsx.writeFile( __dirname + "/public/report/Attendance Reporting.xlsx" )
+		.then(function() {
+			var file = __dirname + "/public/report/Attendance Reporting.xlsx";
+			res.sendFile(file)
+		});
+
 });
 
 // start app ===============================================
