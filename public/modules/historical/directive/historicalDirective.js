@@ -1124,15 +1124,15 @@ angular.module('HistoricalDirective', [])
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
             var margin = { top: 50, right: 30, bottom: 24, left: 40 },
-              hMargin = 30,
               rangeDomain = [1,3,6,9,15],
               displayRangeDomain = [0,1,3,6,9],
-              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
               times = ["8am","", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"],
-              width = screen.width - margin.left - margin.right -72,
+              width = screen.width - margin.left - margin.right -30,
               gridSize = Math.floor(width / 7),
               legendElementWidth = width / rangeDomain.length,
+              hMargin = 30,
               height = gridSize*times.length;
 
             var svg = d3.select(Element[0]).append("svg")
@@ -1177,6 +1177,8 @@ angular.module('HistoricalDirective', [])
                   .attr("x", function(d) { return (d.day - 1) * gridSize; })
                   .attr("rx", 4)
                   .attr("ry", 4)
+                  .attr("stroke", "#E6E6E6")
+                  .attr("stroke-width", "1.5px")
                   .attr("class", "hour bordered")
                   .attr("width", gridSize)
                   .attr("height", gridSize)
@@ -1186,12 +1188,13 @@ angular.module('HistoricalDirective', [])
                   .style("fill", function(d) { return colorScale(d.value); });
 
               cards.enter().append("text")
-                .attr("y", function(d) { return (d.hour - 1) * gridSize + (gridSize/1.5) + hMargin; })
-                .attr("x", function(d) { return (d.day - 1) * gridSize + gridSize/3.1 ;})
+                .attr("y", function(d) { return (d.hour - 1) * gridSize + (gridSize/2) + hMargin; })
+                .attr("x", function(d) { return (d.day - 1) * gridSize + gridSize/2 ;})
                 .attr("rx", 4)
                 .attr("ry", 4)
-                //.text(function(d) { return d.value; })
                 .text(function(d) {return(d.value ==0) ? null : d.value ;})
+                .attr("text-anchor","middle")
+                .attr("alignment-baseline","middle")
                 .style("fill",'#000000')
                 .style("font-weight",'bold');
 
@@ -1206,8 +1209,8 @@ angular.module('HistoricalDirective', [])
                   .attr("class", "legend");
 
               legend.append("rect")
-                .attr("x", function(d, i) { return legendElementWidth * i -50; })
-                .attr("y", -35)
+                .attr("x", function(d, i) { return legendElementWidth * i - margin.left/2; })
+                .attr("y", -hMargin -5)
                 .attr("width", legendElementWidth)
                 .attr("height", gridSize / 2)
                 .style("fill", function(d, i) { return colors[i]; })
@@ -1215,8 +1218,8 @@ angular.module('HistoricalDirective', [])
               legend.append("text")
                 .attr("class", "mono")
                 .text(function(d) { return "≥ " + Math.round(d); })
-                .attr("x", function(d, i) { return legendElementWidth * i -50; })
-                .attr("y", -35 + gridSize);
+                .attr("x", function(d, i) { return legendElementWidth * i - margin.left/2; })
+                .attr("y", -hMargin -5 + gridSize);
 
               legend.exit().remove();
           }else {
