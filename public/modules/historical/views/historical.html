@@ -23,11 +23,15 @@
           <div class="input-field col s12 m2">
             <i class="material-icons prefix">today</i>
             <input ng-model="historical.selectedEndDate_courses" id="end_date_courses" type="date" class="datepicker">
-            <label  class="card-filter-label-date  active" for="end_date_courses">End Date</label>
+            <label  class="card-filter-label-date active" for="end_date_courses">End Date</label>
           </div>
         <div class="col s12 m2">
           <button ng-click="historical.generateDataCourses()" class="waves-effect waves-light btn">Generate</button>
+          <a class="btn-floating btn-small waves-effect waves-light red darken-4 tooltipped" data-position="bottom" data-delay="50" data-tooltip="Download Report" ng-click="historical.generateReport()">
+            <i class="material-icons">file_download</i>
+          </a>
         </div>
+        
       </div>
 
 </div>

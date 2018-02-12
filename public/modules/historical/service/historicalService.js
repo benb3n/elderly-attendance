@@ -8,10 +8,18 @@ angular.module('HistoricalService', [])
     service.getAllResidents = getAllResidents;
     service.getAllCenterAttendanceInterval = getAllCenterAttendanceInterval;
     service.getCenterActivities = getCenterActivities;
-    
+    service.generateReport = generateReport;
 
     return service;
     
+    function generateReport (callback) { 
+        $http.post("/report")
+        .then(
+            function(result){            
+                callback(result.data) },
+            function(){ callback(false) }
+        );
+    }
     function getAllDevices(project_prefix){
         $http.get(deviceAPI.url ,
             {
