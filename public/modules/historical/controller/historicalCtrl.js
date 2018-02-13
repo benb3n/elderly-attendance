@@ -1299,7 +1299,7 @@ angular.module('HistoricalCtrl', [])
     .then(function(data){
       var element = document.createElement('a');
       element.setAttribute('href', "/report/Attendance Reporting.xlsx")  //"/assets/reports/sample_output.pptx") //"/assets/img/flags.png")
-      element.setAttribute('download', 'Attendace.xlsx');
+      element.setAttribute('download', 'Attendance Report.xlsx');
       element.click();
       //let blob = new Blob([data], {type: 'vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
       //FileSaver.saveAs(blob, 'Attendance.xlsx');
