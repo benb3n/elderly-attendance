@@ -610,11 +610,11 @@ angular.module('HistoricalCtrl', [])
 
   function resident_heatmap_widget(resident_index){
     //resident_index = "MP0015"; //Susan YIK Soh Lui
-    console.log("RESIDENT HEATMAP");
     var resident_activity_readings = vm.data.real_time_activity_reading_by_resident_index[resident_index];
     if (resident_activity_readings==undefined){
-      console.log("NO DATA AVAIL");
-      //TODO: do something to show
+      var residentBoxHeatmapData = [];
+      vm.data.residentBoxHeatmapData = angular.copy(residentBoxHeatmapData);
+      //vm.data.residentBoxHeatmapData_date =angular.copy(full_date_list);
     }else{
       var temp_arr = insArr_to_dateInsArr(resident_activity_readings);
       var resident_date_ins_array = temp_arr[1];
@@ -632,7 +632,11 @@ angular.module('HistoricalCtrl', [])
       //console.log(resident_date_list);
       //console.log(full_date_list);
 
-      var residentBoxHeatmapDataArr = new Array(full_date_list.length).fill(new Array(22).fill(0));
+      var residentBoxHeatmapDataArr = [];// new Array(full_date_list.length).fill(new Array(22).fill(0));
+      for (i = 0; i <= full_date_list.length; i++) {
+        residentBoxHeatmapDataArr[i] = new Array(22).fill(0);
+      }
+
       full_date_list.forEach(function(date, date_index){
         if (resident_date_list.includes(date)) {
           var date_instances = resident_date_ins_array[resident_date_list.indexOf(date)];
@@ -669,8 +673,8 @@ angular.module('HistoricalCtrl', [])
         day++;
       });//end for each day
 
-      console.log(residentBoxHeatmapDataArr);
-      console.log(residentBoxHeatmapData);
+      //console.log(residentBoxHeatmapDataArr);
+      //console.log(residentBoxHeatmapData);
       vm.data.residentBoxHeatmapData = angular.copy(residentBoxHeatmapData);
       vm.data.residentBoxHeatmapData_date =angular.copy(full_date_list);
 
