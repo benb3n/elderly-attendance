@@ -169,6 +169,32 @@ nav .brand-logo {
 .sidenav-header > .row {
     margin-bottom: 0 !important;
 }
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+}
+.clear_button {
+    background-color: white;
+    color: black;
+    border: 2px solid #4CAF50; /* Green */
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+}.clear_button:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
 
 
  /* .g-hed {

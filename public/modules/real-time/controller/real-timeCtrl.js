@@ -1,5 +1,5 @@
 angular.module('RealTimeCtrl', [])
-.controller('RealTimeController', function ($scope, $q, $timeout, RTService) { 
+.controller('RealTimeController', function ($scope, $q, $timeout, RTService) {
     var vm = this;
     vm.api = {
         project: 'mp',
@@ -22,7 +22,7 @@ angular.module('RealTimeCtrl', [])
         $('.modal').modal();
     });
 
-    /*************** 
+    /***************
         WATCHERS
     ****************/
     $scope.$watch(function() {
@@ -37,14 +37,14 @@ angular.module('RealTimeCtrl', [])
         return vm.selectedStatus;
     },function(newStatus, oldStatus) {
         if(newStatus != oldStatus) {
-            applyFilters();    
+            applyFilters();
         }
     });
     $scope.getkeys = function(event){
-        applyFilters();    
+        applyFilters();
     }
 
-    /********************* 
+    /*********************
         SEARCH FILTERS
     **********************/
     function applyFilters(){
@@ -54,7 +54,7 @@ angular.module('RealTimeCtrl', [])
                 result = angular.copy(vm.display.elderly_attendance_backup);
             }else{
                 result = applySearchFilter();
-            }   
+            }
             result = applyEventTypeFilter(result);
         }
         result = Array.from(new Set(result));
@@ -74,14 +74,14 @@ angular.module('RealTimeCtrl', [])
             result = result.concat(filterByAttr("recent_status", value, data));
         });
         return result;
-      }
+    }
     function filterByAttr(attr, value, data) {
         var value = value.toLowerCase();
         return $.grep(data, function(n, i) {
           return n[attr].toLowerCase().indexOf(value) != -1;
         });
     }
-    
+
     initController();
     function initController(){
         vm.loading = true;
@@ -107,16 +107,16 @@ angular.module('RealTimeCtrl', [])
         vm.status = {
             no_data:false
         };
-        vm.update = {}; 
+        vm.update = {};
 
         vm.selectedStatus = ['0', '1', '2']
         vm.searchname = "";
-        
-        
+
+
         generateDataForInit();
     }
 
-  
+
     function generateDataForInit () {
         $q.when()
         .then(function(){
@@ -155,22 +155,22 @@ angular.module('RealTimeCtrl', [])
                     vm.data.all_devices_pairs[id] = value;
                 }
             })
-            
-            
-            
-        })  
+
+
+
+        })
         .then(function(){
-           
+
         })*/
 
-        
+
     }
 
     function generateRealTimeData(){
         var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
         var start_datetime = moment('2017-12-20').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
-        var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
-        var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD") 
+        var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
+        var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD")
 
         $q.when()
         .then(function(){
@@ -182,13 +182,13 @@ angular.module('RealTimeCtrl', [])
             result.results.forEach(function(value, index){
                 vm.data.all_centers_activity_by_id[value.id] = value;
                 vm.display.activity.push({name: value.activity_desc, value: value.id})
-            })   
+            })
 
             return getCurrentAttendees(vm.api.project, vm.selectedCenter, start_datetime, end_datetime);
         })
         .then(function(result){
             console.log('readings' , result)
-            
+
             if(result.data.length == 0){
                 vm.status.no_data = true;
                 vm.loading = false;
@@ -200,7 +200,7 @@ angular.module('RealTimeCtrl', [])
                 result.data.forEach(function(value, index){
                     vm.data.real_time_activity_reading_hash[value.resident_index] = value;
                 })
-   
+
                 vm.data.all_residents.results.forEach(function(value, index){
                     var obj = {
                         resident_index: value.resident_index,
@@ -217,22 +217,22 @@ angular.module('RealTimeCtrl', [])
                 })
 
                 vm.display.elderly_attendance.sort(compareCount);
-                vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance); 
+                vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
             }
         })
         .then(function(){
             $timeout(function () {
                 $('select').material_select()
             });
-            vm.loading = false; 
+            vm.loading = false;
         })
-        
+
     }
-    
-    
+
+
 
     /**********************
-        BUTTON FUNCTION 
+        BUTTON FUNCTION
     **********************/
     vm.updateAttendance = updateAttendance;
     vm.refresh = refresh;
@@ -259,8 +259,8 @@ angular.module('RealTimeCtrl', [])
         console.log(vm.update)
         $('#updateModal').modal('close');
     }
-    
-    /******************** 
+
+    /********************
         WEB SERVICES
     *********************/
     vm.allDevice = [];
@@ -275,7 +275,7 @@ angular.module('RealTimeCtrl', [])
                 _defer.resolve(result)
                 /*if(result.next != null){
                     overall = overall.concat(result.results)
-                    getAllDevices(project_prefix, result.next, _defer, overall) 
+                    getAllDevices(project_prefix, result.next, _defer, overall)
                 }else{
                     overall = overall.concat(result.results)
                     _defer.resolve(overall);
@@ -284,11 +284,11 @@ angular.module('RealTimeCtrl', [])
                 _defer.reject();
             }
         });
-        
+
         return _defer.promise;
     }
 
-    function getAllResidents (project_prefix, page_size) { 
+    function getAllResidents (project_prefix, page_size) {
         var _defer = $q.defer();
         RTService.getAllResidents(project_prefix, page_size, function (result) {
             if (result) {
@@ -300,7 +300,7 @@ angular.module('RealTimeCtrl', [])
         return _defer.promise;
     }
 
-    function getAllCentersActivity (project_prefix, center_code_name, start_date, end_date, page_size) { 
+    function getAllCentersActivity (project_prefix, center_code_name, start_date, end_date, page_size) {
         var _defer = $q.defer();
         RTService.getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, page_size, function (result) {
             if (result) {
@@ -312,7 +312,7 @@ angular.module('RealTimeCtrl', [])
         return _defer.promise;
     }
 
-    function getAllCenters (project_prefix, page_size) { 
+    function getAllCenters (project_prefix, page_size) {
         var _defer = $q.defer();
         RTService.getAllCenters(project_prefix, page_size, function (result) {
             if (result) {
@@ -324,7 +324,7 @@ angular.module('RealTimeCtrl', [])
         return _defer.promise;
     }
 
-    function getCurrentAttendees (project_prefix, center_code_name, start_datetime, end_datetime) { 
+    function getCurrentAttendees (project_prefix, center_code_name, start_datetime, end_datetime) {
         var _defer = $q.defer();
         RTService.getCurrentAttendees(project_prefix, center_code_name, start_datetime, end_datetime, function (result) {
             if (result) {
@@ -335,7 +335,7 @@ angular.module('RealTimeCtrl', [])
         });
         return _defer.promise;
     }
-    
+
     function getSensorReadings (gw_device, start_datetime, end_datetime, page_size) {
         var _defer = $q.defer();
         console.log(gw_device + " , " + start_datetime + " , " + end_datetime + " , " + page_size)
@@ -364,8 +364,8 @@ angular.module('RealTimeCtrl', [])
         }
         return _defer.promise;
     }
-    
-    /******************** 
+
+    /********************
         HELPERS METHOD
     *********************/
     function compareCount (a, b) {

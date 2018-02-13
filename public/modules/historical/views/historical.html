@@ -219,18 +219,19 @@
 
     <!-- PERSON TAB -->
     <div id="person" class="col s12">
-
       <div class="row">
-        <div class="col s11" ng-model="historical.SOMETHING">
-            <div class="input-field col s12 m2">
-              <i class="material-icons prefix">search</i>
-              <input value="Rajesh Akib" id="resident_search" type="search" required>
-              <label for="search">Input Name</label>
-              <i class="material-icons">close</i>
-            </div>
+        <div class="input-field col s12 m2">
+          <i class="material-icons prefix">search</i>
+          <input id="search" type="search" ng-model="historical.searchname" ng-keyup="getkeys($event)" required>
+          <label for="search">Search Resident</label>
+          <i class="material-icons">close</i>
         </div>
       </div>
-
+      <div class="row">
+        <div ng-repeat="person in historical.data.resident_heatmap_name_list">
+          <div class="col s6 m3 l2 animated fadeIn clear_button" ng-click="historical.load_resident_heatmap(person.value)" >{{person.name}}</div>
+        </div>
+      </div>
       <!-- CONTENT -->
       <div class="row">
         <div class="col s12">
