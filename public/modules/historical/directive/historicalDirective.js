@@ -1560,20 +1560,20 @@ angular.module('HistoricalDirective', [])
         scope.heatmapChart =  function(data, date_list) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
-            var margin = { top: 30, right: 40, bottom: 30, left: 75 },
+            var margin = { top: 30, right: 30, bottom: 30, left: 75 },
+              hMargin = 40,
               width = window.innerWidth - margin.left - margin.right -30,
               legend_text = ["Absent","Present"],
               index = [0,1],
               colors = ["#ffffd9","#9EFA6B"],
               times = ["8am", "", "10am", "", "12pm", "", "2pm", "", "4pm", "", "6pm"],
               gridSize = Math.floor(width / times.length),
-              height = (gridSize*(data.length/(times.length*2))) + margin.top + margin.bottom,
-              legendElementWidth = gridSize*4
-              hMargin = 40;
+              height = (gridSize*date_list.length) + margin.top + margin.bottom,
+              legendElementWidth = gridSize*4;
 
             var svg = d3.select(Element[0]).append("svg")
               .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom + hMargin)
+              .attr("height", height + margin.top + margin.bottom)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -1581,31 +1581,32 @@ angular.module('HistoricalDirective', [])
               .data(date_list)
               .enter().append("text")
                 .text(function (d) { return d; })
-                .attr("x", -5)
-                .attr("y", function (d, i) { return i * gridSize + hMargin + 10; })
+                .attr("x", 0)
+                .attr("y", function (d, i) { return (i) * gridSize; })
                 .style("text-anchor", "end")
+                //.attr("alignment-baseline","middle")
                 .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
 
+            /*
             var timeLabels = svg.selectAll(".timeLabel")
               .data(times)
               .enter().append("text")
                 .text(function(d) { return d; })
                 .attr("x", function(d, i) { return i * gridSize; })
-                .attr("y", hMargin)
+                .attr("y",0 )
                 .style("text-anchor", "middle")
                 .attr("transform", "translate(" + gridSize / 2 + ", -6)")
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+                */
 
               var cards = svg.selectAll(".hour")
                   .data(data, function(d) {return d.day+':'+d.hour;});
 
-              cards.append("title");
+              //cards.append("title");
 
               cards.enter().append("rect")
-                  .attr("x", function(d) { return (d.hour - 1) * gridSize; })
-                  .attr("y", function(d) { return (d.day - 1) * gridSize + hMargin; })
-                  .attr("rx", 4)
-                  .attr("ry", 4)
+                  .attr("x", function(d) { return (d.hour-1) * gridSize; })
+                  .attr("y", function(d) { return (d.day) * gridSize ; })
                   .attr("stroke", "#E6E6E6")
                   .attr("stroke-width", "1.5px")
                   .attr("class", "hour bordered")
@@ -1616,10 +1617,11 @@ angular.module('HistoricalDirective', [])
               cards.transition().duration(1000)
                   .style("fill", function(d) { return ((d.value==0)? colors[0]:colors[1]); });
 
-              cards.select("title").text(function(d) { return d.value; });
+              //cards.select("title").text(function(d) { return d.value; });
 
               cards.exit().remove();
 
+              /*
               var legend = svg.selectAll(".legend")
                   .data(index);
 
@@ -1640,6 +1642,7 @@ angular.module('HistoricalDirective', [])
                 .attr("y",0);
 
               legend.exit().remove();
+              */
             }else {
               d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
             }
