@@ -624,7 +624,7 @@ angular.module('HistoricalCtrl', [])
       var full_date_list = [];
       var curr_date = moment(vm.selectedStartDate_courses);
       var end_date = moment( vm.selectedEndDate_courses);
-      while (curr_date.isSameOrBefore(end_date)){
+      while (curr_date.isSameOrBefore(end_date,'day')){
         full_date_list.push(curr_date.format("YYYY-MM-DD"));
         curr_date = moment(curr_date.add(1, 'days').format("YYYY-MM-DD hh:mm:ss"));
       }

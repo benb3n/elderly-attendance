@@ -1560,7 +1560,7 @@ angular.module('HistoricalDirective', [])
         scope.heatmapChart =  function(data, date_list) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
-            var margin = { top: 30, right: 30, bottom: 30, left: 75 },
+            var margin = { top: 30, right: 30, bottom: 30, left: 80 },
               hMargin = 40,
               width = window.innerWidth - margin.left - margin.right -30,
               legend_text = ["Absent","Present"],
@@ -1575,19 +1575,19 @@ angular.module('HistoricalDirective', [])
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
               .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              .attr("transform", "translate(" + margin.left + "," + 0 + ")");
 
             var dayLabels = svg.selectAll(".dayLabel")
               .data(date_list)
               .enter().append("text")
                 .text(function (d) { return d; })
-                .attr("x", 0)
-                .attr("y", function (d, i) { return (i) * gridSize; })
+                .attr("x", -5)
+                .attr("y", function (d, i) { return (i+2) * gridSize; })
                 .style("text-anchor", "end")
-                //.attr("alignment-baseline","middle")
-                .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+                .attr("alignment-baseline","text-after-edge");
+                //.attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
 
-            /*
+
             var timeLabels = svg.selectAll(".timeLabel")
               .data(times)
               .enter().append("text")
@@ -1595,9 +1595,9 @@ angular.module('HistoricalDirective', [])
                 .attr("x", function(d, i) { return i * gridSize; })
                 .attr("y",0 )
                 .style("text-anchor", "middle")
-                .attr("transform", "translate(" + gridSize / 2 + ", -6)")
-                .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
-                */
+                .attr("transform", "translate(" + gridSize / 2 + ", -6)");
+                //.attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
 
               var cards = svg.selectAll(".hour")
                   .data(data, function(d) {return d.day+':'+d.hour;});
