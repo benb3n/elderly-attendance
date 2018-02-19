@@ -633,7 +633,7 @@ angular.module('HistoricalCtrl', [])
       //console.log(full_date_list);
 
       var residentBoxHeatmapDataArr = [];// new Array(full_date_list.length).fill(new Array(22).fill(0));
-      for (i = 0; i <= full_date_list.length; i++) {
+      for (i = 0; i < full_date_list.length; i++) {
         residentBoxHeatmapDataArr[i] = new Array(22).fill(0);
       }
 
