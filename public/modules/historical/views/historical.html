@@ -31,7 +31,7 @@
             <i class="material-icons">file_download</i>
           </a>
         </div>
-        
+
       </div>
 
 </div>
@@ -39,7 +39,7 @@
 
 <div class="row" style="margin-top: -20px">
     <div class="col s12">
-      <ul class="tabs tabs-fixed-width">
+      <ul class="tabs tabs-fixed-width" style="overflow: hidden !important">
         <li class="tab col s3"><a class="active" href="#overview">Overview</a></li>
         <li class="tab col s3"><a href="#activity" ng-click="historical.tab2()">Activity</a></li>
         <li class="tab col s3"><a href="#person">Person</a></li>
@@ -55,6 +55,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Hours</span>
             <div class="card-content">
+
               <horizontal-Bar-Chart id="top_resident" data="historical.data.top_active_resident" ></horizontal-Bar-Chart>
               <!--<bar-Horizontal-Chart id="top_resident" data="historical.data.top_active_resident" axis="historical.data.top_active_resident_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -65,6 +66,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Residents by Hours</span>
             <div class="card-content">
+
               <horizontal-Bar-Chart id="top_resident" data="historical.data.bottom_active_resident" ></horizontal-Bar-Chart>
               <!--<bar-Horizontal-Chart id="bottom_resident" data="historical.data.bottom_active_resident" axis="historical.data.bottom_active_resident_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -75,6 +77,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by Average Time Spent</span>
             <div class="card-content">
+
               <horizontal-Bar-Chart id="top_activites" data="historical.data.top_popular_activities" ></horizontal-Bar-Chart>
               <!--<bar-Horizontal-Chart id="top_activities" data="historical.data.top_popular_activities" axis="historical.data.top_popular_activities_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -85,6 +88,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by Average Time Spent</span>
             <div class="card-content">
+
               <horizontal-Bar-Chart id="bottom_activites" data="historical.data.bottom_popular_activities" ></horizontal-Bar-Chart>
               <!--<bar-Horizontal-Chart id="bottom_activities" data="historical.data.bottom_popular_activities" axis="historical.data.bottom_popular_activities_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -99,6 +103,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Top 5 Residents by Unique Visit Count</span>
             <div class="card-content">
+
               <horizontal-Bar-Chart-Count id="top_resident_by_count" data="historical.data.top_active_resident_count" ></horizontal-Bar-Chart-Count>
               <!--<bar-Horizontal-Chart id="top_resident_count" data="historical.data.top_active_resident_count" axis="historical.data.top_active_resident_count_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -109,6 +114,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Residents by Unique Visit Count</span>
             <div class="card-content">
+
               <horizontal-Bar-Chart-Count id="top_resident_by_count" data="historical.data.bottom_active_resident_count" ></horizontal-Bar-Chart-Count>
               <!--<bar-Horizontal-Chart id="bottom_resident_count" data="historical.data.bottom_active_resident_count" axis="historical.data.bottom_active_resident_count_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -119,6 +125,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Top 5 Activities by Attendance </span>
             <div class="card-content">
+
                <horizontal-Bar-Chart-Count id="top_activites_by_count" data="historical.data.top_popular_activities_count" ></horizontal-Bar-Chart-Count>
               <!--<bar-Horizontal-Chart id="top_activities_count" data="historical.data.top_popular_activities_count" axis="historical.data.top_popular_activities_count_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -128,6 +135,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Bottom 5 Activities by Attendance</span>
             <div class="card-content">
+
               <horizontal-Bar-Chart-Count id="bottom_activities_by_count" data="historical.data.bottom_popular_activities_count"></horizontal-Bar-Chart-Count>
               <!--<bar-Horizontal-Chart id="bottom_activities_count" data="historical.data.bottom_popular_activities_count" axis="historical.data.bottom_popular_activities_count_xaxis" ></bar-Horizontal-Chart>-->
             </div>
@@ -183,10 +191,10 @@
             </div>
           </div>
         </div>
-
         <!--
         <div class="col s12 m6 l4">
           <div class="card">
+
             <span class="card-title">Attendance per Time Slot</span>
             <div class="card-content">
                 <bar-Chart data="historical.barData" color=""></bar-Chart>
@@ -211,18 +219,19 @@
 
     <!-- PERSON TAB -->
     <div id="person" class="col s12">
-
-      <div class="row">
-        <div class="col s11" ng-model="historical.SOMETHING">
-            <div class="input-field col s12 m2">
-              <i class="material-icons prefix">search</i>
-              <input value="Rajesh Akib" id="resident_search" type="search" required>
-              <label for="search">Input Name</label>
-              <i class="material-icons">close</i>
-            </div>
+      <div class="row" style="overflow: hidden !important">
+        <div class="input-field col s12 m2">
+          <i class="material-icons prefix">search</i>
+          <input id="search" type="search" ng-model="historical.searchname" ng-keyup="getkeys($event)" required>
+          <label for="search">Search Resident</label>
+          <i class="material-icons">close</i>
         </div>
       </div>
-
+      <div class="row">
+        <div ng-repeat="person in historical.data.resident_heatmap_name_list">
+          <div class="col s6 m6 l3 animated fadeIn clear_button" ng-click="historical.load_resident_heatmap(person.value)" >{{person.name}}</div>
+        </div>
+      </div>
       <!-- CONTENT -->
       <div class="row">
         <div class="col s12">
@@ -230,6 +239,9 @@
             <span class="card-title col s12 teal darken-1 white-text">Resident Heatmap</span>
             <div class="card-content hide-on-small-only">
               <resident-Box-Heatmap-Chart data="historical.data.residentBoxHeatmapData" datelist="historical.data.residentBoxHeatmapData_date" style="text-align: center"></resident-Box-Heatmap-Chart>
+            </div>
+            <div class="card-content hide-on-med-and-up">
+              <flip-Resident-Box-Heatmap-Chart data="historical.data.residentBoxHeatmapData" datelist="historical.data.residentBoxHeatmapData_date" ></flip-Resident-Box-Heatmap-Chart>
             </div>
           </div>
         </div>

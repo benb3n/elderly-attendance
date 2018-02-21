@@ -111,7 +111,7 @@ angular.module('HistoricalDirective', [])
 
         function resized(){
             chart.flush();
-            //chart.resize();
+            chart.resize();
         }
 
 
@@ -220,7 +220,6 @@ angular.module('HistoricalDirective', [])
         var w = (document.documentElement.clientWidth <= 640) ? (document.documentElement.clientWidth-100) : (document.documentElement.clientWidth <= 906) ? (document.documentElement.clientWidth - 200) / 2 : (document.documentElement.clientWidth - 200) / 3;
 
         if(data && data.length > 0){
-
           var chart = c3.generate({
             bindto: Element[0],
             data: {
@@ -659,6 +658,7 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
       scope.$watch('data', function(data) {
+
         if(typeof data != 'undefined' ){
           var parsedData = [{
             key: "Hours",
@@ -669,7 +669,8 @@ angular.module('HistoricalDirective', [])
         scope.renderChart(parsedData, "");
       },true);
 
-      scope.renderChart = function(parsedData, color){  
+
+      scope.renderChart = function(parsedData, color){
         d3.select(Element[0]).selectAll("*").remove();
         if(typeof parsedData != "undefined" && parsedData[0].values.length > 0){
           var chart = nv.models.multiBarHorizontalChart()
@@ -677,8 +678,8 @@ angular.module('HistoricalDirective', [])
             .y(function(d) { return parseFloat(d.value) })
             .margin({top: 0, right: 0, bottom: 20, left: 140})
             .showValues(true)           //Show bar value next to each bar.
-            .showControls(false); 
-         
+            .showControls(false);
+
           chart.yAxis
             .tickFormat(d3.format(",.0f"));
 
@@ -711,21 +712,21 @@ angular.module('HistoricalDirective', [])
             key: "Count",
             values: data
           }]
-          
+
         };
         scope.renderChart(parsedData, "");
       },true);
 
       scope.renderChart = function(parsedData, color){
-        d3.select(Element[0]).selectAll("*").remove();  
+        d3.select(Element[0]).selectAll("*").remove();
         if(parsedData && typeof parsedData != "undefined" && parsedData[0].values.length > 0){
           var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d.name })
             .y(function(d) { return parseInt(d.count) })
             .margin({top: 0, right: 0, bottom: 20, left: 140})
             .showValues(true)           //Show bar value next to each bar.
-            .showControls(false); 
-         
+            .showControls(false);
+
           chart.yAxis
             .tickFormat(d3.format(",.0f"));
 
@@ -988,125 +989,6 @@ angular.module('HistoricalDirective', [])
   }
 })//end responsiveHorizontalBarChart
 
-.directive('dayHourHeatmapChart',function(){
-  return {
-    restrict: 'EA',
-    scope: {
-        data: "=",
-        color: "="
-    },
-    link: function(scope, Element, Attrs) {
-        scope.$watch('data', function(data) {
-            scope.heatmapChart(data);
-        },true);
-
-        scope.heatmapChart =  function(data) {
-          d3.select(Element[0]).selectAll("*").remove();
-          if(data && data.length > 0){
-            var margin = { top: 40, right: 0, bottom: 30, left: 30 },
-              width = screen.width - margin.left - margin.right -30,
-              gridSize = Math.floor(width / 23),
-              height = (gridSize*7) + margin.top + margin.bottom,
-              legendElementWidth = gridSize*2,
-              rangeDomain = [1,3,6,9,15],
-              displayRangeDomain = [0,1,3,6,9],
-              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
-              days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-              times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
-              /*times = ["8am", "", "9am", "", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];*/
-            var svg = d3.select(Element[0]).append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            var dayLabels = svg.selectAll(".dayLabel")
-              .data(days)
-              .enter().append("text")
-                .text(function (d) { return d; })
-                .attr("x", 0)
-                .attr("y", function (d, i) { return i * gridSize; })
-                .style("text-anchor", "end")
-                .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
-                .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
-
-            var timeLabels = svg.selectAll(".timeLabel")
-              .data(times)
-              .enter().append("text")
-                .text(function(d) { return d; })
-                .attr("x", function(d, i) { return i * gridSize; })
-                .attr("y", 0)
-                .style("text-anchor", "middle")
-                //.style("font-size",'10px')
-                .attr("transform", "translate(" + gridSize / 2 + ", -6)")
-                .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
-
-              var colorScale = d3.scale.threshold()
-                   .domain(rangeDomain)
-                  .range(colors);
-
-              var cards = svg.selectAll(".hour")
-                  .data(data, function(d) {return d.day+':'+d.hour;});
-
-              cards.append("title");
-
-              cards.enter().append("rect")
-                  .attr("x", function(d) { return (d.hour - 1) * gridSize; })
-                  .attr("y", function(d) { return (d.day - 1) * gridSize; })
-                  .attr("rx", 4)
-                  .attr("ry", 4)
-                  .attr("class", "hour bordered")
-                  .attr("width", gridSize)
-                  .attr("height", gridSize)
-                  .style("color", colors[0]);
-
-              cards.transition().duration(1000)
-                  .style("fill", function(d) { return colorScale(d.value); });
-
-              cards.enter().append("text")
-                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
-                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
-                //.attr("rx", 4)
-                //.attr("ry", 4)
-                .text(function(d) { return d.value; })
-                .style("fill",'#000000')
-                //.style("fill",'#CBC8B4')
-                .style("font-weight",'bold');
-
-              cards.select("title").text(function(d) { return d.value; });
-
-              cards.exit().remove();
-
-              var legend = svg.selectAll(".legend")
-                  //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
-                  .data(displayRangeDomain);
-
-              legend.enter().append("g")
-                  .attr("class", "legend");
-
-              legend.append("rect")
-                .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height-margin.bottom)
-                .attr("width", legendElementWidth)
-                .attr("height", gridSize / (2))
-                .style("fill", function(d, i) { return colors[i]; })
-
-              legend.append("text")
-                .attr("class", "mono")
-                .text(function(d) { return "≥ " + Math.round(d); })
-                .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height + gridSize - margin.bottom);
-                //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
-
-              legend.exit().remove();
-            }else {
-              d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
-            }
-        };
-    }
-  }
-})//end dayHourHeatmapChart
-
 .directive('flipDayHourHeatmapChart',function(){
   return {
     restrict: 'EA',
@@ -1123,15 +1005,15 @@ angular.module('HistoricalDirective', [])
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
             var margin = { top: 50, right: 30, bottom: 24, left: 40 },
-              hMargin = 30,
               rangeDomain = [1,3,6,9,15],
               displayRangeDomain = [0,1,3,6,9],
-              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"]
               days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
               times = ["8am","", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"],
-              width = screen.width - margin.left - margin.right -72,
+              width = screen.width - margin.left - margin.right -30,
               gridSize = Math.floor(width / 7),
               legendElementWidth = width / rangeDomain.length,
+              hMargin = 30,
               height = gridSize*times.length;
 
             var svg = d3.select(Element[0]).append("svg")
@@ -1176,6 +1058,8 @@ angular.module('HistoricalDirective', [])
                   .attr("x", function(d) { return (d.day - 1) * gridSize; })
                   .attr("rx", 4)
                   .attr("ry", 4)
+                  .attr("stroke", "#E6E6E6")
+                  .attr("stroke-width", "1.5px")
                   .attr("class", "hour bordered")
                   .attr("width", gridSize)
                   .attr("height", gridSize)
@@ -1185,12 +1069,13 @@ angular.module('HistoricalDirective', [])
                   .style("fill", function(d) { return colorScale(d.value); });
 
               cards.enter().append("text")
-                .attr("y", function(d) { return (d.hour - 1) * gridSize + (gridSize/1.5) + hMargin; })
-                .attr("x", function(d) { return (d.day - 1) * gridSize + gridSize/3.1 ;})
+                .attr("y", function(d) { return (d.hour - 1) * gridSize + (gridSize/2) + hMargin; })
+                .attr("x", function(d) { return (d.day - 1) * gridSize + gridSize/2 ;})
                 .attr("rx", 4)
                 .attr("ry", 4)
-                //.text(function(d) { return d.value; })
                 .text(function(d) {return(d.value ==0) ? null : d.value ;})
+                .attr("text-anchor","middle")
+                .attr("alignment-baseline","middle")
                 .style("fill",'#000000')
                 .style("font-weight",'bold');
 
@@ -1205,8 +1090,8 @@ angular.module('HistoricalDirective', [])
                   .attr("class", "legend");
 
               legend.append("rect")
-                .attr("x", function(d, i) { return legendElementWidth * i -50; })
-                .attr("y", -35)
+                .attr("x", function(d, i) { return legendElementWidth * i - margin.left/2; })
+                .attr("y", -hMargin -5)
                 .attr("width", legendElementWidth)
                 .attr("height", gridSize / 2)
                 .style("fill", function(d, i) { return colors[i]; })
@@ -1214,8 +1099,8 @@ angular.module('HistoricalDirective', [])
               legend.append("text")
                 .attr("class", "mono")
                 .text(function(d) { return "≥ " + Math.round(d); })
-                .attr("x", function(d, i) { return legendElementWidth * i -50; })
-                .attr("y", -35 + gridSize);
+                .attr("x", function(d, i) { return legendElementWidth * i - margin.left/2; })
+                .attr("y", -hMargin -5 + gridSize);
 
               legend.exit().remove();
           }else {
@@ -1458,25 +1343,23 @@ angular.module('HistoricalDirective', [])
     },
     link: function(scope, Element, Attrs) {
         scope.$watch('data', function(data) {
-            scope.heatmapChart(data,scope.datelist);
+          scope.heatmapChart(data,scope.datelist);
         },true);
 
         scope.heatmapChart =  function(data, date_list) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
+            //var margin = { top: 40, right: 50, bottom: 30, left: 80 },
+              //width = window.innerWidth - margin.left - margin.right -30,
             var margin = { top: 40, right: 0, bottom: 30, left: 80 },
-              width = screen.width - margin.left - margin.right -30,
-              gridSize = Math.floor(width / 25),
-              height = (gridSize*(data.length/22)) + margin.top + margin.bottom,
-              legendElementWidth = gridSize*2,
+              width = window.innerWidth - margin.left - margin.right -100,
               legend_text = ["Absent","Present"],
               index = [0,1],
               colors = ["#ffffd9","#9EFA6B"],
-              //rangeDomain = [1,5,10,15,25],
-              //displayRangeDomain = [0,1,5,10,15],
-              //colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
-              //days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-              times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
+              times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm", ""],
+              gridSize = Math.floor(width / times.length),
+              height = (gridSize*(data.length/times.length)) + margin.top + margin.bottom,
+              legendElementWidth = gridSize*2;
 
             var svg = d3.select(Element[0]).append("svg")
               .attr("width", width + margin.left + margin.right)
@@ -1501,7 +1384,6 @@ angular.module('HistoricalDirective', [])
                 .attr("x", function(d, i) { return i * gridSize; })
                 .attr("y", 0)
                 .style("text-anchor", "middle")
-                //.style("font-size",'10px')
                 .attr("transform", "translate(" + gridSize / 2 + ", -6)")
                 .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
@@ -1530,7 +1412,6 @@ angular.module('HistoricalDirective', [])
               cards.exit().remove();
 
               var legend = svg.selectAll(".legend")
-                  //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
                   .data(index);
 
               legend.enter().append("g")
@@ -1548,6 +1429,336 @@ angular.module('HistoricalDirective', [])
                 .text(function(d,i) { return legend_text[i]; })
                 .attr("x", function(d, i) { return legendElementWidth * i; })
                 .attr("y", height + gridSize - margin.bottom - 30);
+
+              legend.exit().remove();
+              //RESPONSIVENESS
+              d3.select(window).on("resize", resized);
+
+            }else {
+              d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+            }
+
+            function resized() {
+              d3.select(Element[0]).select("svg").remove();
+              var margin = { top: 40, right: 0, bottom: 30, left: 80 },
+                width = window.innerWidth - margin.left - margin.right -100,
+                legend_text = ["Absent","Present"],
+                index = [0,1],
+                colors = ["#ffffd9","#9EFA6B"],
+                times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm", ""],
+                gridSize = Math.floor(width / times.length),
+                height = (gridSize*(data.length/times.length)) + margin.top + margin.bottom,
+                legendElementWidth = gridSize*2;
+
+              var svg = d3.select(Element[0]).append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+              var dayLabels = svg.selectAll(".dayLabel")
+                .data(date_list)
+                .enter().append("text")
+                  .text(function (d) { return d; })
+                  .attr("x", 0)
+                  .attr("y", function (d, i) { return i * gridSize; })
+                  .style("text-anchor", "end")
+                  .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+                  .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+              var timeLabels = svg.selectAll(".timeLabel")
+                .data(times)
+                .enter().append("text")
+                  .text(function(d) { return d; })
+                  .attr("x", function(d, i) { return i * gridSize; })
+                  .attr("y", 0)
+                  .style("text-anchor", "middle")
+                  .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+                  .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+                var cards = svg.selectAll(".hour")
+                    .data(data, function(d) {return d.day+':'+d.hour;});
+
+                cards.append("title");
+
+                cards.enter().append("rect")
+                    .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+                    .attr("y", function(d) { return (d.day - 1) * gridSize; })
+                    .attr("rx", 4)
+                    .attr("ry", 4)
+                    .attr("stroke", "#E6E6E6")
+                    .attr("stroke-width", "1.5px")
+                    .attr("class", "hour bordered")
+                    .attr("width", gridSize)
+                    .attr("height", gridSize)
+                    .style("color", colors[0]);
+
+                cards.transition().duration(1000)
+                    .style("fill", function(d) { return ((d.value==0)? colors[0]:colors[1]); });
+
+                cards.select("title").text(function(d) { return d.value; });
+
+                cards.exit().remove();
+
+                var legend = svg.selectAll(".legend")
+                    .data(index);
+
+                legend.enter().append("g")
+                    .attr("class", "legend");
+
+                legend.append("rect")
+                  .attr("x", function(d, i) { return legendElementWidth * i; })
+                  .attr("y", height-margin.bottom - 30)
+                  .attr("width", legendElementWidth)
+                  .attr("height", gridSize / (2))
+                  .style("fill", function(d, i) { return colors[i]; })
+
+                legend.append("text")
+                  .attr("class", "mono")
+                  .text(function(d,i) { return legend_text[i]; })
+                  .attr("x", function(d, i) { return legendElementWidth * i; })
+                  .attr("y", height + gridSize - margin.bottom - 30);
+            }//end resized
+
+        };
+    }
+  }
+})//end residentBoxHeatmapChart
+
+.directive('flipResidentBoxHeatmapChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "=",
+        datelist: "="
+    },
+    link: function(scope, Element, Attrs) {
+        scope.$watch('data', function(data) {
+            datad = [];
+            hour = 1;
+            for (i = 0; i < data.length; i++){
+              val = 0;
+              if ((data[i].value+data[i+1].value)>0){
+                val = 1;
+              }
+              datad.push({
+                "day":data[i].day,
+                "hour": hour,
+                "value": val
+              })
+              i++;
+              if (hour==11){
+                hour = 1;
+              }else{
+                hour++;
+              }
+            }
+            scope.heatmapChart(datad,scope.datelist);
+        },true);
+
+        scope.heatmapChart =  function(data, date_list) {
+          d3.select(Element[0]).selectAll("*").remove();
+          if(data && data.length > 0){
+            var margin = { top: 30, right: 40, bottom: 30, left: 75 },
+              width = window.innerWidth - margin.left - margin.right -30,
+              legend_text = ["Absent","Present"],
+              index = [0,1],
+              colors = ["#ffffd9","#9EFA6B"],
+              times = ["8am", "", "10am", "", "12pm", "", "2pm", "", "4pm", "", "6pm"],
+              gridSize = Math.floor(width / times.length),
+              height = (gridSize*(data.length/(times.length*2))) + margin.top + margin.bottom,
+              legendElementWidth = gridSize*4
+              hMargin = 40;
+
+            var svg = d3.select(Element[0]).append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom + hMargin)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var dayLabels = svg.selectAll(".dayLabel")
+              .data(date_list)
+              .enter().append("text")
+                .text(function (d) { return d; })
+                .attr("x", -5)
+                .attr("y", function (d, i) { return i * gridSize + hMargin + 10; })
+                .style("text-anchor", "end")
+                .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+            var timeLabels = svg.selectAll(".timeLabel")
+              .data(times)
+              .enter().append("text")
+                .text(function(d) { return d; })
+                .attr("x", function(d, i) { return i * gridSize; })
+                .attr("y", hMargin)
+                .style("text-anchor", "middle")
+                .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+                .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+              var cards = svg.selectAll(".hour")
+                  .data(data, function(d) {return d.day+':'+d.hour;});
+
+              cards.append("title");
+
+              cards.enter().append("rect")
+                  .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+                  .attr("y", function(d) { return (d.day - 1) * gridSize + hMargin; })
+                  .attr("rx", 4)
+                  .attr("ry", 4)
+                  .attr("stroke", "#E6E6E6")
+                  .attr("stroke-width", "1.5px")
+                  .attr("class", "hour bordered")
+                  .attr("width", gridSize)
+                  .attr("height", gridSize)
+                  .style("color", colors[0]);
+
+              cards.transition().duration(1000)
+                  .style("fill", function(d) { return ((d.value==0)? colors[0]:colors[1]); });
+
+              cards.select("title").text(function(d) { return d.value; });
+
+              cards.exit().remove();
+
+              var legend = svg.selectAll(".legend")
+                  .data(index);
+
+              legend.enter().append("g")
+                  .attr("class", "legend");
+
+              legend.append("rect")
+                .attr("x", function(d, i) { return legendElementWidth * i; })
+                .attr("y",0)
+                .attr("width", legendElementWidth)
+                .attr("height", gridSize)
+                .style("fill", function(d, i) { return colors[i]; })
+
+              legend.append("text")
+                .attr("class", "mono")
+                .text(function(d,i) { return legend_text[i]; })
+                .attr("x", function(d, i) { return legendElementWidth * i; })
+                .attr("y",0);
+
+              legend.exit().remove();
+            }else {
+              d3.select(Element[0]).html('<div style="text-align: center; line-height: 115px;"><span style="font-size: 18px;font-weight: 700;">No Data Available.</span></div>');
+            }
+        };
+    }
+  }
+})//end flipResidentBoxHeatmapChart
+
+/************
+  not in use
+************/
+.directive('dayHourHeatmapChart',function(){
+  return {
+    restrict: 'EA',
+    scope: {
+        data: "=",
+        color: "="
+    },
+    link: function(scope, Element, Attrs) {
+        scope.$watch('data', function(data) {
+            scope.heatmapChart(data);
+        },true);
+
+        scope.heatmapChart =  function(data) {
+          d3.select(Element[0]).selectAll("*").remove();
+          if(data && data.length > 0){
+            var margin = { top: 40, right: 0, bottom: 30, left: 30 },
+              width = screen.width - margin.left - margin.right -30,
+              gridSize = Math.floor(width / 23),
+              height = (gridSize*7) + margin.top + margin.bottom,
+              legendElementWidth = gridSize*2,
+              rangeDomain = [1,3,6,9,15],
+              displayRangeDomain = [0,1,3,6,9],
+              colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4"],//,"#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+              days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+              times = ["8am", "", "9am", "", "10am", "", "11am", "", "12pm", "", "1pm", "", "2pm", "", "3pm", "", "4pm", "", "5pm", "", "6pm"];
+              /*times = ["8am", "", "9am", "", "10am", "10:30am", "11am", "11:30am", "12pm", "12:30pm", "1pm", "1:30pm", "2pm", "2:30pm", "3pm", "3:30pm", "4pm", "4:30p", "5pm", "5:30pm", "6pm", "6:30pm", "7pm", "7:30pm","8pm"];*/
+            var svg = d3.select(Element[0]).append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var dayLabels = svg.selectAll(".dayLabel")
+              .data(days)
+              .enter().append("text")
+                .text(function (d) { return d; })
+                .attr("x", 0)
+                .attr("y", function (d, i) { return i * gridSize; })
+                .style("text-anchor", "end")
+                .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+                .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+
+            var timeLabels = svg.selectAll(".timeLabel")
+              .data(times)
+              .enter().append("text")
+                .text(function(d) { return d; })
+                .attr("x", function(d, i) { return i * gridSize; })
+                .attr("y", 0)
+                .style("text-anchor", "middle")
+                //.style("font-size",'10px')
+                .attr("transform", "translate(" + gridSize / 2 + ", -6)")
+                .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+
+              var colorScale = d3.scale.threshold()
+                   .domain(rangeDomain)
+                  .range(colors);
+
+              var cards = svg.selectAll(".hour")
+                  .data(data, function(d) {return d.day+':'+d.hour;});
+
+              cards.append("title");
+
+              cards.enter().append("rect")
+                  .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+                  .attr("y", function(d) { return (d.day - 1) * gridSize; })
+                  .attr("rx", 4)
+                  .attr("ry", 4)
+                  .attr("class", "hour bordered")
+                  .attr("width", gridSize)
+                  .attr("height", gridSize)
+                  .style("color", colors[0]);
+
+              cards.transition().duration(1000)
+                  .style("fill", function(d) { return colorScale(d.value); });
+
+              cards.enter().append("text")
+                .attr("x", function(d) { return (d.hour - 1) * gridSize + (gridSize/2.8); })
+                .attr("y", function(d) { return (d.day - 1) * gridSize + (gridSize/1.5); })//height
+                //.attr("rx", 4)
+                //.attr("ry", 4)
+                .text(function(d) { return d.value; })
+                .style("fill",'#000000')
+                //.style("fill",'#CBC8B4')
+                .style("font-weight",'bold');
+
+              cards.select("title").text(function(d) { return d.value; });
+
+              cards.exit().remove();
+
+              var legend = svg.selectAll(".legend")
+                  //.data([0].concat(colorScale.quantiles()), function(d) { return d; });
+                  .data(displayRangeDomain);
+
+              legend.enter().append("g")
+                  .attr("class", "legend");
+
+              legend.append("rect")
+                .attr("x", function(d, i) { return legendElementWidth * i; })
+                .attr("y", height-margin.bottom)
+                .attr("width", legendElementWidth)
+                .attr("height", gridSize / (2))
+                .style("fill", function(d, i) { return colors[i]; })
+
+              legend.append("text")
+                .attr("class", "mono")
+                .text(function(d) { return "≥ " + Math.round(d); })
+                .attr("x", function(d, i) { return legendElementWidth * i; })
+                .attr("y", height + gridSize - margin.bottom);
                 //.attr("y", height + (gridSize / (2.5)) - margin.bottom);
 
               legend.exit().remove();

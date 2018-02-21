@@ -22,7 +22,7 @@ angular.module('HistoricalCtrl', [])
 
       vm.selectedEndDate_person = new Date();
       vm.selectedEndDate_courses = new Date();
-      
+
       $('.datepicker').pickadate({
         format: 'yyyy-mm-dd',
         selectMonths: true, // Creates a dropdown to control month
@@ -77,7 +77,7 @@ angular.module('HistoricalCtrl', [])
       end_date_courses.set('enable', true);
       end_date_courses.set('min', newStartDate);
       //end_date_courses.start();
-      //console.log("start date changed!");
+
     }
   });
 
@@ -96,48 +96,54 @@ angular.module('HistoricalCtrl', [])
       vm.selectedEndDate_courses = newEndDate;
     }
   });
+  $scope.getkeys = function(event){
+      if (vm.searchname != null && vm.searchname != ""){
+        var name_list = $.grep(vm.display.residents, function(n, i) {
+          return n["name"].toLowerCase().indexOf(vm.searchname) != -1;
+        });
+        name_list = Array.from(new Set(name_list));
+        vm.data.resident_heatmap_name_list=angular.copy(name_list);
+      }
+  }
+
+  /*********************
+      SEARCH FILTERS
+  **********************/
+  function applyFilters(){
+      /*var result = []
+      if(vm.display.elderly_attendance_backup.length > 0){
+          if(typeof vm.searchname == 'undefined' ){
+              result = angular.copy(vm.display.elderly_attendance_backup);
+          }else{
+              result = applySearchFilter();
+          }
+          result = applyEventTypeFilter(result);
+      }
+      result = Array.from(new Set(result));
+      result.sort(compareCount);
+      vm.data.residentBoxHeatmapData = angular.copy(result);*/
+    }
+    function applySearchFilter(data){
+        if(vm.searchname == ""){
+            return null;
+        }else{
+            return filterByAttr("display_name", vm.searchname, vm.display.elderly_attendance_backup);
+        }
+    }
+    function filterByAttr(attr, value, data) {
+        var value = value.toLowerCase();
+        return $.grep(data, function(n, i) {
+          return n[attr].toLowerCase().indexOf(value) != -1;
+        });
+    }
 
 
   initController();
   function initController(){
     document.getElementById("calendar_error").style.visibility='hidden';
-/*
-    //testing data
-    vm.activity_comparison_data =[
-      {
-        key: 'language lesson',
-        values: [
-          {x: 0,y: 3},
-          {x: 1,y: 7},
-          {x: 2,y: 7},
-          {x: 3,y: 8},
-          {x: 4,y: 11},
-          {x: 5,y: 17}
-        ]
-      },
-      {
-        key: 'physical exercise',
-        values: [
-          {x: 0,y: 9},
-          {x: 1,y: 5},
-          {x: 2,y: 10},
-          {x: 3,y: 15},
-          {x: 4,y: 3},
-          {x: 5,y: 8}
-        ]
-      }];
-    vm.barData = [
-        {
-            key: "Cumulative Return",
-            values: [
-                {x:"1", y:29}, {x:"2", y:70}, {x:"3", y:50}, {x:"4", y:88} ,{x:"4", y:10}]
-        }
-      ]; //end data
-*/
-    //vm.selectedCenter = 6901;
 
-    //vm.selectedEndDate_courses = new Date('29 October 2017');
-    //vm.selectedStartDate_courses = new Date('5 November 2017');
+    vm.selectedEndDate_courses = new Date();
+    vm.selectedStartDate_courses = new Date();
 
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
@@ -153,6 +159,7 @@ angular.module('HistoricalCtrl', [])
       real_time_activity_reading_hash: {},
       real_time_activity_reading_by_device_id: {},
       real_time_activity_reading_by_activity: {},
+      real_time_activity_reading_by_resident:{},
       text_display_wdiget: {},
       calendarheatmap: null,
       popular_days: [],
@@ -174,6 +181,7 @@ angular.module('HistoricalCtrl', [])
       bottom_popular_activities_count_xaxis: [],
       activityMonthData: [],
       activityMonthDatalabel:[],
+      resident_heatmap_name_list: [],
       residentBoxHeatmapData: [],
       residentBoxHeatmapData_date: []
     }
@@ -182,6 +190,7 @@ angular.module('HistoricalCtrl', [])
       residents: [],
       activity: []
     }
+    vm.searchname = "";
 
     generateDataForInit();
 
@@ -211,10 +220,9 @@ angular.module('HistoricalCtrl', [])
         vm.data.all_centers_by_center_code[value.code_name] = value;
         vm.display.centers.push({name: value.code_name, value: value.code_name})
       })
-
-      
-
-      callSensorReadings(vm.selectedCenter, '2017-12-01', '2018-02-04') //'2017-12-01'
+      vm.selectedStartDate_courses = new Date('2017-12-01');
+      vm.selectedEndDate_courses = new Date('2018-02-04');
+      callSensorReadings(vm.selectedCenter, vm.selectedStartDate_courses, vm.selectedEndDate_courses) //'2017-12-01'
     })
 
   }
@@ -288,7 +296,7 @@ angular.module('HistoricalCtrl', [])
       }, Object.create(null));
 
       vm.data.real_time_activity_reading_by_activity = vm.data.real_time_activity_reading.reduce(function (r, a) {
-        r[a.resident_display_name] = r[a.resident_display_name] || []; 
+        r[a.resident_display_name] = r[a.resident_display_name] || [];
         r[a.resident_display_name].push(a);
         //r[a.resident_display_name + " -" + a.device_id] = r[a.resident_display_name] + " -" + a.device_id] || [];
         //r[a.resident_display_name + " -" + a.device_id].push(a);
@@ -301,7 +309,13 @@ angular.module('HistoricalCtrl', [])
         return r;
       }, Object.create(null));
 
-      console.log("readings by activity", vm.data.real_time_activity_reading_by_activity_name);
+      //console.log("readings by activity", vm.data.real_time_activity_reading_by_activity_name);
+
+      vm.data.real_time_activity_reading_by_resident_index = vm.data.real_time_activity_reading.reduce(function (r, a) {
+        r[a.resident_index ] = r[a.resident_index ] || [];
+        r[a.resident_index ].push(a);
+        return r;
+      }, Object.create(null));
 
       //OVERVIEW TAB
       calendar_heatmap_widget();
@@ -315,7 +329,7 @@ angular.module('HistoricalCtrl', [])
       update_activity_month_chart(start_date_time,end_date_time);
 
       //PERSON TAB
-      resident_heatmap_widget();
+      //resident_heatmap_widget();
 
     })//end when.then
     .then(function(){
@@ -425,13 +439,13 @@ angular.module('HistoricalCtrl', [])
       obj.count = vm.data.real_time_activity_reading_by_device_id[key].length;
       resident_time_spent_by_device_id.push(obj);
     })//end for each macID
-
+    console.log(resident_time_spent_by_device_id)
     //sorting
     var resident_time_spent_by_hour = angular.copy(resident_time_spent_by_device_id.sort(compareValue));
     var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
     var resident_time_spent_by_count = angular.copy(resident_time_spent_by_device_id.sort(compareCount));
     var resident_time_spent_by_count_asc = angular.copy(resident_time_spent_by_device_id.sort(compareCountAsc));
-      
+
     //time spent
     var top_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour.slice(0,5) : resident_time_spent_by_hour.slice(0, resident_time_spent_by_hour.length);
     var bottom_5_resident = (resident_time_spent_by_device_id.length >= 5) ? resident_time_spent_by_hour_asc.slice(0,5) : resident_time_spent_by_hour_asc.slice(0, resident_time_spent_by_hour_asc.length);
@@ -441,7 +455,7 @@ angular.module('HistoricalCtrl', [])
 
     vm.data.top_active_resident = angular.copy(top_5_resident)
     vm.data.top_active_resident_count = angular.copy(top_5_resident_count)
-    
+
     vm.data.bottom_active_resident = angular.copy(bottom_5_resident)
     vm.data.bottom_active_resident_count = angular.copy(bottom_5_resident_count)
 
@@ -463,7 +477,6 @@ angular.module('HistoricalCtrl', [])
      CHARTS - ACTIVITY
   ***********************/
   function day_of_week_widget(){
-
     var popular_days = []
     Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key, index){
       var result = vm.data.real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
@@ -483,7 +496,6 @@ angular.module('HistoricalCtrl', [])
   }
 
   function box_heatmap_widget(){
-
     temp_arr = insArr_to_dateInsArr(vm.data.real_time_activity_reading);
     var date_ins_array = temp_arr[1];
     var date_list = temp_arr[0];
@@ -559,7 +571,6 @@ angular.module('HistoricalCtrl', [])
       month_list.forEach(function(value, index){
         month_data.push((result[index])? result[index].length:0);
       })
-      //console.log(month_data);
       vm.data.activityMonthData.push(month_data);
       month_data = [];
     })
@@ -594,8 +605,79 @@ angular.module('HistoricalCtrl', [])
 
   }
 
-  function resident_heatmap_widget(){
+  function resident_heatmap_widget(resident_index){
+    //resident_index = "MP0015"; //Susan YIK Soh Lui
+    var resident_activity_readings = vm.data.real_time_activity_reading_by_resident_index[resident_index];
+    if (resident_activity_readings==undefined){
+      var residentBoxHeatmapData = [];
+      vm.data.residentBoxHeatmapData = angular.copy(residentBoxHeatmapData);
+      //vm.data.residentBoxHeatmapData_date =angular.copy(full_date_list);
+    }else{
+      var temp_arr = insArr_to_dateInsArr(resident_activity_readings);
+      var resident_date_ins_array = temp_arr[1];
+      var resident_date_list = temp_arr[0];
 
+      //gen full date_list from start to end date
+      var full_date_list = [];
+      var curr_date = moment(vm.selectedStartDate_courses);
+      var end_date = moment( vm.selectedEndDate_courses);
+      while (curr_date.isSameOrBefore(end_date)){
+        full_date_list.push(curr_date.format("YYYY-MM-DD"));
+        curr_date = moment(curr_date.add(1, 'days').format("YYYY-MM-DD hh:mm:ss"));
+      }
+
+      //console.log(resident_date_list);
+      //console.log(full_date_list);
+
+      var residentBoxHeatmapDataArr = [];// new Array(full_date_list.length).fill(new Array(22).fill(0));
+      for (i = 0; i <= full_date_list.length; i++) {
+        residentBoxHeatmapDataArr[i] = new Array(22).fill(0);
+      }
+
+      full_date_list.forEach(function(date, date_index){
+        if (resident_date_list.includes(date)) {
+          var date_instances = resident_date_ins_array[resident_date_list.indexOf(date)];
+
+          var this_date = moment(date);
+          var time_arr = generate_time_array(this_date,8,18);
+
+          date_instances.forEach(function(instance_value){
+            var this_start = moment(instance_value.start_timestamp);
+            var this_end = moment(instance_value.end_timestamp);
+            //console.log(instance_value);
+            //console.log(moment(this_start).format('HH:mm:ss')+ " -- " + moment(this_end).format('HH:mm:ss'));
+            for (i = 0; i < time_arr.length-1; i++) {
+              if(!(time_arr[i+1].isBefore(this_start) || this_end.isBefore(time_arr[i]))){
+                //console.log("falls between: "+i+"= " +time_arr[i].format('HH:mm') + "--"+time_arr[i+1].format('HH:mm'));
+                residentBoxHeatmapDataArr[date_index][i] = 1;
+              };//end if
+            };//end for loop
+          })//end forEach instance
+        }//end IF there is data for this resident at date
+      });//end of each date of full_date_list
+
+      var day = 1;
+
+      residentBoxHeatmapData = [];
+      residentBoxHeatmapDataArr.forEach(function(day_value){
+        day_value.forEach(function(value,index){
+          residentBoxHeatmapData.push({
+            "day": day,
+            "hour":	index+1,
+            "value": value
+          });
+        });//end for each hour
+        day++;
+      });//end for each day
+
+      //console.log(residentBoxHeatmapDataArr);
+      //console.log(residentBoxHeatmapData);
+      vm.data.residentBoxHeatmapData = angular.copy(residentBoxHeatmapData);
+      vm.data.residentBoxHeatmapData_date =angular.copy(full_date_list);
+
+    }//end of ELSE aka there is data for selected resident_index
+
+    /*
     var residentBoxHeatmapData = [
     {      "day": 1,      "hour":	1,      "value": 0    },
     {      "day": 1,      "hour": 2,      "value": 0    },
@@ -796,25 +878,15 @@ angular.module('HistoricalCtrl', [])
     {      "day": 9,      "hour": 21,      "value": 0    },
     {      "day": 9,      "hour": 22,      "value": 0    }
     ];
-    /*
-    weekly_activity_data = [];
-    week_arr.forEach(function(day_value,day_index){
-      day_value.forEach(function(value,index){
-        weekly_activity_data.push({
-          "day": day_index+1,
-          "hour":	index+1,
-          "value": value
-        })
-      })//end for each hour
-    })//end for each day
-    */
     var residentBoxHeatmapData_date = ['26 Dec 17','27 Dec 17','28 Dec 17','29 Dec 17','30 Dec 17','31 Dec 17','1 Jan 18','2 Jan 18','3 Jan 18'];
 
     vm.data.residentBoxHeatmapData = angular.copy(residentBoxHeatmapData)
     vm.data.residentBoxHeatmapData_date =angular.copy(residentBoxHeatmapData_date)
+    */
+
 
   }//end resident_heatmap_widget
-
+/*
   function update_most_active_chart(result){
     if (result.results.length == 0){
       document.getElementById("active_error").style.visibility='visible';
@@ -843,10 +915,8 @@ angular.module('HistoricalCtrl', [])
 
       vm.mostActiveData = angular.copy(time_data);
   }//end update_most_active_chart function
+*/
 
-  function update_course_time_chart(result){
-    //TODO:
-  }// end func update_course_time_chart
 
   /********************
     REUSEABLE FUNCTIONS
@@ -1284,6 +1354,11 @@ angular.module('HistoricalCtrl', [])
   vm.generateDataPerson = generateDataPerson;
   vm.generateDataCourses = generateDataCourses;
   vm.generateReport = generateReport;
+  vm.load_resident_heatmap= load_resident_heatmap;
+
+  function load_resident_heatmap(resident_index){
+     resident_heatmap_widget(resident_index);
+  }
 
   function generateReport(){
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -1292,6 +1367,7 @@ angular.module('HistoricalCtrl', [])
     var today = new Date();
     var report_month = months[today.getMonth()];
 
+    console.log()
     $q.when()
     .then(function(){
       return getReport();
@@ -1304,14 +1380,14 @@ angular.module('HistoricalCtrl', [])
       //let blob = new Blob([data], {type: 'vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
       //FileSaver.saveAs(blob, 'Attendance.xlsx');
     })
-    
+
 
     /*var excelCell = {
       v: "ASDDD",
       t: "s",
       s: {
-        fill: { 
-          fgColor: { rgb: "FF0000"}, 
+        fill: {
+          fgColor: { rgb: "FF0000"},
         } //here you can define the color you want to use
       }
       };
@@ -1324,13 +1400,13 @@ angular.module('HistoricalCtrl', [])
           "!ref": "A1:Z1000",
           A1:{t:'s', v:"Monthly Attendance Reporting: " + report_month + " " + today.getFullYear()},
           A4:{t:'s', v: "Month : " + report_month.toLocaleUpperCase() + " " + today.getFullYear()},
-          
+
           A5:{t:'s', v: "No"},
           B5:{t:'s', v: "Blk"},
           C5:{t:'s', v: "Unit No."},
           D5:{t:'s', v: "Name of Registered Elderly"},
           E5:{t:'s', v: "Gender"},
-          
+
           F5:{t:'s', v: "hehe"},
 
           D10:{t:'s', v: "test", s: {
@@ -1339,35 +1415,35 @@ angular.module('HistoricalCtrl', [])
                 'fgColor': {rgb: "FF0000"},
                 'bgColor': {rgb: "FF0000"}
               }
-            } 
+            }
           },
           D9:{t:'s', v: "test1", s: {
-              'fill': {          
+              'fill': {
                 patternType: "none",
                 'fgColor': {rgb: "fff00000"},
                 'bgColor': {rgb: "fff00000"}
               }
-            } 
+            }
           },
-          D8:{t:'s', v: "test2", s: 
+          D8:{t:'s', v: "test2", s:
             { patternType: 'solid',
               fgColor: { rgb: "fff00000" },
-              bgColor: { rgb: "fff00000"} }  
+              bgColor: { rgb: "fff00000"} }
           },
-      
+
 
 
           B6: excelCell,
 
           "!merges":[
-            {s:{r:3,c:0},e:{r:3,c:2}} 
+            {s:{r:3,c:0},e:{r:3,c:2}}
           ]
         }
       }
     }
     XLSX.writeFile(wb, "Attendance Report.xlsx")*/
-  
-   
+
+
 
     /* make worksheet */
     /*var ws_data = [
@@ -1383,7 +1459,7 @@ angular.module('HistoricalCtrl', [])
     //wb.Sheets[ws_name] = ws;
 
 
-    
+
 
 
     /*var workbook = new Excel.Workbook();
@@ -1413,7 +1489,7 @@ angular.module('HistoricalCtrl', [])
   }
 
   function generateDataCourses(){
-    //console.log("updating courses data");
+    console.log("updating courses data");
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
   }
 
