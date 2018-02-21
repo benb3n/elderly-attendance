@@ -614,7 +614,11 @@ angular.module('HistoricalCtrl', [])
 
   }
 
-  function resident_heatmap_widget(resident_index){
+  function resident_heatmap_widget(resident_index,resident_name){
+    //clearing
+    vm.data.resident_heatmap_name_list=angular.copy([]);
+    document.getElementById("search").value = resident_name;
+
     //resident_index = "MP0015"; //Susan YIK Soh Lui
     var resident_activity_readings = vm.data.real_time_activity_reading_by_resident_index[resident_index];
     if (resident_activity_readings==undefined){
@@ -1365,8 +1369,8 @@ angular.module('HistoricalCtrl', [])
   vm.generateReport = generateReport;
   vm.load_resident_heatmap= load_resident_heatmap;
 
-  function load_resident_heatmap(resident_index){
-     resident_heatmap_widget(resident_index);
+  function load_resident_heatmap(resident_index,resident_name){
+     resident_heatmap_widget(resident_index,resident_name);
   }
 
   function generateReport(){

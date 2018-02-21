@@ -219,6 +219,7 @@
 
     <!-- PERSON TAB -->
     <div id="person" class="col s12">
+
       <div class="row">
         <div class="input-field col s12 m4 ">
           <i class="material-icons prefix">search</i>
@@ -229,7 +230,7 @@
       </div>
       <div class="row">
         <div ng-repeat="person in historical.data.resident_heatmap_name_list">
-          <div class="col s6 m6 l3 animated fadeIn clear_button" ng-click="historical.load_resident_heatmap(person.value)" >{{person.name}}</div>
+          <div class="col s6 m6 l3 animated fadeIn clear_button" ng-click="historical.load_resident_heatmap(person.value,person.name)" >{{person.name}}</div>
         </div>
       </div>
       <!-- CONTENT -->
