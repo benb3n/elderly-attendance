@@ -17,10 +17,10 @@ angular.module('HistoricalCtrl', [])
         closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
       });
       vm.selectedCenter=6901;
-      vm.selectedStartDate_person = new Date(); //moment(new Date()).format("DD MMM, YYYY"); //'9 November, 2017'
+      //vm.selectedStartDate_person = new Date(); //moment(new Date()).format("DD MMM, YYYY"); //'9 November, 2017'
       vm.selectedStartDate_courses = new Date();
 
-      vm.selectedEndDate_person = new Date();
+      //vm.selectedEndDate_person = new Date();
       vm.selectedEndDate_courses = new Date();
 
       $('.datepicker').pickadate({
@@ -98,13 +98,19 @@ angular.module('HistoricalCtrl', [])
     }
   });
   $scope.getkeys = function(event){
-      if (vm.searchname != null && vm.searchname != ""){
-        var name_list = $.grep(vm.display.residents, function(n, i) {
+    var name_list;
+      if(vm.searchname == "" || vm.searchname == null){
+        //do nothing as of now
+        name_list = [];
+      }else{
+        name_list = $.grep(vm.display.residents, function(n, i) {
           return n["name"].toLowerCase().indexOf(vm.searchname) != -1;
         });
         name_list = Array.from(new Set(name_list));
-        vm.data.resident_heatmap_name_list=angular.copy(name_list);
       }
+
+      vm.data.resident_heatmap_name_list=angular.copy(name_list);
+
   }
 
   /*********************
@@ -221,8 +227,8 @@ angular.module('HistoricalCtrl', [])
         vm.data.all_centers_by_center_code[value.code_name] = value;
         vm.display.centers.push({name: value.code_name, value: value.code_name})
       })
-      vm.selectedStartDate_courses = '2017-12-01';
-      vm.selectedEndDate_courses = '2018-02-04';
+      vm.selectedStartDate_courses = new Date('2017-12-01');
+      vm.selectedEndDate_courses = new Date('2018-02-04');
       callSensorReadings(vm.selectedCenter, vm.selectedStartDate_courses, vm.selectedEndDate_courses) //'2017-12-01'
     })
 
