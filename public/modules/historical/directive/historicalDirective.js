@@ -1580,6 +1580,28 @@ angular.module('HistoricalDirective', [])
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            /*var timeLabels = svg.selectAll(".timeLabel")
+              .data(times)
+              .enter().append("text")
+                .text(function(d) { return d; })
+                .attr("x", function(d, i) { return ((i+1) * gridSize * 1.4); })
+                .attr("y", gridSize )
+                .style("text-anchor", "start")
+                .attr('transform', function(d, i) { return ('translate(-25, '+(25 + (i)*21) +') rotate(-45)') ;} );
+                */
+
+              var timeLabels = svg.selectAll(".timeLabel")
+                .data(times)
+                .enter().append("g")
+                .attr("x", function(d, i) { return ((i+1) * gridSize * 1.4); })
+                .attr("y", gridSize );
+                //.attr("transform", function(d, i) {return "translate(" + x0(i) + ",330)";});
+
+              gText.append("text")
+                    .text(function(d) { return d; })
+                    .attr("text-anchor","start");
+                    //.attr("transform", function(d, i) {return "translate(20,0) rotate(-45,0,0)";});
+
             var dayLabels = svg.selectAll(".dayLabel")
               .data(date_list)
               .enter().append("text")
@@ -1613,14 +1635,8 @@ angular.module('HistoricalDirective', [])
 
               cards.exit().remove();
 
-              var timeLabels = svg.selectAll(".timeLabel")
-                .data(times)
-                .enter().append("text")
-                  .text(function(d) { return d; })
-                  .attr("x", function(d, i) { return ((i+1) * gridSize * 1.4); })
-                  .attr("y", gridSize )
-                  .style("text-anchor", "start")
-                  .attr('transform', function(d, i) { return ('translate(-25, '+(25 + (i)*21) +') rotate(-45)') ;} );
+
+
 
 
               var legend = svg.selectAll(".legend")
