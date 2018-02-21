@@ -1593,14 +1593,14 @@ angular.module('HistoricalDirective', [])
               var timeLabels = svg.selectAll(".timeLabel")
                 .data(times)
                 .enter().append("g")
-                .attr("x", function(d, i) { return ((i+1) * gridSize * 1.4); })
-                .attr("y", gridSize );
+                .attr("x", 0)
+                .attr("y", 0);
                 //.attr("transform", function(d, i) {return "translate(" + x0(i) + ",330)";});
 
-              gText.append("text")
+              timeLabels.append("text")
                     .text(function(d) { return d; })
-                    .attr("text-anchor","start");
-                    //.attr("transform", function(d, i) {return "translate(20,0) rotate(-45,0,0)";});
+                    .attr("text-anchor","start")
+                    .attr("transform", function(d, i) {return "translate("+ (i*gridSize) +",20) rotate(-45,0,0)";});
 
             var dayLabels = svg.selectAll(".dayLabel")
               .data(date_list)
