@@ -17,10 +17,10 @@ angular.module('HistoricalCtrl', [])
         closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
       });
       vm.selectedCenter=6901;
-      vm.selectedStartDate_person = new Date(); //moment(new Date()).format("DD MMM, YYYY"); //'9 November, 2017'
+      //vm.selectedStartDate_person = new Date(); //moment(new Date()).format("DD MMM, YYYY"); //'9 November, 2017'
       vm.selectedStartDate_courses = new Date();
 
-      vm.selectedEndDate_person = new Date();
+      //vm.selectedEndDate_person = new Date();
       vm.selectedEndDate_courses = new Date();
 
       $('.datepicker').pickadate({
@@ -97,13 +97,19 @@ angular.module('HistoricalCtrl', [])
     }
   });
   $scope.getkeys = function(event){
-      if (vm.searchname != null && vm.searchname != ""){
-        var name_list = $.grep(vm.display.residents, function(n, i) {
+    var name_list;
+      if(vm.searchname == "" || vm.searchname == null){
+        //do nothing as of now
+        name_list = [];
+      }else{
+        name_list = $.grep(vm.display.residents, function(n, i) {
           return n["name"].toLowerCase().indexOf(vm.searchname) != -1;
         });
         name_list = Array.from(new Set(name_list));
-        vm.data.resident_heatmap_name_list=angular.copy(name_list);
       }
+
+      vm.data.resident_heatmap_name_list=angular.copy(name_list);
+
   }
 
   /*********************
@@ -605,7 +611,11 @@ angular.module('HistoricalCtrl', [])
 
   }
 
-  function resident_heatmap_widget(resident_index){
+  function resident_heatmap_widget(resident_index,resident_name){
+    //clearing
+    vm.data.resident_heatmap_name_list=angular.copy([]);
+    document.getElementById("search").value = resident_name;
+
     //resident_index = "MP0015"; //Susan YIK Soh Lui
     var resident_activity_readings = vm.data.real_time_activity_reading_by_resident_index[resident_index];
     if (resident_activity_readings==undefined){
@@ -621,7 +631,7 @@ angular.module('HistoricalCtrl', [])
       var full_date_list = [];
       var curr_date = moment(vm.selectedStartDate_courses);
       var end_date = moment( vm.selectedEndDate_courses);
-      while (curr_date.isSameOrBefore(end_date)){
+      while (curr_date.isSameOrBefore(end_date,'day')){
         full_date_list.push(curr_date.format("YYYY-MM-DD"));
         curr_date = moment(curr_date.add(1, 'days').format("YYYY-MM-DD hh:mm:ss"));
       }
@@ -630,7 +640,7 @@ angular.module('HistoricalCtrl', [])
       //console.log(full_date_list);
 
       var residentBoxHeatmapDataArr = [];// new Array(full_date_list.length).fill(new Array(22).fill(0));
-      for (i = 0; i <= full_date_list.length; i++) {
+      for (i = 0; i < full_date_list.length; i++) {
         residentBoxHeatmapDataArr[i] = new Array(22).fill(0);
       }
 
@@ -1355,9 +1365,14 @@ angular.module('HistoricalCtrl', [])
   vm.generateDataCourses = generateDataCourses;
   vm.generateReport = generateReport;
   vm.load_resident_heatmap= load_resident_heatmap;
+  vm.clearInput = clearInput;
 
-  function load_resident_heatmap(resident_index){
-     resident_heatmap_widget(resident_index);
+  function clearInput(){
+    $('#search').val('');
+  }
+
+  function load_resident_heatmap(resident_index,resident_name){
+     resident_heatmap_widget(resident_index,resident_name);
   }
 
   function generateReport(){
