@@ -77,7 +77,6 @@ angular.module('HistoricalCtrl', [])
       end_date_courses.set('enable', true);
       end_date_courses.set('min', newStartDate);
       //end_date_courses.start();
-      console.log("start date changed!");
 
     }
   });
@@ -446,7 +445,7 @@ angular.module('HistoricalCtrl', [])
       obj.count = vm.data.real_time_activity_reading_by_device_id[key].length;
       resident_time_spent_by_device_id.push(obj);
     })//end for each macID
-
+    console.log(resident_time_spent_by_device_id)
     //sorting
     var resident_time_spent_by_hour = angular.copy(resident_time_spent_by_device_id.sort(compareValue));
     var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
@@ -484,7 +483,6 @@ angular.module('HistoricalCtrl', [])
      CHARTS - ACTIVITY
   ***********************/
   function day_of_week_widget(){
-
     var popular_days = []
     Object.keys(vm.data.real_time_activity_reading_by_activity_name).forEach(function(key, index){
       var result = vm.data.real_time_activity_reading_by_activity_name[key].reduce(function (r, a) {
@@ -504,7 +502,6 @@ angular.module('HistoricalCtrl', [])
   }
 
   function box_heatmap_widget(){
-
     temp_arr = insArr_to_dateInsArr(vm.data.real_time_activity_reading);
     var date_ins_array = temp_arr[1];
     var date_list = temp_arr[0];
@@ -1368,6 +1365,11 @@ angular.module('HistoricalCtrl', [])
   vm.generateDataCourses = generateDataCourses;
   vm.generateReport = generateReport;
   vm.load_resident_heatmap= load_resident_heatmap;
+  vm.clearInput = clearInput;
+
+  function clearInput(){
+    $('#search').val('');
+  }
 
   function load_resident_heatmap(resident_index,resident_name){
      resident_heatmap_widget(resident_index,resident_name);
@@ -1380,6 +1382,7 @@ angular.module('HistoricalCtrl', [])
     var today = new Date();
     var report_month = months[today.getMonth()];
 
+    console.log()
     $q.when()
     .then(function(){
       return getReport();

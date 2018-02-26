@@ -39,7 +39,7 @@
 
 <div class="row" style="margin-top: -20px">
     <div class="col s12">
-      <ul class="tabs tabs-fixed-width">
+      <ul class="tabs tabs-fixed-width" style="overflow: hidden !important">
         <li class="tab col s3"><a class="active" href="#overview">Overview</a></li>
         <li class="tab col s3"><a href="#activity" ng-click="historical.tab2()">Activity</a></li>
         <li class="tab col s3"><a href="#person">Person</a></li>
@@ -167,7 +167,7 @@
             <span class="card-title col s12 teal darken-1 white-text">Monthly Attendance</span>
             <div class="card-content" id="monthly_content">
               <div class="g-chart">
-                <monthly-Line-Chart data="historical.data.activityMonthData" id="rlinecharts" axis="historical.data.activityMonthDatalabel"></monthly-Line-Chart>
+                <!--<monthly-Line-Chart data="historical.data.activityMonthData" id="rlinecharts" axis="historical.data.activityMonthDatalabel"></monthly-Line-Chart>-->
               </div>
             </div>
           </div>
@@ -176,7 +176,7 @@
           <div class="card">
             <span class="card-title col s12 teal darken-1 white-text">Best Day of the Week</span>
             <div class="card-content" id="activity_content">
-              <weekly-Line-Chart  data="historical.data.popular_days" color="" id="activities_line_chart"></weekly-Line-Chart>
+              <!--<weekly-Line-Chart  data="historical.data.popular_days" color="" id="activities_line_chart"></weekly-Line-Chart>-->
             </div>
           </div>
         </div>
@@ -225,7 +225,7 @@
           <i class="material-icons prefix">search</i>
           <input id="search" type="search" ng-model="historical.searchname" ng-keyup="getkeys($event)" required>
           <label for="search">Search Resident</label>
-          <i class="material-icons">close</i>
+          <i class="material-icons" ng-click="historical.clearInput()">close</i>
         </div>
       </div>
       <div class="row">
