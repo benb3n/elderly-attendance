@@ -54,20 +54,6 @@ angular.module('HistoricalCtrl', [])
   });
 
   $scope.$watch(function() {
-    return vm.selectedStartDate_person;
-  },function(newStartDate, oldStartDate) {
-    if(newStartDate != oldStartDate) {
-      vm.selectedStartDate_person = newStartDate;
-      var end_date_courses = $('#end_date_person').pickadate('picker');
-      if(typeof end_date_courses != 'undefined'){
-        end_date_courses.set('disable', true);
-        end_date_courses.set('enable', true);
-        end_date_courses.set('min', newStartDate)
-      }
-    }
-  });
-
-  $scope.$watch(function() {
     return vm.selectedStartDate_courses;
   },function(newStartDate, oldStartDate) {
     if(newStartDate != oldStartDate) {
@@ -78,14 +64,6 @@ angular.module('HistoricalCtrl', [])
       end_date_courses.set('min', newStartDate);
       //end_date_courses.start();
 
-    }
-  });
-
-  $scope.$watch(function() {
-    return vm.selectedEndDate_person;
-  },function(newEndDate, oldEndate) {
-    if(newEndDate != oldEndate) {
-      vm.selectedEndDate_person = newEndDate;
     }
   });
 
@@ -107,9 +85,7 @@ angular.module('HistoricalCtrl', [])
         });
         name_list = Array.from(new Set(name_list));
       }
-
       vm.data.resident_heatmap_name_list=angular.copy(name_list);
-
   }
 
   /*********************
@@ -335,12 +311,18 @@ angular.module('HistoricalCtrl', [])
       update_activity_month_chart(start_date_time,end_date_time);
 
       //PERSON TAB
+
+      vm.data.residentBoxHeatmapData = angular.copy([]);
+      vm.data.residentBoxHeatmapData_date =angular.copy([]);
+      document.getElementById("search").value = "";
+
       //resident_heatmap_widget();
 
     })//end when.then
     .then(function(){
       $timeout(function () {
         $('select').material_select()
+        Materialize.updateTextFields();
       });
     })
   }//end callSensorReadings
@@ -1497,6 +1479,7 @@ angular.module('HistoricalCtrl', [])
   }
 
   function generateDataPerson(){
+    //unused
     //console.log(vm.selectedCenter +"\n"+ vm.selectedStartDate_person +"\n"+ vm.selectedEndDate_person);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     //console.log("updating person data");
@@ -1504,7 +1487,7 @@ angular.module('HistoricalCtrl', [])
   }
 
   function generateDataCourses(){
-    console.log("updating courses data");
+    console.log("updating courses data: "+ vm.selectedStartDate_courses + " - " +vm.selectedEndDate_courses);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
   }
 
