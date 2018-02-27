@@ -185,7 +185,7 @@ angular.module('HistoricalCtrl', [])
     })
     .then(function(result){
       vm.data.all_residents = result;
-      console.log("resident", result)
+      //console.log("resident", result)
       result.results.forEach(function(value, index){
         vm.data.all_residents_by_resident_index[value.resident_index] = value;
         vm.display.residents.push({name: value.display_name, value: value.resident_index})
@@ -195,7 +195,7 @@ angular.module('HistoricalCtrl', [])
     })
     .then(function(result){
       vm.data.all_centers = result;
-      console.log("centers", result)
+      //console.log("centers", result)
       vm.selectedCenter = result.results[0].code_name
       vm.selectedGwDevice = result.results[0].device_list.split("; ")
       result.results.forEach(function(value, index){
@@ -210,6 +210,50 @@ angular.module('HistoricalCtrl', [])
   }
 
   function callSensorReadings (center, start_date_time, end_date_time){
+
+    vm.data = {
+      all_residents:vm.data.all_residents,
+      all_residents_by_resident_index:vm.data.all_residents_by_resident_index,
+      all_centers: vm.data.all_centers,
+      all_centers_by_center_code: vm.data.all_centers_by_center_code,
+      all_centers_activity: vm.data.all_centers_activity,
+      all_centers_activity_by_id:vm.data.all_centers_activity_by_id,
+      real_time_activity_reading: [],
+      real_time_activity_reading_hash: {},
+      real_time_activity_reading_by_device_id: {},
+      real_time_activity_reading_by_activity: {},
+      real_time_activity_reading_by_resident:{},
+      text_display_wdiget: {},
+      calendarheatmap: null,
+      popular_days: [],
+      top_active_resident: [],
+      top_active_resident_xaxis: [],
+      top_active_resident_count: [],
+      top_active_resident_count_xaxis: [],
+      bottom_active_resident: [],
+      bottom_active_resident_xaxis: [],
+      bottom_active_resident_count: [],
+      bottom_active_resident_count_xaxis: [],
+      top_popular_activities: [],
+      top_popular_activities_xaxis: [],
+      top_popular_activities_count: [],
+      top_popular_activities_count_xaxis: [],
+      bottom_popular_activities: [],
+      bottom_popular_activities_xaxis: [],
+      bottom_popular_activities_count: [],
+      bottom_popular_activities_count_xaxis: [],
+      activityMonthData: [],
+      activityMonthDatalabel:[],
+      resident_heatmap_name_list: [],
+      residentBoxHeatmapData: [],
+      residentBoxHeatmapData_date: []
+    }
+    vm.display = {
+      centers:[],
+      residents: [],
+      activity: []
+    }
+
     var start_datetime =moment(start_date_time).format('YYYY-MM-DD') + 'T00:00:00'
     var end_datetime =moment(end_date_time).format('YYYY-MM-DD') + 'T23:59:59'
     var start_date = moment(start_date_time).subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
@@ -233,7 +277,7 @@ angular.module('HistoricalCtrl', [])
         vm.data.all_centers_activity_by_id[value.id] = value;
         vm.display.activity.push({name: value.activity_desc, value: value.id})
       })
-      console.log("activity" , vm.data.all_centers_activity)
+      //console.log("activity" , vm.data.all_centers_activity)
 
       return getAllCenterAttendanceInterval(vm.api.project, vm.api.center_code_name, start_datetime, end_datetime );
     })
@@ -266,8 +310,8 @@ angular.module('HistoricalCtrl', [])
 
         }
       })
-      console.log("readings" , vm.data.real_time_activity_reading)
-      console.log("total seconds " + total_time_spent_in_sec)
+      //console.log("readings" , vm.data.real_time_activity_reading)
+      //console.log("total seconds " + total_time_spent_in_sec)
 
       vm.data.real_time_activity_reading_by_device_id = vm.data.real_time_activity_reading.reduce(function (r, a) {
         r[a.resident_display_name] = r[a.resident_display_name] || []
@@ -427,7 +471,7 @@ angular.module('HistoricalCtrl', [])
       obj.count = vm.data.real_time_activity_reading_by_device_id[key].length;
       resident_time_spent_by_device_id.push(obj);
     })//end for each macID
-    console.log(resident_time_spent_by_device_id)
+    //console.log(resident_time_spent_by_device_id)
     //sorting
     var resident_time_spent_by_hour = angular.copy(resident_time_spent_by_device_id.sort(compareValue));
     var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
@@ -485,6 +529,7 @@ angular.module('HistoricalCtrl', [])
 
   function box_heatmap_widget(){
     temp_arr = insArr_to_dateInsArr(vm.data.real_time_activity_reading);
+    //console.log(vm.data.real_time_activity_reading);
     var date_ins_array = temp_arr[1];
     var date_list = temp_arr[0];
 
@@ -1343,7 +1388,7 @@ angular.module('HistoricalCtrl', [])
   /********************
     BUTTON FUNCTIONS
   *********************/
-  vm.generateDataPerson = generateDataPerson;
+  //vm.generateDataPerson = generateDataPerson;
   vm.generateDataCourses = generateDataCourses;
   vm.generateReport = generateReport;
   vm.load_resident_heatmap= load_resident_heatmap;
@@ -1364,7 +1409,6 @@ angular.module('HistoricalCtrl', [])
     var today = new Date();
     var report_month = months[today.getMonth()];
 
-    console.log()
     $q.when()
     .then(function(){
       return getReport();
@@ -1478,16 +1522,10 @@ angular.module('HistoricalCtrl', [])
 
   }
 
-  function generateDataPerson(){
-    //unused
-    //console.log(vm.selectedCenter +"\n"+ vm.selectedStartDate_person +"\n"+ vm.selectedEndDate_person);
-    callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
-    //console.log("updating person data");
-    //console.log("disabled for now");
-  }
+
 
   function generateDataCourses(){
-    console.log("updating courses data: "+ vm.selectedStartDate_courses + " - " +vm.selectedEndDate_courses);
+    //console.log("updating courses data: "+ vm.selectedStartDate_courses + " - " +vm.selectedEndDate_courses);
     callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
   }
 
