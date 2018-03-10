@@ -445,7 +445,7 @@ angular.module('HistoricalCtrl', [])
       obj.count = vm.data.real_time_activity_reading_by_device_id[key].length;
       resident_time_spent_by_device_id.push(obj);
     })//end for each macID
-    console.log(resident_time_spent_by_device_id)
+
     //sorting
     var resident_time_spent_by_hour = angular.copy(resident_time_spent_by_device_id.sort(compareValue));
     var resident_time_spent_by_hour_asc = angular.copy(resident_time_spent_by_device_id.sort(compareValueAsc));
@@ -959,6 +959,15 @@ angular.module('HistoricalCtrl', [])
     return 0;
   }
 
+  function sundaysInMonth( m, y ) {
+    var days = new Date( y,m,0 ).getDate();
+    var sundays = [ 8 - (new Date( m +'/01/'+ y ).getDay()) ];
+    for ( var i = sundays[0] + 7; i < days; i += 7 ) {
+      sundays.push( i );
+    }
+    return sundays.length;
+  }
+
   function getInstancesTotalTime(instances_array){
     /*instance = {
           activity_desc:"Karaoke"
@@ -1378,6 +1387,80 @@ angular.module('HistoricalCtrl', [])
   function generateReport(){
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     //var wb = XLSX.utils.book_new();
+    var current_date = new Date("01/01/2018")
+    var no_of_days = new Date(current_date.getFullYear(), current_date.getMonth(), 0).getDate() + 2;
+    console.log(no_of_days)
+    var monthly_reporting_table_data = {}
+    var monthly_reporting_table_data_total_attendance = new Array(no_of_days).fill(0);
+
+    var unique_count = 1;
+    //store residet name + day to get the total unique count by day.
+    var unique_attendance_arr = []
+
+    vm.data.real_time_activity_reading.forEach(function(value, index){
+      if(value.resident_display_name != null && value.resident_display_name != ''){
+        var day = new Date(value.start_timestamp).getDate() - 1;
+        
+        if(typeof monthly_reporting_table_data[value.resident_display_name] == 'undefined'){
+          monthly_reporting_table_data[value.resident_display_name] = []
+          monthly_reporting_table_data[value.resident_display_name].push(unique_count);
+          unique_count++;
+          monthly_reporting_table_data[value.resident_display_name].push("Blk 117")
+          monthly_reporting_table_data[value.resident_display_name].push("#03-01")
+          monthly_reporting_table_data[value.resident_display_name].push(value.resident_display_name)
+          monthly_reporting_table_data[value.resident_display_name].push("M")
+          
+          monthly_reporting_table_data[value.resident_display_name] = monthly_reporting_table_data[value.resident_display_name].concat(new Array(no_of_days).fill(''));
+          monthly_reporting_table_data[value.resident_display_name][day + 5] = 1;
+          monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] = (monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] == '') ? 1 : monthly_reporting_table_data[value.resident_display_name][no_of_days + 5- 2] + 1;
+          monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 1] =  1;
+          
+
+          //Calculate Total Attendance for the Day for monthly
+          monthly_reporting_table_data_total_attendance[day] += 1;
+          monthly_reporting_table_data_total_attendance[no_of_days - 2] += 1;
+          monthly_reporting_table_data_total_attendance[no_of_days - 1] += 1;
+          unique_attendance_arr.push(value.resident_display_name+day)
+        }else{
+          monthly_reporting_table_data[value.resident_display_name][day+5] = 1;
+          monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] = (monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] == '') ? 1 : monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] + 1;
+          monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 1] =  1;
+
+          //Calculate Total Attendance for the Day for monthly
+          if(unique_attendance_arr.indexOf(value.resident_display_name) == -1){
+            monthly_reporting_table_data_total_attendance[day] +=   1;
+            monthly_reporting_table_data_total_attendance[no_of_days - 2] += 1;
+            unique_attendance_arr.push(value.resident_display_name+day)
+          }
+          
+        }
+      }
+    })
+
+    //MONTHLY
+    console.log("TABLE" , Object.values(monthly_reporting_table_data))
+    console.log("TOTAL" , monthly_reporting_table_data_total_attendance)
+
+    var total_seniors = 10
+    var total_members = 40;
+    var total_attendance = monthly_reporting_table_data_total_attendance[no_of_days - 2];
+    var working_days = no_of_days - 2 - sundaysInMonth(current_date.getMonth()+1, current_date.getFullYear())
+    var total_active_members = monthly_reporting_table_data_total_attendance[no_of_days - 1];
+
+    var monthly_reporting_table_legend_data = [
+      [, , "Month : "+months[current_date.getMonth()].toUpperCase() + " " + current_date.getFullYear() ],
+      [, , "Total # of seniors (est)", , total_seniors ],
+      [, , "Total # of members", , total_members],
+      [, , "Total attendance for the month", ,total_attendance],
+      [, , "No of working days in the month", ,working_days],
+      [, , "Average daily attendance", ,(total_attendance / working_days) ],
+      [, , "Total # of active members", ,total_active_members ],
+      [, , "% of members", ,0],
+      [, , "% of Active members", ,(total_active_members/total_members*100)],
+    ]
+
+    console.log(monthly_reporting_table_legend_data)
+    
 
     var today = new Date();
     var report_month = months[today.getMonth()];
@@ -1385,16 +1468,16 @@ angular.module('HistoricalCtrl', [])
     console.log()
     $q.when()
     .then(function(){
-      return getReport();
+      return getReport( Object.values(monthly_reporting_table_data) , monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data);
     })
     .then(function(data){
       var element = document.createElement('a');
       element.setAttribute('href', "/report/Attendance Reporting.xlsx")  //"/assets/reports/sample_output.pptx") //"/assets/img/flags.png")
       element.setAttribute('download', 'Attendance Report.xlsx');
       element.click();
-      //let blob = new Blob([data], {type: 'vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
-      //FileSaver.saveAs(blob, 'Attendance.xlsx');
     })
+
+
 
 
     /*var excelCell = {
@@ -1511,9 +1594,9 @@ angular.module('HistoricalCtrl', [])
   /********************
       WEB SERVICES
   *********************/
-  function getReport (){
+  function getReport (monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data){
     var _defer = $q.defer();
-    HService.generateReport(function (result) {
+    HService.generateReport( monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, function (result) {
       if (result) {
         _defer.resolve(result);
       } else {

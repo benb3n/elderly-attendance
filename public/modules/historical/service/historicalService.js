@@ -12,8 +12,12 @@ angular.module('HistoricalService', [])
 
     return service;
     
-    function generateReport (callback) { 
-        $http.post("/report")
+    function generateReport (monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, callback) { 
+        $http.post("/report", {
+            monthly_table: monthly_reporting_table_data, 
+            monthly_table_total: monthly_reporting_table_data_total_attendance,
+            monthly_legend: monthly_reporting_table_legend_data
+        })
         .then(
             function(result){            
                 callback(result.data) },

@@ -39,6 +39,8 @@ app.get('/*', function(req, res) {
 var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 var day_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 app.post('/report', (req, res) => {
+	//console.log(req.body)
+
 	var workbook = new Excel.Workbook();
 	workbook.creator = 'iCity';
 	workbook.lastModifiedBy = 'iCity';
@@ -46,8 +48,12 @@ app.post('/report', (req, res) => {
 	workbook.modified = new Date();
 	workbook.lastPrinted = new Date();
 
-	var current_date = new Date();
-	var worksheet = workbook.addWorksheet('Monthly Attendance Reporting');
+	var current_date = new Date("01/01/2018");
+	var worksheet = workbook.addWorksheet('Current Daily Attendance Taking');
+	worksheet.getCell('A1').value = 'Attendance for Date: ' + new Date();
+
+
+	worksheet = workbook.addWorksheet('Monthly Attendance Reporting');
 
 	worksheet.getCell('A1').value = 'Monthly Attendance Reporting: ' + months[current_date.getMonth()] + " " + current_date.getFullYear();
 
@@ -55,23 +61,22 @@ app.post('/report', (req, res) => {
 
 	var header_length = 0;
 	for(var i = 4; i <= 5; i ++){
-		var r = generate_data_ws(worksheet, no_of_days, i, current_date, [])
+		var r = generate_data_ws(worksheet, no_of_days, i, current_date, [], null)
 		if(i ==4){header_length = r.length;}
 		fill_up_row_data(worksheet, i, r)
 	}
 	worksheet.mergeCells('A4:C4');
 
-	merge_row_w_same_column(worksheet, header_length+1)
-	merge_row_w_same_column(worksheet, header_length+2)
+	//Fill Up TOTAL VISIT & ACTIVE MEMBER
+	merge_row_w_same_column(worksheet, header_length+1, 4 ,5, "TOTAL VISIT")
+	merge_row_w_same_column(worksheet, header_length+2, 4, 5, "ACTIVE MEMBER")
 
-	var data = [
-		["1", "117", "#03-xxx", "Member", "F", , , 1, 1, , , 1],
-		["2", "117", "#03-xxx", "Member", "F", , , 1, 1, , , 1],
-		["3", "117", "#03-xxx", "Member", "F", , , 1, 1, , , 1]
-	]
-	var new_member = [1 , 0 , 1]
+	var data = req.body.monthly_table
+
+	var new_member = [1 , 0 , 1, 0 ,0 ,0 ,1 ,0]
 
 	var start_row = 6
+	var fourth_row = worksheet.getRow(4);
 	for (var i = 0; i < data.length; i++){
 		var row = worksheet.getRow(start_row);
 		row.values = data[i];
@@ -79,14 +84,26 @@ app.post('/report', (req, res) => {
 		if(new_member[i] == 1){
 			for(var col = 3; col < header_length; col++){
 				if(row.getCell(col).value != null){
-				row.getCell(col).fill = {
-					type: 'pattern',
-					pattern:'solid',
-					fgColor:{argb:'00ADD8E6'}
-				};
+					row.getCell(col).fill = {
+						type: 'pattern',
+						pattern:'solid',
+						fgColor:{argb:'00ADD8E6'}
+					};
 				}
 			}
 		}
+
+		//Color all the sunday column red in the data
+		for(var col = 3; col < header_length; col++){
+			if(fourth_row.getCell(col).value == "Sun"){
+				row.getCell(col).fill = {
+					type: 'pattern',
+					pattern:'solid',
+					fgColor:{argb:'FFFF0000'}
+				};
+			}
+		}
+		
 	}
 
 	start_row++;
@@ -99,31 +116,23 @@ app.post('/report', (req, res) => {
 	row = worksheet.getRow(start_row+1)
 	row_data = [, , , ,"Working Day", ,]
 	row.values = row_data;
-		
-	var r = generate_data_ws(worksheet, no_of_days, start_row, current_date, row_data)
-	fill_up_row_data(worksheet, i, r)
+	
+	//Fill up the monthly total attendace row
+	var r = generate_data_ws(worksheet, no_of_days, start_row, current_date, req.body.monthly_table_total, null)
+
+	//fill_up_row_data(worksheet, i, r)
 	applyBorder(row, (7+no_of_days))
 
 	start_row += 5
 
-	var legend_data = [
-		[, , , "Month : "+months[current_date.getMonth()].toUpperCase() + " " + current_date.getFullYear() ],
-		[, , , "Total # of seniors (est)" ],
-		[, , , "Total # of members"],
-		[, , , "Total attendance for the month"],
-		[, , , "No of working days in the month"],
-		[, , , "Average daily attendance"],
-		[, , , "Total # of active members"],
-		[, , , "% of members"],
-		[, , , "% of Active members"],
-	]
+	//Monthly Attendance Legend
+	var legend_data = req.body.monthly_legend;
 
 	for(var i = 0; i < legend_data.length; i++){
 		var row = worksheet.getRow(start_row);
 		row.values = legend_data[i];
 		start_row++;
 	}
-	//worksheet.getCell("E"+start_row).value = {formula: }
 
 	var colors = ['FFFFFF00', 'FF000000', 'FFFF0000', 'FFFFB266', 'FFADD8E6', 'FFC0C0C0', '', 'FF336600']
 	var legend_names = ['moved out', 'passed away', 'Sunday', 'Public holiday', 'New Members', 'Not Registered Members', 'Hospital', 'Centre Closed']
@@ -142,6 +151,24 @@ app.post('/report', (req, res) => {
 		start_row++;
 	}
 
+	//Add in 2 rows template
+	start_row +=2
+
+	//Add back 2 header rows of the table
+	var header_length = 0;
+	var header_count = 0
+	var init_row_header = start_row
+	for(var i = start_row; i <= (start_row+1); i ++){
+		var r = generate_data_ws(worksheet, no_of_days, i, current_date, [], header_count)
+		if(i ==start_row){header_length = r.length;}
+		fill_up_row_data(worksheet, i, r)
+		header_count++;
+	}
+	worksheet.mergeCells('A'+start_row+':C'+start_row);
+
+	//Fill Up TOTAL VISIT & ACTIVE MEMBER
+	merge_row_w_same_column(worksheet, header_length+1, init_row_header, (init_row_header+1), "TOTAL VISIT")
+	merge_row_w_same_column(worksheet, header_length+2, init_row_header, (init_row_header+1), "ACTIVE MEMBER")
 
 
 
@@ -165,7 +192,8 @@ function applyBorder(row, col_no){
 	}
 }
 
-function generate_data_ws(worksheet, no_of_days, row_no, current_date, data){
+function generate_data_ws(worksheet, no_of_days, row_no, current_date, data, header_count){
+	console.log(header_count)
 	if(row_no == 4){
 		var fourth_row_data = ['Month : ' + months[current_date.getMonth()] + " " + current_date.getFullYear(), , , , ,]
 		for(var i = 1; i <= no_of_days; i++){
@@ -180,22 +208,70 @@ function generate_data_ws(worksheet, no_of_days, row_no, current_date, data){
 			fifth_row_data.push(value)
 		}
 		return fifth_row_data;
+	}else if (header_count == 0){
+		var row_data = ['Month : ' + months[current_date.getMonth()] + " " + current_date.getFullYear(), , , , ,]
+		for(var i = 1; i <= no_of_days; i++){
+			var day = new Date(current_date.getFullYear(), current_date.getMonth(), i )
+			row_data.push(day_of_week[day.getDay()])
+		}
+		return row_data
+	}else if (header_count == 1){
+		row_data= ["No", "Blk", "Unit No", "Name of Registered Elderly", "Gender"]
+		for(var i = 1; i <= no_of_days; i++){
+			var value = "" + i;
+			row_data.push(value)
+		}
+		return row_data
 	}
+	
 	if(data.length > 0){
+		var non_weekend_count = 0;
 		var fourth_row = worksheet.getRow(4);
 		var col_no = 6;
-		for(var i = 1; i <= no_of_days; i++){
+		for(var i = 1; i <= no_of_days+2; i++){
 			var column_name = toColumnName(col_no)
+
+			//Total Attendance of the day
 			var cell = ''+column_name + row_no;
-			worksheet.getCell(cell).value = { formula: "=SUM(" + column_name + "6:" + column_name +  row_no +")", result:''};
-			cell = ''+column_name + (row_no+1);
-			if(fourth_row.getCell(col_no).value != "Sun"){
-				worksheet.getCell(cell).value = 1;
-			}else{
-				worksheet.getCell(cell).value = 0;
+			worksheet.getCell(cell).value = { formula: "=SUM(" + column_name + "6:" + column_name +  row_no +")", result: data[i-1] };
+
+			if(fourth_row.getCell(col_no).value == "Sun"){
+				var beforeCell = ''+column_name + (row_no-1);
+				worksheet.getCell(beforeCell).fill = {
+					type: 'pattern',
+					pattern:'solid',
+					fgColor:{argb:'FFFF0000'}
+				};
+				worksheet.getCell(cell).fill = {
+					type: 'pattern',
+					pattern:'solid',
+					fgColor:{argb:'FFFF0000'}
+				};
 			}
+
+			//Working Day
+			cell = ''+column_name + (row_no+1);
+			if(i > no_of_days){
+				worksheet.getCell(cell).value = non_weekend_count;
+				non_weekend_count = 0;
+			}else{
+				if(fourth_row.getCell(col_no).value != "Sun"){
+					worksheet.getCell(cell).value = 1;
+					non_weekend_count++;
+				}else{
+					worksheet.getCell(cell).value = 0;
+				}
+			}
+			//Color Sunday Column
+			if(fourth_row.getCell(col_no).value == "Sun"){
+				worksheet.getCell(cell).fill = {
+					type: 'pattern',
+					pattern:'solid',
+					fgColor:{argb:'FFFF0000'}
+				};
+			}
+
 			col_no++;
-			
 		}
 		return data;
 	}
@@ -225,13 +301,13 @@ function fill_up_row_data(worksheet, row_no, result){
 	}
 }
 
-function merge_row_w_same_column(worksheet, column_number){
+function merge_row_w_same_column(worksheet, column_number, start_row, end_row, data){
 	var column_name = toColumnName(column_number)
-	var column_range = column_name + "4:" + column_name + "5"
+	var column_range = column_name + start_row +":" + column_name + end_row
 	worksheet.mergeCells(column_range)
-	worksheet.getCell(column_name+"4").value = "TOTAL VISIT"
-	worksheet.getCell(column_name+"4").alignment = { wrapText: true };
-	worksheet.getCell(column_name+"4").border = {
+	worksheet.getCell(column_name + start_row).value = data
+	worksheet.getCell(column_name + start_row).alignment = { wrapText: true };
+	worksheet.getCell(column_name + start_row).border = {
 		top: {style:'thin'},
 		left: {style:'thin'},
 		bottom: {style:'thin'},

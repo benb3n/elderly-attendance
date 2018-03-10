@@ -1563,7 +1563,7 @@ angular.module('HistoricalDirective', [])
         scope.heatmapChart =  function(data, date_list) {
           d3.select(Element[0]).selectAll("*").remove();
           if(data && data.length > 0){
-            var margin = { top: 60, right: 30, bottom: 10, left: 80 },
+            var margin = { top: 60, right: 30, bottom: 30, left: 80 },
               hMargin = 40,
               width = window.innerWidth - margin.left - margin.right -30,
               legend_text = ["Absent","Present"],
