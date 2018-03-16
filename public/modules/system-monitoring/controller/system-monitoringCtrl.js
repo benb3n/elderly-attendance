@@ -11,7 +11,7 @@ angular.module('SystemMonitoringCtrl', [])
     }
 
     $(document).ready(function() {
-        
+        $('ul.tabs').tabs();
         $('.tooltipped').tooltip({delay: 50});
         $('.button-collapse').sideNav({
             menuWidth: 300, // Default is 240
@@ -25,6 +25,7 @@ angular.module('SystemMonitoringCtrl', [])
             selectYears: 15 // Creates a dropdown of 15 years to control year
         });
         $('.modal').modal();
+        
 
     });
 
@@ -98,7 +99,14 @@ angular.module('SystemMonitoringCtrl', [])
             system_monitoring_device: [],
             system_monitoring_device_backup: []
         }
-        vm.update = {};
+        vm.update = {
+            device: {},
+            mapping: {}
+        };
+        vm.add = {
+            device: {},
+            mapping: {}
+        }
         vm.searchname = "";
         vm.selectedBatteryLevel = ['Low', 'Medium', 'High']
 
@@ -173,13 +181,24 @@ angular.module('SystemMonitoringCtrl', [])
     ***********************/
     vm.addNewDevice = addNewDevice;
     vm.updateNewDevice = updateNewDevice;
+    vm.addNewMappingDevice = addNewMappingDevice;
+    vm.updateNewMappingDevice = updateNewMappingDevice;
     vm.refresh = refresh;
 
     function refresh(id){
         $('.modal').modal();
-        vm.update.update_selectedPerson = vm.data.system_monitoring_hash[id].resident_list;
-        vm.update.update_selectedDevice = vm.data.system_monitoring_hash[id].device;
-        console.log(vm.update.update_selectedPerson)
+        //vm.update.update_selectedPerson = vm.data.system_monitoring_hash[id].resident_list;
+        //vm.update.update_selectedDevice = vm.data.system_monitoring_hash[id].device;
+        //console.log(vm.update.update_selectedPerson)
+        $('.datepicker').pickadate({
+            format: 'yyyy-mm-dd',
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year
+            closeOnSelect: true,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+          });
         $timeout(function () {
             $('select').material_select()
             Materialize.updateTextFields();
@@ -187,25 +206,128 @@ angular.module('SystemMonitoringCtrl', [])
         
     }
 
-    function addNewDevice(){
-        console.log(" " + $('#new_name').val() + " , " +$('#new_device_id').val())
-        var obj = {};
-        obj.name = $('#new_name').val();
-        obj.device_id = $('#new_device_id').val();
-        
-        
+    function addNewMappingDevice(){        
+        vm.add.mapping.participant_list = [vm.add.mapping.participant_list];
+        vm.add.mapping.install_date = moment(new Date($('#add_resident_install_date').val())).format("YYYY-MM-DD");
+
+        console.log(vm.add.mapping)
+
+        $q.when()
+        .then(function(){
+            return addDeviceMapping(vm.add.mapping);
+        })
+        .then(function(result){
+            console.log(result)
+        })
     }
-    function updateNewDevice(){
-        console.log(" " + $('#update_name').val() + " , " +$('#update_device_id').val())
+
+    function updateNewMappingDevice(){
+        /*console.log(" " + $('#update_name').val() + " , " +$('#update_device_id').val())
         var obj = {};
         obj.name = $('#update_name').val();
-        obj.device_id = $('#update_device_id').val();
+        obj.device_id = $('#update_device_id').val();*/
+
+        vm.update.id = 2
+        vm.update.mapping.participant_list = ["14"]
+        vm.update.mapping.device = '2'
+        vm.update.mapping.install_date = '2018-05-12'
+        vm.update.mapping.uninstall_date = '2018-05-12'
         
+        $q.when()
+        .then(function(){
+            return updateDeviceMapping(vm.update.id, vm.update.mapping);
+        })
+        .then(function(result){
+            console.log(result)
+        })
+    }
+
+    function addNewDevice(){
+        /*console.log(" " + $('#new_name').val() + " , " +$('#new_device_id').val())
+        var obj = {};
+        obj.name = $('#new_name').val();
+        obj.device_id = $('#new_device_id').val();*/
+        
+        vm.add.device.device_type_desc = 'beacon'
+        vm.add.device.device_id = '123456'
+        vm.add.device.remarks = 'abc'
+        
+        $q.when()
+        .then(function(){
+            return addDevice(vm.add.device);
+        })
+        .then(function(result){
+            console.log(result)
+        })
+    }
+    function updateNewDevice(){
+        /*console.log(" " + $('#update_name').val() + " , " +$('#update_device_id').val())
+        var obj = {};
+        obj.name = $('#update_name').val();
+        obj.device_id = $('#update_device_id').val();*/
+
+        vm.update.id = 3
+        vm.update.device.device_type_desc = 'beacon'
+        vm.update.device.device_id = '123457'
+        vm.update.device.remarks = 'abc'
+        
+        $q.when()
+        .then(function(){
+            return updateDevice(vm.update.id, vm.update.device);
+        })
+        .then(function(result){
+            console.log(result)
+        })
     }
 
     /******************
         WEB SERVICE 
     ******************/
+   function addDeviceMapping (params) { 
+        var _defer = $q.defer();
+        SMService.addDeviceMapping(params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    function updateDeviceMapping (id, params) { 
+        var _defer = $q.defer();
+        SMService.updateDeviceMapping(id, params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+
+    function addDevice (params) { 
+        var _defer = $q.defer();
+        SMService.addDevice(params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    function updateDevice (id, params) { 
+        var _defer = $q.defer();
+        SMService.updateDevice(id, params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
     function getAllDevices (project_prefix, page_size) { //url, _defer, overall
         var _defer = $q.defer();
         var params = {
@@ -248,7 +370,7 @@ angular.module('SystemMonitoringCtrl', [])
         return _defer.promise;
     }
 
-    function addDevice(params){
+    /*function addDevice(params){
         var _defer = $q.defer();
         SMService.addDevice(parmas, function (result) {
             if (result) {
@@ -269,5 +391,5 @@ angular.module('SystemMonitoringCtrl', [])
             }
         });
         return _defer.promise;
-    }
+    }*/
 })

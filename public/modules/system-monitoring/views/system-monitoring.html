@@ -1,7 +1,26 @@
 
-<!-- Alert Container-->
 <div class="row">
-  <div class="row" style="margin-top:10px !important">
+  <div class="col s12">
+    <ul class="tabs tabs-fixed-width">
+      <li class="tab col s3"><a  href="#alert">Beacon Battery Alerts</a></li>
+      <li class="tab col s3"><a class="active" href="#mapping"> Device Mapping</a></li>
+    </ul>
+  </div>
+
+  <!-- ALERT -->
+  <div id="alert" class="col s12">
+      
+  </div>
+  <!-- END OF ALERTS -->
+
+  <!-- RESIDENT -->
+  <div id="mapping" class="col s12">
+      <button class="btn-floating btn-small waves-effect waves-light modal-trigger" data-target="addMappingModal" id="add_mapping_btn" ng-click="sm.refresh();"><i class="material-icons">add</i></button>
+      <table id="mapping_table" class="table responsive-table display nowrap" style="width:100%" cellspacing="0"></table>
+  </div>
+  <!-- END OF RESIDENT -->
+
+  <!--<div class="row" style="margin-top:10px !important">
     <div class="col s12 m2">
       <h5 style="font-weight: 300;">Beacon Battery Status</h5>
     </div>
@@ -60,13 +79,83 @@
       </div>
     </div>
 
-  </div>
+  </div>-->
 </div>
 
-      <!-- Modal Structure -->
+  <!-- Modal Structure MAPPING MODAL-->
+  <div id="addMappingModal" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>Create New Device</h4>
+        <div class="input-field col s12">
+            <i class="material-icons prefix">info</i>
+            <select ng-model="sm.add.mapping.device">
+                <option value = "" disabled selected>Select Device</option>
+                <option value = "3" selected>3</option>
+                <!--<option value={{center.id}} ng-repeat="center in attendance.data.all_centers">{{center.prefix}}</option>-->
+            </select>
+        </div>
+        <div class="input-field col s12">
+            <i class="material-icons prefix">info</i>
+            <select ng-model="sm.add.mapping.participant_list">
+                <option value = "" disabled selected>Select Participant</option>
+                <option value = "16" selected>16</option>
+                <!--<option value={{center.id}} ng-repeat="center in attendance.data.all_centers">{{center.prefix}}</option>-->
+            </select>
+        </div>
+        <div class="input-field col s12">
+          <i class="material-icons prefix">today</i>
+          <input id="add_resident_install_date" type="date" class="datepicker">
+          <label  class="card-filter-label-date" for="add_resident_install_date">Install Date</label>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+          <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+        <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.addNewMappingDevice()">Submit</button>
+        <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.updateNewMappingDevice()">Update</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Structure MAPPING MODAL-->
+  <div id="updateMappingModal" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>Create New Device</h4>
+        <div class="input-field col s12">
+            <i class="material-icons prefix">info</i>
+            <select ng-model="sm.add.mapping.device">
+                <option value = "" disabled selected>Select Device</option>
+                <option value = "3" selected>3</option>
+                <!--<option value={{center.id}} ng-repeat="center in attendance.data.all_centers">{{center.prefix}}</option>-->
+            </select>
+        </div>
+        <div class="input-field col s12">
+            <i class="material-icons prefix">info</i>
+            <select ng-model="sm.add.mapping.participant_list">
+                <option value = "" disabled selected>Select Participant</option>
+                <option value = "16" selected>16</option>
+                <!--<option value={{center.id}} ng-repeat="center in attendance.data.all_centers">{{center.prefix}}</option>-->
+            </select>
+        </div>
+        <div class="input-field col s12">
+          <i class="material-icons prefix">today</i>
+          <input id="add_resident_install_date" type="date" class="datepicker">
+          <label  class="card-filter-label-date" for="add_resident_install_date">Install Date</label>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+          <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+        <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.addNewMappingDevice()">Submit</button>
+        <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.updateNewMappingDevice()">Update</button>
+      </div>
+    </div>
+  </div>
+
+      <!-- Modal Structure CREATE NEW DEVICE -->
       <div id="addModal" class="modal modal-fixed-footer">
         <div class="modal-content">
-          <h4>Add/Pair a New Device</h4>
+          <h4>Create New Device</h4>
           <div class="input-field col s12">
             <i class="material-icons prefix">account_circle</i>
             <input id="new_name" type="text" class="validate">
@@ -81,6 +170,7 @@
         <div class="modal-footer">
             <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
           <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.addNewDevice()">Submit</button>
+          <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="sm.updateNewDevice()">Update</button>
         </div>
       </div>
     </div>

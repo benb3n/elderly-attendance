@@ -2,8 +2,9 @@ angular.module('AttendanceCtrl', [])
 .controller('AttendanceController', function ($scope, $q, $timeout, AService) {
     var vm = this;
     vm.api = {
-        project: 'SMU',
-        center_code_name : 'gl15',
+        project: 3,
+        project_prefix: 'SMU',
+        center_code_name : 'smu-office',
         all_activity_count: 5000,
         all_device_count: 3000,
         latest_sensor_reading_count: 1000
@@ -47,10 +48,11 @@ angular.module('AttendanceCtrl', [])
             all_centers_activity_by_id: {}
         };
         vm.update = {
-            activity:{},
+            activity: {},
             resident: {}
         };
         vm.add = {
+            activity: {},
             resident:{}
         }
         vm.delete = {};
@@ -64,7 +66,16 @@ angular.module('AttendanceCtrl', [])
     function generateDataForInit(){
         $q.when()
         .then(function(){
-            return getAllResidents(vm.api.project)
+            return getAllProjects();
+        })
+        .then(function(result){
+            console.log("projects", result)
+            vm.data.all_centers = result.results;
+            result.results.forEach(function(value, index){
+                vm.data.all_centers_by_center_code[value.prefix] = value;
+            })
+            
+            return getAllResidents(vm.api.project_prefix)
         })
         .then(function(result){
             vm.data.all_residents = result;
@@ -85,7 +96,7 @@ angular.module('AttendanceCtrl', [])
                     { title: "First Name", data: "name_first" },
                     { title: "Last Name", data: "name_last" },
                     { title: "Gender", data: "gender" },
-                    //{ title: "Ethnicity", data: "ethnicity" },
+                    { title: "Ethnicity", data: "ethnicity" },
                     //{ title: "Date of Birth", data: "dob" },
                     { title: "Contact No", data: "contact_mobile" },
                     { title: "Contact Other", data: "contact_other" },
@@ -124,8 +135,8 @@ angular.module('AttendanceCtrl', [])
                 vm.update.resident.address_street = data.address_street
                 vm.update.resident.address_floor = data.address_floor
                 vm.update.resident.address_unit = data.address_unit
-                vm.update.resident.gender = data.gender
-                vm.update.resident.ethnicity = data.ethnicity
+                vm.update.resident.gender_desc = data.gender
+                vm.update.resident.ethnicity_desc = data.ethnicity
                 vm.update.resident.contact_mobile = data.contact_mobile
                 vm.update.resident.contact_other = data.contact_other
                 vm.update.resident.join_date = data.join_date
@@ -142,16 +153,16 @@ angular.module('AttendanceCtrl', [])
             });
 
 
-            return getAllCenters(vm.api.project, vm.api.all_device_count)
+            return getAllCenters(vm.api.project_prefix)
         })
         .then(function(result){
-            /*vm.data.all_centers = result;
+            vm.data.all_centers = result;
             console.log("centers", result)
             vm.selectedCenter = result.results[0].code_name
-            vm.selectedGwDevice = result.results[0].device_list.split("; ")
+            //vm.selectedGwDevice = result.results[0].device_list.split("; ")
             result.results.forEach(function(value, index){
                 vm.data.all_centers_by_center_code[value.code_name] = value;
-            })*/
+            })
             /*$('#center_table').DataTable({
                 "destroy": true,
                 "responsive": true,
@@ -194,23 +205,25 @@ angular.module('AttendanceCtrl', [])
             var start_date = moment('2017-11-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD") 
             var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD") 
 
-            return getAllCentersActivity(vm.api.project, vm.selectedCenter, start_date, end_date, vm.api.all_activity_count)
+            return getAllCentersActivity(vm.api.project_prefix, vm.selectedCenter, start_date, end_date, vm.api.all_activity_count)
         })
         .then(function(result){
             vm.data.all_centers_activity = result
             console.log("activity" , result)
-            /*$('#activity_table').DataTable({
+            $('#activity_table').DataTable({
                 "destroy": true,
                 "responsive": true,
                 "data": vm.data.all_centers_activity.results,
                 "columns": [
                     { title: "ID" ,data: "id" },
-                    { title: "Name" ,data: "activity_desc" },
-                    { title: "Center", data: "center_code_name" },
+                    { title: "Name" ,data: "desc" },
+                    { title: "Center", data: "center" },
                     { title: "Start Date", data: "start_date" },
                     { title: "Start Time", data: "start_time" },
                     { title: "End Date", data: "end_date" },
                     { title: "End Time", data: "end_time" },
+                    { title: "Repeat", data: "repeat_params" },
+                    {title: "Activity Type", data: "activity_type_list"},
                     {
                         title: "Edit / Delete",
                         data: null,
@@ -235,13 +248,13 @@ angular.module('AttendanceCtrl', [])
                 $('#updateCenterActivityModal').modal();
                 $('#updateCenterActivityModal').modal('open');
 
-            } );*/
+            } );
             
 
-            return getAllDevices(vm.api.project, vm.api.all_device_count)
+            //return getAllDevices(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
-            console.log(result)
+            /*console.log(result)
             vm.data.all_devices = [];
             vm.data.all_devices_pairs = {};
             result.results.forEach(function(value, index){
@@ -305,11 +318,11 @@ angular.module('AttendanceCtrl', [])
                     {name: "Present", value: "Present"},
                     {name: "Absent", value: "Absent"}
                 ]
-            }
-            return getAllResidentsAlerts(vm.api.project, vm.api.center_code_name, vm.selectedDays, vm.api.all_activity_count)
+            }*/
+            //return getAllResidentsAlerts(vm.api.project, vm.api.center_code_name, vm.selectedDays, vm.api.all_activity_count)
         })
         .then(function(result){
-            console.log("alerts", result)
+            /*console.log("alerts", result)
 
             vm.display.attendance_alert = []
 
@@ -324,10 +337,16 @@ angular.module('AttendanceCtrl', [])
             })
             
 
-            vm.display.attendance_alert.sort(compareCount)
+            vm.display.attendance_alert.sort(compareCount)*/
 
             vm.alertLoading = false;
             vm.loading = false;
+        })
+        .then(function(){
+            $timeout(function(){
+                $('select').material_select();
+                Materialize.updateTextFields();
+           })
         });
 
 
@@ -339,19 +358,74 @@ angular.module('AttendanceCtrl', [])
     vm.deleteAttendance = deleteAttendance;
     vm.updateResidentDetails = updateResidentDetails;
     vm.addResidentDetails = addResidentDetails;
+    vm.addActivityDetails = addActivityDetails;
+    vm.updateActivityDetails = updateActivityDetails;
+    vm.refresh = refresh;
+
+    function refresh(){   
+        $timeout(function(){
+             $('select').material_select();
+             Materialize.updateTextFields();
+        })
+    }
+
+    function addActivityDetails(){
+        $q.when()
+        .then(function(){
+            vm.add.activity.center = 1
+            vm.add.activity.desc = "HIT ME ONE MORE TIME"
+            vm.add.activity.start_date = "2018-01-15"
+            vm.add.activity.end_date = "2018-03-15"
+            vm.add.activity.start_time = "9:30:00"
+            vm.add.activity.end_time = "11:30:00"
+            vm.add.activity.repeat_params = {"days_of_week":[4,5]}
+            vm.add.activity.activity_type_desc_list = "abc, asd, assd"
+
+            console.log(vm.add.activity)
+            return addActivity(vm.add.activity)
+        })
+        .then(function(result){
+            console.log(result)
+        })
+    }
+    function updateActivityDetails(){
+        
+        $q.when()
+        .then(function(){
+            vm.update.id = 13
+            vm.update.activity.center = 1
+            vm.update.activity.desc = "I WAN TO SLEEP"
+            vm.update.activity.start_date = "2018-01-15"
+            vm.update.activity.end_date = "2018-03-15"
+            vm.update.activity.start_time = "08:00:00"
+            vm.update.activity.end_time = "09:00:00"
+            vm.update.activity.repeat_params = {"days_of_week":[1,2,3,5]}
+            vm.update.activity.activity_type_desc_list = "abc, asd, assd"
+
+            console.log(vm.update.activity)
+
+            return updateActivity(vm.update.id , vm.update.activity)
+        })
+        .then(function(result){
+            console.log(result)
+        })
+        
+
+        //$('#updateModal').modal('close');
+    }
 
     function addResidentDetails(){
         $q.when()
         .then(function(){
-            
+            //console.log(vm.add.resident.project)
             vm.add.resident.contact_other = parseInt(vm.add.resident.contact_other)
             vm.add.resident.contact_mobile = parseInt(vm.add.resident.contact_mobile)
-            vm.add.resident.join_date = new Date() //"2018-03-15"
-            console.log("ADD");
-            console.log(vm.add.resident)
+            vm.add.resident.join_date =  moment(new Date()).format("YYYY-MM-DD")
+            //console.log("ADD");
+            //console.log(vm.add.resident)
             return addResident(vm.add.resident)
         })
-        .then(function(){
+        .then(function(result){
             console.log(result)
         })
     }
@@ -361,14 +435,14 @@ angular.module('AttendanceCtrl', [])
         $q.when()
         .then(function(){
             
-            vm.update.resident.contact_other = ""+parseInt(vm.update.resident.contact_other)
-            vm.update.resident.contact_mobile = ""+parseInt(vm.update.resident.contact_mobile)
-            vm.update.resident.join_date = new Date(vm.update.resident.join_date)
+            vm.update.resident.contact_other = parseInt(vm.update.resident.contact_other)
+            vm.update.resident.contact_mobile = parseInt(vm.update.resident.contact_mobile)
+            vm.update.resident.join_date = "2018-03-15" //new Date(vm.update.resident.join_date)
             console.log("UPDATE");
             console.log(vm.update.resident)
             return updateResident(vm.update.id , vm.update.resident)
         })
-        .then(function(){
+        .then(function(result){
             console.log(result)
         })
         
@@ -384,17 +458,39 @@ angular.module('AttendanceCtrl', [])
     /******************
         WEB SERVICE 
     ******************/
-   function addResident (params) { 
-    var _defer = $q.defer();
-    AService.addResident(params, function (result) {
-        if (result) {
-            _defer.resolve(result)
-        } else {
-            _defer.reject();
-        }
-    });
-    return _defer.promise;
-}
+   function addActivity (params) { 
+        var _defer = $q.defer();
+        AService.addActivity(params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    function updateActivity (id, params) { 
+        var _defer = $q.defer();
+        AService.updateActivity(id, params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    function addResident (params) { 
+        var _defer = $q.defer();
+        AService.addResident(params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
     function updateResident (id, params) { 
         var _defer = $q.defer();
         AService.updateResident(id, params, function (result) {
@@ -409,6 +505,17 @@ angular.module('AttendanceCtrl', [])
     function getAllResidents (project_prefix, page_size) { 
         var _defer = $q.defer();
         AService.getAllResidents(project_prefix, page_size, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
+    function getAllProjects(){
+        var _defer = $q.defer();
+        AService.getAllProjects(function (result) {
             if (result) {
                 _defer.resolve(result)
             } else {
