@@ -1,6 +1,6 @@
 angular.module('AttendanceService', [])
 
-.factory('AService', function($http, $q, starlightAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('AService', function($http, $q, starlightAPI, digitalOceanAPI, systemMonitoringAPI, deviceAPI, APIToken) {
 
     var service = {};
     service.getSensorReadings = getSensorReadings;
@@ -9,15 +9,37 @@ angular.module('AttendanceService', [])
     service.getAllCenters = getAllCenters;
     service.getAllCentersActivity = getAllCentersActivity;
     service.getAllResidentsAlerts = getAllResidentsAlerts;
-    
+    service.addResident = addResident
+    service.updateResident = updateResident;
+
     return service;
+
+    function updateResident(id, params, callback){
+        console.log(params)
+        console.log(localStorage.currentUserToken)
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.put(digitalOceanAPI.url + '/api/v1/manifest_user/participant/' + id + "/", params, {
+        }).then(
+            function(result){ 
+                console.log(result);
+                callback(result.data) },
+            function(){ callback(false) }
+        );;
+    }
+    function addResident(params, callback){
+        $http.post(digitalOceanAPI.url + '/api/v1/manifest_user/participant/create', params, {
+
+        }).then(
+            function(result){ callback(result.data) },
+            function(){ callback(false) }
+        );;
+    }
 
     function getAllResidents(project_prefix, page_size, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_user/resident/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_user/participant/',{
             params: {
                 project_prefix: project_prefix,
-                page_size: page_size
             }
         })
         .then(
@@ -28,7 +50,7 @@ angular.module('AttendanceService', [])
 
     function getAllResidentsAlerts(params, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerattendee/', {
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centerattendee/', {
             params: params
         })
         .then(
@@ -39,7 +61,7 @@ angular.module('AttendanceService', [])
 
     function getAllCenters(project_prefix, page_size, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/center/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/center/',{
             params: {
                 project_prefix: project_prefix,
                 page_size: page_size
@@ -53,7 +75,7 @@ angular.module('AttendanceService', [])
 
     function getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, page_size, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centeractivity/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centeractivity/',{
             params: {
                 project_prefix: project_prefix,
                 center_code_name: center_code_name,

@@ -51,6 +51,7 @@
 
         <!-- RESIDENT -->
         <div id="resident" class="col s12">
+            <button class="btn-floating btn-small waves-effect waves-light modal-trigger" data-target="addResidentModal" id="add_resident_btn"><i class="material-icons">add</i></button>
             <table id="resident_table" class="table responsive-table display nowrap" style="width:100%" cellspacing="0"></table>
         </div>
         <!-- END OF RESIDENT -->
@@ -81,37 +82,170 @@
             <div id="updateResidentModal" class="modal modal-fixed-footer ">
                 <div class="modal-content">
                     <h4>Update Resident Details</h4>
-                    <div class="input-field col s12">
-                            <i class="material-icons prefix">account_circle</i>
-                            <input placeholder="First Name" id="update_resident_name_first" ng-model="attendance.update.resident.name_first" type="text" class="validate">
-                            <label for="update_resident_name_first">First Name</label>
-                        </div>
-                    <div class="input-field col s12">
+                    <div class="input-field col m6 s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input placeholder="First Name" id="update_resident_name_first" ng-model="attendance.update.resident.name_first" type="text" class="validate">
+                        <label class="card-filter-label-for-input-field" for="update_resident_name_first">First Name</label>
+                    </div>
+                    <div class="input-field col m6 s12">
                         <i class="material-icons prefix">account_circle</i>
                         <input placeholder="Last Name" id="update_resident_name_last" ng-model="attendance.update.resident.name_last" type="text" class="validate">
-                        <label for="update_resident_name_last">Last Name</label>
+                        <label class="card-filter-label-for-input-field"  for="update_resident_name_last">Last Name</label>
                     </div>
-                    <div class="input-field col s12">
+                    <div class="input-field col m3 s12">
                         <i class="material-icons prefix">home</i>
-                        <input placeholder="Address" id="update_resident_address" ng-model="attendance.update.resident.address" type="text" class="validate">
-                        <label for="update_resident_address">Address</label>
+                        <input placeholder="Address Blk" id="update_resident_address_blk" ng-model="attendance.update.resident.address_blk" type="text" class="validate">
+                        <label class="card-filter-label-for-input-field"  for="update_resident_address_blk">Address Blk</label>
+                    </div>
+                    <div class="input-field col m5 s12">
+                        <!--<i class="material-icons prefix">home</i>-->
+                        <input placeholder="Address Street" id="update_resident_address_street" ng-model="attendance.update.resident.address_street" type="text" class="validate">
+                        <label class="card-filter-label-for-input-field"  for="update_resident_address_street">Address Street</label>
+                    </div>
+                    <div class="input-field col m2 s12">
+                        <!--<i class="material-icons prefix">home</i>-->
+                        <input placeholder="Address Floor" id="update_resident_address_floor" ng-model="attendance.update.resident.address_floor" type="text" class="validate">
+                        <label class="card-filter-label-for-input-field"  for="update_resident_address_floor">Address Floor</label>
+                    </div>
+                    <div class="input-field col m2 s12">
+                        <!--<i class="material-icons prefix">home</i>-->
+                        <input placeholder="Address Unit" id="update_resident_address_unit" ng-model="attendance.update.resident.address_unit" type="text" class="validate">
+                        <label class="card-filter-label-for-input-field"  for="update_resident_address_unit">Address Unit</label>
                     </div>
                     <div class="input-field col s12">
                         <i class="material-icons prefix">info</i>
-                        <select ng-model="attendance.update.status">
-                            <option value = "" disabled selected>Select Status</option>
-                            <option value={{status.value}} ng-repeat="status in attendance.display.status">{{status.name}}</option>
+                        <select ng-model="attendance.update.resident.gender">
+                            <option value = "" disabled selected>Select Gender</option>
+                            <option value = "Male" selected>Male</option>
+                            <option value = "Female" selected>Female</option>
                         </select>
-                        <label>Status</label>
+                        <label class="card-filter-label">Gender</label>
                     </div>
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">info</i>
+                        <select ng-model="attendance.update.resident.ethnicity">
+                            <option value = "" disabled selected>Select Ethnicity</option>
+                            <option value = "Chinese" selected>Chinese</option>
+                            <option value = "Indian" selected>Indian</option>
+                            <option value = "Malay" selected>Malay</option>
+                            <option value = "Others" selected>Others</option>
+                        </select>
+                        <label class="card-filter-label">Ethnicity</label>
+                    </div>
+                    <div class="input-field col m6 s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input placeholder="Contact No" id="update_resident_contact_mobile" ng-model="attendance.update.resident.contact_mobile" type="text" class="validate">
+                        <label class="card-filter-label-for-input-field"  for="update_resident_contact_mobile">Contact No</label>
+                    </div>
+                    <div class="input-field col m6 s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input placeholder="Contact Others" id="update_resident_contact_other" ng-model="attendance.update.resident.contact_other" type="text" class="validate">
+                        <label class="card-filter-label-for-input-field"  for="update_resident_contact_other">Contact Others</label>
+                    </div>
+                    <!--<div class="input-field col s12">
+                        <i class="material-icons prefix">today</i>
+                        <input ng-model="attendance.update.resident.join_date" id="update_resident_join_date" type="date" class="datepicker">
+                        <label  class="card-filter-label-date active" for="update_resident_join_date">Join Date</label>
+                    </div>-->
                    
                      
                 </div>
                 <div class="modal-footer">
                     <button class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</button>
-                    <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="attendance.updateAttendance()">Submit</button>
+                    <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="attendance.updateResidentDetails()">Submit</button>
                 </div>
             </div>
+
+            <!-- Add Resident Modal -->
+            <div id="addResidentModal" class="modal modal-fixed-footer ">
+                    <div class="modal-content">
+                        <h4>Add New Resident Details</h4>
+                        <div class="input-field col s12">
+                                <i class="material-icons prefix">info</i>
+                                <select ng-model="attendance.add.resident.project_prefix">
+                                    <option value = "" disabled selected>Select Project Prefix</option>
+                                    <option value = "Male" selected>Male</option>
+                                </select>
+                                <label class="card-filter-label">Project Prefix</label>
+                            </div>
+                        <div class="input-field col m4 s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input placeholder="First Name" id="add_resident_name_first" ng-model="attendance.add.resident.name_first" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field" for="add_resident_name_first">First Name</label>
+                        </div>
+                        <div class="input-field col m4 s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input placeholder="Last Name" id="add_resident_name_last" ng-model="attendance.add.resident.name_last" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field"  for="add_resident_name_last">Last Name</label>
+                        </div>
+                        <!--<div class="input-field col m4 s12">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input placeholder="Last Name" id="add_resident_display_name" ng-model="attendance.add.resident.display_name" type="text" class="validate">
+                                <label class="card-filter-label-for-input-field"  for="add_resident_display_name">Display Name</label>
+                            </div>-->
+                        <div class="input-field col m3 s12">
+                            <i class="material-icons prefix">home</i>
+                            <input placeholder="Address Blk" id="add_resident_address_blk" ng-model="attendance.add.resident.address_blk" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field"  for="add_resident_address_blk">Address Blk</label>
+                        </div>
+                        <div class="input-field col m5 s12">
+                            <!--<i class="material-icons prefix">home</i>-->
+                            <input placeholder="Address Street" id="add_resident_address_street" ng-model="attendance.add.resident.address_street" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field"  for="add_resident_address_street">Address Street</label>
+                        </div>
+                        <div class="input-field col m2 s12">
+                            <!--<i class="material-icons prefix">home</i>-->
+                            <input placeholder="Address Floor" id="add_resident_address_floor" ng-model="attendance.add.resident.address_floor" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field"  for="add_resident_address_floor">Address Floor</label>
+                        </div>
+                        <div class="input-field col m2 s12">
+                            <!--<i class="material-icons prefix">home</i>-->
+                            <input placeholder="Address Unit" id="add_resident_address_unit" ng-model="attendance.add.resident.address_unit" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field"  for="add_resident_address_unit">Address Unit</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">info</i>
+                            <select ng-model="attendance.add.resident.gender">
+                                <option value = "" disabled selected>Select Gender</option>
+                                <option value = "Male" selected>Male</option>
+                                <option value = "Female" selected>Female</option>
+                            </select>
+                            <label class="card-filter-label">Gender</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">info</i>
+                            <select ng-model="attendance.add.resident.ethnicity">
+                                <option value = "" disabled selected>Select Ethnicity</option>
+                                <option value = "Chinese" selected>Chinese</option>
+                                <option value = "Indian" selected>Indian</option>
+                                <option value = "Malay" selected>Malay</option>
+                                <option value = "Others" selected>Others</option>
+                            </select>
+                            <label class="card-filter-label">Ethnicity</label>
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input placeholder="Contact No" id="add_resident_contact_mobile" ng-model="attendance.add.resident.contact_mobile" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field"  for="add_resident_contact_mobile">Contact No</label>
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input placeholder="Contact Others" id="add_resident_contact_other" ng-model="attendance.add.resident.contact_other" type="text" class="validate">
+                            <label class="card-filter-label-for-input-field"  for="add_resident_contact_other">Contact Others</label>
+                        </div>
+                        <!--<div class="input-field col s12">
+                            <i class="material-icons prefix">today</i>
+                            <input ng-model="attendance.update.resident.join_date" id="update_resident_join_date" type="date" class="datepicker">
+                            <label  class="card-filter-label-date active" for="update_resident_join_date">Join Date</label>
+                        </div>-->
+                       
+                         
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</button>
+                        <button class="modal-action modal-close waves-effect waves-green btn-flat" ng-click="attendance.addResidentDetails()">Submit</button>
+                    </div>
+                </div>
             
             <!-- Update Center Activites Modal -->
             <div id="updateCenterActivityModal" class="modal modal-fixed-footer ">

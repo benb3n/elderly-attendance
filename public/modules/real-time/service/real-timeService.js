@@ -1,6 +1,6 @@
 angular.module('RealTimeService', [])
 
-.factory('RTService', function($http, $q, starlightAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('RTService', function($http, $q, digitalOceanAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
 
     var service = {};
     service.getSensorReadings = getSensorReadings;
@@ -41,7 +41,7 @@ angular.module('RealTimeService', [])
 
     function getAllResidents(project_prefix, page_size, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_user/resident/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_user/participant/',{
             params: {
                 project_prefix: project_prefix,
                 page_size: page_size
@@ -55,7 +55,7 @@ angular.module('RealTimeService', [])
 
     function getAllCenters(project_prefix, page_size, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/center/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/center/',{
             params: {
                 project_prefix: project_prefix,
                 page_size: page_size
@@ -69,7 +69,7 @@ angular.module('RealTimeService', [])
 
     function getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, page_size, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centeractivity/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centeractivity/',{
             params: {
                 project_prefix: project_prefix,
                 center_code_name: center_code_name,
@@ -86,7 +86,7 @@ angular.module('RealTimeService', [])
 
     function getCurrentAttendees(project_prefix, center_code_name, start_date, end_date, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centercurrentattendee/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centercurrentattendee/',{
             params: {
                 project_prefix: project_prefix,
                 center_code_name: center_code_name,
@@ -102,7 +102,7 @@ angular.module('RealTimeService', [])
 
     function getSensorReadings (gw_device, start_datetime, end_datetime,  page_size, callback) { 
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(sensorReadingAPI.url ,
+        $http.get(digitalOceanAPI.url + '/api/v1/readings/sensorreading/',
             {
                 params: {
                     gw_device :gw_device,

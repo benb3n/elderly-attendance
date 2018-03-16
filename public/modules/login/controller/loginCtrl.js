@@ -1,22 +1,27 @@
 angular.module('LoginCtrl', [])
-.controller('LoginController', function ($scope, $location, $q, $http, LService) {
+.controller('LoginController', function ($scope, $location, $q, $http, $timeout, LService) {
     document.getElementById("navbar").style.visibility = "hidden";
     document.getElementById("body_content").setAttribute('class', 'login');
 
+    $(document).ready(function() {
+        Materialize.updateTextFields();
+    });
+    
     var vm = this;
-
     vm.login = login;
 
     //Director
     //vm.username = "benedict"
     //vm.password = "qwerty123456"
     //CM
-    vm.username = "hxtest"
+    vm.username = "benedict"
     vm.password = "qwerty123456"
 
     initController();
     function initController(){
-        Materialize.updateTextFields();
+        $timeout(function () {
+            Materialize.updateTextFields();
+        })
         LService.logout();
 
     }
@@ -29,18 +34,17 @@ angular.module('LoginCtrl', [])
             username: vm.username,
             password: vm.password
         }
-        console.log(params)
+
         LService.login(params, function (result) {
-            console.log(result)
+            console.log(result.token)
             if (result.token) {
                 $http.defaults.headers.common.Authorization = 'Token ' + result.token;
                 LService.getUserRole(function (role) {
                     document.getElementById("body_content").setAttribute('class', '');
                     document.getElementById("navbar").style.visibility = "visible";
-
                     localStorage.currentUserToken = 'Token ' + result.token;
                     localStorage.currentUser =  vm.username,
-                    localStorage.currentCenterCode = 'gl15',
+                    localStorage.currentCenterCode = 'SMU',
                     localStorage.currentRole = role;
 
                     //console.log(localStorage.currentUser + " , " + localStorage.currentUserToken + " , " +

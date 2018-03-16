@@ -1461,6 +1461,7 @@ angular.module('HistoricalCtrl', [])
 
     console.log(monthly_reporting_table_legend_data)
     
+    //UNIT NO	NAME	Exercise	Daily Activity	Event 2	Event 3	NO 	UNIT NO 	NAME	Exercise
 
     var today = new Date();
     var report_month = months[today.getMonth()];

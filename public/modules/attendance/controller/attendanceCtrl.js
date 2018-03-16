@@ -2,7 +2,7 @@ angular.module('AttendanceCtrl', [])
 .controller('AttendanceController', function ($scope, $q, $timeout, AService) {
     var vm = this;
     vm.api = {
-        project: 'mp',
+        project: 'SMU',
         center_code_name : 'gl15',
         all_activity_count: 5000,
         all_device_count: 3000,
@@ -21,6 +21,7 @@ angular.module('AttendanceCtrl', [])
 
         $('select').material_select();
         $('.modal').modal();
+        
     });
 
     /*************** 
@@ -49,6 +50,9 @@ angular.module('AttendanceCtrl', [])
             activity:{},
             resident: {}
         };
+        vm.add = {
+            resident:{}
+        }
         vm.delete = {};
         vm.alertLoading = false;
         vm.loading = true;
@@ -60,7 +64,7 @@ angular.module('AttendanceCtrl', [])
     function generateDataForInit(){
         $q.when()
         .then(function(){
-            return getAllResidents(vm.api.project, vm.api.all_device_count)
+            return getAllResidents(vm.api.project)
         })
         .then(function(result){
             vm.data.all_residents = result;
@@ -76,18 +80,19 @@ angular.module('AttendanceCtrl', [])
                 "data": vm.data.all_residents.results,
                 "columns": [
                     { title: "ID" ,data: "id" },
-                    { title: "Resident Index" ,data: "resident_index" },
+                    //{ title: "Resident Index" ,data: "resident_index" },
                     //{ title: "Display Name", data: "display_name" },
                     { title: "First Name", data: "name_first" },
                     { title: "Last Name", data: "name_last" },
                     { title: "Gender", data: "gender" },
                     //{ title: "Ethnicity", data: "ethnicity" },
                     //{ title: "Date of Birth", data: "dob" },
-                    { title: "Contact", data: "contact_mobile" },
-                    //{ title: "Address Blk", data: "address_blk" },
-                    //{ title: "Address Street", data: "address_street" },
-                    //{ title: "Address Floor", data: "address_floor" },
-                    //{ title: "Address Unit", data: "address_unit"},
+                    { title: "Contact No", data: "contact_mobile" },
+                    { title: "Contact Other", data: "contact_other" },
+                    { title: "Address Blk", data: "address_blk" },
+                    { title: "Address Street", data: "address_street" },
+                    { title: "Address Floor", data: "address_floor" },
+                    { title: "Address Unit", data: "address_unit"},
                     //{ title: "Language", data: "language_list"},
                     //{ title: "Active", data: "active"},
                     {
@@ -110,15 +115,25 @@ angular.module('AttendanceCtrl', [])
             $('#resident_table tbody').on( 'click', 'a', function (e) {
 
                 var data = resident_table.row( $(this).parents('tr') ).data();
+              
+                vm.update.id = data.id
                 vm.update.resident.name_first = data.name_first;
                 vm.update.resident.name_last = data.name_last;
-                vm.update.resident.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + "-" + data.address_unit
-                console.log(data)
-                console.log(vm.update.resident.address)
-                //$('select').material_select();
-                //Materialize.updateTextFields();
+                vm.update.resident.display_name = data.display_name;
+                vm.update.resident.address_blk = data.address_blk 
+                vm.update.resident.address_street = data.address_street
+                vm.update.resident.address_floor = data.address_floor
+                vm.update.resident.address_unit = data.address_unit
+                vm.update.resident.gender = data.gender
+                vm.update.resident.ethnicity = data.ethnicity
+                vm.update.resident.contact_mobile = data.contact_mobile
+                vm.update.resident.contact_other = data.contact_other
+                vm.update.resident.join_date = data.join_date
+           
+                
+
                 $timeout(function () {
-                    $('select').material_select();
+                    $('select').material_select();     
                     Materialize.updateTextFields();
                 });
                 //$('#updateResidentModal').modal();
@@ -130,13 +145,13 @@ angular.module('AttendanceCtrl', [])
             return getAllCenters(vm.api.project, vm.api.all_device_count)
         })
         .then(function(result){
-            vm.data.all_centers = result;
+            /*vm.data.all_centers = result;
             console.log("centers", result)
             vm.selectedCenter = result.results[0].code_name
             vm.selectedGwDevice = result.results[0].device_list.split("; ")
             result.results.forEach(function(value, index){
                 vm.data.all_centers_by_center_code[value.code_name] = value;
-            })
+            })*/
             /*$('#center_table').DataTable({
                 "destroy": true,
                 "responsive": true,
@@ -184,7 +199,7 @@ angular.module('AttendanceCtrl', [])
         .then(function(result){
             vm.data.all_centers_activity = result
             console.log("activity" , result)
-            $('#activity_table').DataTable({
+            /*$('#activity_table').DataTable({
                 "destroy": true,
                 "responsive": true,
                 "data": vm.data.all_centers_activity.results,
@@ -220,7 +235,7 @@ angular.module('AttendanceCtrl', [])
                 $('#updateCenterActivityModal').modal();
                 $('#updateCenterActivityModal').modal('open');
 
-            } );
+            } );*/
             
 
             return getAllDevices(vm.api.project, vm.api.all_device_count)
@@ -322,11 +337,41 @@ angular.module('AttendanceCtrl', [])
         BUTTON FUNCTION 
     **********************/
     vm.deleteAttendance = deleteAttendance;
-    vm.updateAttendance = updateAttendance;
+    vm.updateResidentDetails = updateResidentDetails;
+    vm.addResidentDetails = addResidentDetails;
 
-    function updateAttendance(){
+    function addResidentDetails(){
+        $q.when()
+        .then(function(){
+            
+            vm.add.resident.contact_other = parseInt(vm.add.resident.contact_other)
+            vm.add.resident.contact_mobile = parseInt(vm.add.resident.contact_mobile)
+            vm.add.resident.join_date = new Date() //"2018-03-15"
+            console.log("ADD");
+            console.log(vm.add.resident)
+            return addResident(vm.add.resident)
+        })
+        .then(function(){
+            console.log(result)
+        })
+    }
 
-        console.log(vm.update)
+    function updateResidentDetails(){
+        
+        $q.when()
+        .then(function(){
+            
+            vm.update.resident.contact_other = ""+parseInt(vm.update.resident.contact_other)
+            vm.update.resident.contact_mobile = ""+parseInt(vm.update.resident.contact_mobile)
+            vm.update.resident.join_date = new Date(vm.update.resident.join_date)
+            console.log("UPDATE");
+            console.log(vm.update.resident)
+            return updateResident(vm.update.id , vm.update.resident)
+        })
+        .then(function(){
+            console.log(result)
+        })
+        
 
         $('#updateModal').modal('close');
     }
@@ -339,6 +384,28 @@ angular.module('AttendanceCtrl', [])
     /******************
         WEB SERVICE 
     ******************/
+   function addResident (params) { 
+    var _defer = $q.defer();
+    AService.addResident(params, function (result) {
+        if (result) {
+            _defer.resolve(result)
+        } else {
+            _defer.reject();
+        }
+    });
+    return _defer.promise;
+}
+    function updateResident (id, params) { 
+        var _defer = $q.defer();
+        AService.updateResident(id, params, function (result) {
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        });
+        return _defer.promise;
+    }
     function getAllResidents (project_prefix, page_size) { 
         var _defer = $q.defer();
         AService.getAllResidents(project_prefix, page_size, function (result) {

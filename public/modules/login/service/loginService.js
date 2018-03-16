@@ -1,6 +1,6 @@
 angular.module('LoginService', [])
 
-.factory('LService', function($http, starlightAPI, APIToken) {
+.factory('LService', function($http, digitalOceanAPI, APIToken) {
     var service = {};
     service.login = login;
     service.logout = logout;
@@ -12,7 +12,7 @@ angular.module('LoginService', [])
     
 
     function login(params, callback){
-        $http.post(starlightAPI.url + "/api-token-auth/", params)
+        $http.post(digitalOceanAPI.url + "/api-token-auth/", params)
         .then(
             function(result){ 
                 callback(result.data) },
@@ -25,7 +25,7 @@ angular.module('LoginService', [])
     }
 
     function getUserRole( callback){
-        $http.get(starlightAPI.url + "/api/v1/manifest_user/user_role/", )
+        $http.get(digitalOceanAPI.url + "/api/v1/manifest_user/user_profile/", )
         .then(
             function(result){ 
                 callback(result.data) },
