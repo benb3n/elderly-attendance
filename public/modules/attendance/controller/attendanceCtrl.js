@@ -23,6 +23,7 @@ angular.module('AttendanceCtrl', [])
         $('select').material_select();
         $('.modal').modal();
         
+        
     });
 
     /*************** 
@@ -43,6 +44,7 @@ angular.module('AttendanceCtrl', [])
             all_residents: [],
             all_residents_by_resident_index: {},
             all_centers: [],
+            all_projects:[],
             all_centers_by_center_code: {},
             all_centers_activity: [],
             all_centers_activity_by_id: {}
@@ -56,6 +58,7 @@ angular.module('AttendanceCtrl', [])
             resident:{}
         }
         vm.delete = {};
+
         vm.alertLoading = false;
         vm.loading = true;
         vm.selectedDays = 3;
@@ -70,10 +73,7 @@ angular.module('AttendanceCtrl', [])
         })
         .then(function(result){
             console.log("projects", result)
-            vm.data.all_centers = result.results;
-            result.results.forEach(function(value, index){
-                vm.data.all_centers_by_center_code[value.prefix] = value;
-            })
+            vm.data.all_projects = result.results;
             
             return getAllResidents(vm.api.project_prefix)
         })
@@ -111,7 +111,7 @@ angular.module('AttendanceCtrl', [])
                         data: null,
                         className: "center",
                         defaultContent: 
-                            '<a class="btn-floating waves-effect waves-light btn modal-trigger" data-target="updateResidentModal"><i class="material-icons">edit</i></a>' //+
+                            '<a class="btn-floating waves-effect waves-light btn modal-trigger" data-target="updateResidentModal" ><i class="material-icons">edit</i></a>' //+
                             //<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>   
                             //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
                     }
@@ -140,23 +140,19 @@ angular.module('AttendanceCtrl', [])
                 vm.update.resident.contact_mobile = data.contact_mobile
                 vm.update.resident.contact_other = data.contact_other
                 vm.update.resident.join_date = data.join_date
-           
                 
-
-                $timeout(function () {
-                    $('select').material_select();     
-                    Materialize.updateTextFields();
-                });
-                //$('#updateResidentModal').modal();
-                //$('#updateResidentModal').modal('open');
- 
+                console.log(vm.update.resident)
+                refresh();
+                $('#updateResidentModal').modal();
+                $('#updateResidentModal').modal('open');
+                refresh();
             });
 
 
             return getAllCenters(vm.api.project_prefix)
         })
         .then(function(result){
-            vm.data.all_centers = result;
+            vm.data.all_centers = angular.copy(result.results);
             console.log("centers", result)
             vm.selectedCenter = result.results[0].code_name
             //vm.selectedGwDevice = result.results[0].device_list.split("; ")
@@ -222,13 +218,13 @@ angular.module('AttendanceCtrl', [])
                     { title: "Start Time", data: "start_time" },
                     { title: "End Date", data: "end_date" },
                     { title: "End Time", data: "end_time" },
-                    { title: "Repeat", data: "repeat_params" },
+                    { title: "Day of Week", data: "repeat_params.days_of_week" },
                     {title: "Activity Type", data: "activity_type_list"},
                     {
                         title: "Edit / Delete",
                         data: null,
                         className: "center",
-                        defaultContent: '<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="tiny material-icons">edit</i></button>  ' //+
+                        defaultContent: '<a class="btn-floating waves-effect waves-light btn modal-trigger" data-target="updateActivityModal" ><i class="material-icons">edit</i></a>' //+
                             //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
                     }
                 ],
@@ -239,15 +235,29 @@ angular.module('AttendanceCtrl', [])
 
             var activity_table = $('#activity_table').DataTable();
             //Edit Button
-            $('#activity_table tbody').on( 'click', 'button', function () {
+            $('#activity_table tbody').on( 'click', 'a', function () {
                 var data = activity_table.row( $(this).parents('tr') ).data();
-                console.log(data)
-                vm.update.activity.address = data.address_blk + " " + data.address_street + " #" + data.address_floor + data.address_unit
-                Materialize.updateTextFields();
-                $('select').material_select();
-                $('#updateCenterActivityModal').modal();
-                $('#updateCenterActivityModal').modal('open');
+                //console.log(data)
 
+                vm.update.id = data.id
+                vm.update.activity.center = ""+data.center
+                vm.update.activity.desc = data.desc
+                vm.update.activity.start_date = new Date(data.start_date)
+                vm.update.activity.end_date = new Date(data.end_date)
+                vm.update.activity.start_time = data.start_time.substring(0,5)
+                vm.update.activity.end_time = data.end_time.substring(0,5)
+                vm.update.activity.repeat_params = [] //data.repeat_params.days_of_week
+                data.repeat_params.days_of_week.toString().split(",").map(function(item) {
+                    vm.update.activity.repeat_params.push(item);
+                });
+                vm.update.activity.activity_type_desc_list = [data.activity_type_list]
+                
+                console.log(data.activity_type_desc_list)
+
+                refresh();
+                $('#updateActivityModal').modal();
+                $('#updateActivityModal').modal('open');
+                refresh();
             } );
             
 
@@ -362,59 +372,106 @@ angular.module('AttendanceCtrl', [])
     vm.updateActivityDetails = updateActivityDetails;
     vm.refresh = refresh;
 
-    function refresh(){   
+    function refresh(){  
+        console.log("R")
+        Materialize.updateTextFields(); 
+        $('.datepicker').pickadate({
+            format: 'yyyy-mm-dd',
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: true // Close upon selecting a date,
+          });
+        $('.timepicker').pickatime({
+            default: 'now', // Set default time: 'now', '1:30AM', '16:30'
+            fromnow: 0,       // set default time to * milliseconds from now (using with default = 'now')
+            twelvehour: false, // Use AM/PM or 24-hour format
+            donetext: 'OK', // text for done-button
+            cleartext: 'Clear', // text for clear-button
+            canceltext: 'Cancel', // Text for cancel-button
+            autoclose: true, // automatic close timepicker
+            ampmclickable: true, // make AM PM clickable
+            aftershow: function(){} //Function for after opening timepicker
+          });
+        
         $timeout(function(){
              $('select').material_select();
              Materialize.updateTextFields();
         })
     }
 
-    function addActivityDetails(){
-        $q.when()
-        .then(function(){
-            vm.add.activity.center = 1
-            vm.add.activity.desc = "HIT ME ONE MORE TIME"
-            vm.add.activity.start_date = "2018-01-15"
-            vm.add.activity.end_date = "2018-03-15"
-            vm.add.activity.start_time = "9:30:00"
-            vm.add.activity.end_time = "11:30:00"
-            vm.add.activity.repeat_params = {"days_of_week":[4,5]}
-            vm.add.activity.activity_type_desc_list = "abc, asd, assd"
-
-            console.log(vm.add.activity)
-            return addActivity(vm.add.activity)
-        })
-        .then(function(result){
-            console.log(result)
-        })
-    }
-    function updateActivityDetails(){
+    function addActivityDetails(e){
+        e.originalEvent.stopPropagation();
         
         $q.when()
         .then(function(){
-            vm.update.id = 13
-            vm.update.activity.center = 1
-            vm.update.activity.desc = "I WAN TO SLEEP"
-            vm.update.activity.start_date = "2018-01-15"
-            vm.update.activity.end_date = "2018-03-15"
-            vm.update.activity.start_time = "08:00:00"
-            vm.update.activity.end_time = "09:00:00"
-            vm.update.activity.repeat_params = {"days_of_week":[1,2,3,5]}
-            vm.update.activity.activity_type_desc_list = "abc, asd, assd"
+            var activity = angular.copy(vm.add.activity)
+            activity.center = parseInt(activity.center)
+            activity.start_time += ":00"
+            activity.end_time += ":00"
+            var repeat_params = activity.repeat_params;
+            activity.repeat_params = []
+            if(activity.length == 1){
+                repeat_params.map(function(item) {
+                    activity.repeat_params.push(parseInt(item));
+                });
+            }else{
+                repeat_params.toString().split(",").map(function(item) {
+                    activity.repeat_params.push(parseInt(item));
+                });
+            }
+            activity.repeat_params = {"days_of_week":activity.repeat_params}
+            activity.start_date = $('#add_activity_start_date').val() //moment(new Date($('#add_activity_start_date').val()) ).format("YYYY-MM-DD");
+            activity.end_date = $('#add_activity_end_date').val() //moment( new Date($('#add_activity_end_date').val()) ).format("YYYY-MM-DD");
+            activity.activity_type_desc_list = vm.add.activity.activity_type_desc_list.toString();
 
-            console.log(vm.update.activity)
-
-            return updateActivity(vm.update.id , vm.update.activity)
+            //console.log(activity)
+            return addActivity(activity)
         })
         .then(function(result){
-            console.log(result)
+            location.reload(); 
+            //console.log(result)
+        })
+    }
+    function updateActivityDetails(e){
+        e.originalEvent.stopPropagation();
+        $q.when()
+        .then(function(){
+            var activity = angular.copy(vm.update.activity)
+            activity.center = parseInt(activity.center)
+            activity.start_time += ":00"
+            activity.end_time += ":00"
+            var repeat_params = activity.repeat_params;
+            activity.repeat_params = []
+            if(activity.length == 1){
+                repeat_params.map(function(item) {
+                    activity.repeat_params.push(parseInt(item));
+                });
+            }else{
+                repeat_params.toString().split(",").map(function(item) {
+                    activity.repeat_params.push(parseInt(item));
+                });
+            }
+            activity.repeat_params = {"days_of_week":activity.repeat_params}
+            activity.start_date = $('#update_activity_start_date').val()
+            activity.end_date = $('#update_activity_end_date').val()
+            activity.activity_type_desc_list = vm.update.activity.activity_type_desc_list.toString();
+
+            return updateActivity(vm.update.id , activity)
+        })
+        .then(function(result){
+            location.reload(); 
+            //console.log(result)
         })
         
 
         //$('#updateModal').modal('close');
     }
 
-    function addResidentDetails(){
+    function addResidentDetails(e){
+        e.originalEvent.stopPropagation();
         $q.when()
         .then(function(){
             //console.log(vm.add.resident.project)
@@ -426,12 +483,12 @@ angular.module('AttendanceCtrl', [])
             return addResident(vm.add.resident)
         })
         .then(function(result){
-            console.log(result)
+            location.reload(); 
         })
     }
 
-    function updateResidentDetails(){
-        
+    function updateResidentDetails(e){
+        e.originalEvent.stopPropagation();
         $q.when()
         .then(function(){
             
@@ -443,11 +500,13 @@ angular.module('AttendanceCtrl', [])
             return updateResident(vm.update.id , vm.update.resident)
         })
         .then(function(result){
-            console.log(result)
+            $('#updateModal').modal('close');
+            location.reload(); 
+  
         })
         
 
-        $('#updateModal').modal('close');
+        
     }
 
     function deleteAttendance(){

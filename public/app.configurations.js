@@ -21,7 +21,7 @@ angular.module('appConfigurations', [])
 })
 
 .value('digitalOceanAPI', {
-    'url': 'http://aurora.hxtan.info'
+    'url': 'https://aurora.hxtan.info'
 })
 
 .value('APIToken', {
