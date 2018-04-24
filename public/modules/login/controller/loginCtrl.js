@@ -36,10 +36,10 @@ angular.module('LoginCtrl', [])
         }
 
         LService.login(params, function (result) {
-            console.log(result.token)
             if (result.token) {
                 $http.defaults.headers.common.Authorization = 'Token ' + result.token;
                 LService.getUserRole(function (role) {
+                    console.log(role)
                     document.getElementById("body_content").setAttribute('class', '');
                     document.getElementById("navbar").style.visibility = "visible";
                     localStorage.currentUserToken = 'Token ' + result.token;

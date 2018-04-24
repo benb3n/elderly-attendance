@@ -1,6 +1,6 @@
 angular.module('RealTimeService', [])
 
-.factory('RTService', function($http, $q, digitalOceanAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('RTService', function($http, $q, digitalOceanAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken, RealTimeThreshold) {
 
     var service = {};
     service.getSensorReadings = getSensorReadings;
@@ -39,12 +39,11 @@ angular.module('RealTimeService', [])
      
     }
 
-    function getAllResidents(project_prefix, page_size, callback){
+    function getAllResidents(project_prefix, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
         $http.get(digitalOceanAPI.url + '/api/v1/manifest_user/participant/',{
             params: {
                 project_prefix: project_prefix,
-                page_size: page_size
             }
         })
         .then(
@@ -52,13 +51,13 @@ angular.module('RealTimeService', [])
             function(){ callback(false) }
         );
     }
+    
 
-    function getAllCenters(project_prefix, page_size, callback){
+    function getAllCenters(project_prefix, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
         $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/center/',{
             params: {
-                project_prefix: project_prefix,
-                page_size: page_size
+                project_prefix: project_prefix
             }
         })
         .then(
@@ -67,15 +66,14 @@ angular.module('RealTimeService', [])
         );
     }
 
-    function getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, page_size, callback){
+    function getAllCentersActivity(project_prefix, center_code_name, start_date, end_date, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
         $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centeractivity/',{
             params: {
                 project_prefix: project_prefix,
                 center_code_name: center_code_name,
                 start_date: start_date,
-                end_date: end_date,
-                page_size: page_size
+                end_date: end_date
             }
         })
         .then(
@@ -86,16 +84,19 @@ angular.module('RealTimeService', [])
 
     function getCurrentAttendees(project_prefix, center_code_name, start_date, end_date, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centercurrentattendee/',{
-            params: {
-                project_prefix: project_prefix,
-                center_code_name: center_code_name,
-                start_datetime: start_date,
-                end_datetime: end_date
-            }
-        })
+        var params = {
+            project_prefix: project_prefix,
+            center_code_name: center_code_name,
+            start_datetime: start_date,
+            end_datetime: end_date,
+            recent_threshold_min: 20 //RealTimeThreshold.recent_threshold_min,
+        }
+        console.log(params)
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/currentattendees/', {params: params})
         .then(
-            function(result){ callback(result.data) },
+            function(result){ 
+                console.log(result)
+                callback(result.data) },
             function(){ callback(false) }
         );
     }

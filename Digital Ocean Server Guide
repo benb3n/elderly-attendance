@@ -1,0 +1,17 @@
+1. Server Installation
+apt-get install nodejs
+cd /var/www
+git clone
+npm install -g pm2
+
+2. Re deploy app for new updates
+ssh benedict@aurora.hxtan.info
+cd /var/www/ntuc-frontend/
+pm2 stop <id> (most like 0)
+git pull
+pm2 start app.js
+
+3. Show app details
+pm2 show 0
+
+

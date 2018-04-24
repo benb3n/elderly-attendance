@@ -28,3 +28,7 @@ angular.module('appConfigurations', [])
     'token': 'Token b2f2c8bd87dff8fa0fb1c2fc24b29f9c551bc21c'
 })
 
+.value('RealTimeThreshold', {
+    'recent_threshold_min': '20'
+})
+

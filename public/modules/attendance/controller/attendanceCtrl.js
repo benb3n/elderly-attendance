@@ -81,7 +81,7 @@ angular.module('AttendanceCtrl', [])
             vm.data.all_residents = result;
             console.log("resident", result)
             result.results.forEach(function(value, index){
-                vm.data.all_residents_by_resident_index[value.resident_index] = value;
+                vm.data.all_residents_by_resident_index[value.id] = value;
             })
             
             $('#resident_table').DataTable({
@@ -315,39 +315,42 @@ angular.module('AttendanceCtrl', [])
                 $('#deleteModal').modal();
                 $('#deleteModal').modal('open');
 
-            } );
+            } );*/
          
             
             vm.display = {
-                centers: [
+                /*centers: [
                     {name:"6901", value:6901},
                     {name:"6902", value:6902},
                     {name:"6903", value:6903}
-                ],
+                ],*/
                 status:[
                     {name: "Present", value: "Present"},
                     {name: "Absent", value: "Absent"}
                 ]
-            }*/
-            //return getAllResidentsAlerts(vm.api.project, vm.api.center_code_name, vm.selectedDays, vm.api.all_activity_count)
+            }
+            var start_date = '2018-04-21'
+            var end_date= '2018-05-01'
+
+            return getAllResidentsAlerts(vm.api.project_prefix, vm.selectedCenter, start_date, end_date)
         })
         .then(function(result){
-            /*console.log("alerts", result)
+            console.log("alerts", result)
 
             vm.display.attendance_alert = []
 
             result.results.forEach(function(value , index){
                 vm.display.attendance_alert.push({
-                    name: value.resident_list,
+                    name: vm.data.all_residents_by_resident_index[value.id].name_first,
                     image: "https://openclipart.org/download/247319/abstract-user-flat-3.svg",
                     //course: "Physical Activities",
-                    last_seen: moment(new Date()).diff(moment(value.gw_timestamp), 'days') + "days" ,
-                    value: moment(new Date()).diff(moment(value.gw_timestamp), 'days') 
+                    last_seen: moment(new Date()).diff(moment(value.modified_timestamp), 'days') + "days" ,
+                    value: moment(new Date()).diff(moment(value.modified_timestamp), 'days') 
                 })
             })
             
 
-            vm.display.attendance_alert.sort(compareCount)*/
+            vm.display.attendance_alert.sort(compareCount)
 
             vm.alertLoading = false;
             vm.loading = false;
@@ -607,12 +610,12 @@ angular.module('AttendanceCtrl', [])
         });
         return _defer.promise;
     }
-    function getAllResidentsAlerts (project_prefix, center_code_name, days, page_size) { 
+    function getAllResidentsAlerts (project_prefix, center_code_name, start_date, end_date) { 
         var params = {
             project_prefix: project_prefix,
             center_code_name: center_code_name,
-            days: days,
-            page_size: page_size
+            start_date: start_date,
+            end_date: end_date
         }
         var _defer = $q.defer();
         AService.getAllResidentsAlerts(params, function (result) {

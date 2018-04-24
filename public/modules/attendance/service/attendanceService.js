@@ -89,7 +89,7 @@ angular.module('AttendanceService', [])
 
     function getAllResidentsAlerts(params, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centerattendee/', {
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centerattendance/', {
             params: params
         })
         .then(

@@ -777,7 +777,7 @@ angular.module('HistoricalDirective', [])
               .attr("height", height + margin.top + margin.bottom)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+            
             //Creates the xScale
             var xScale = d3.scale.linear()
               .range([0,width]);
