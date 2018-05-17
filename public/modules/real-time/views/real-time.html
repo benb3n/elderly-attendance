@@ -7,6 +7,7 @@
           <i class="material-icons prefix">store</i>
           <select ng-model="rt.selectedCenter">
             <option value= "" disabled selected>Select Center</option>
+            <!--<option value={{center.value}} ng-repeat="center in rt.display.centers">{{center.name}}</option>-->
             <option value={{center.value}} ng-repeat="center in rt.display.centers">{{center.name}}</option>
           </select>
           <label>Center</label>
@@ -14,7 +15,7 @@
         <div class="input-field col s12 m3">
           <i class="material-icons prefix">description</i>
           <select multiple ng-model="rt.selectedCourse">
-            <option value = "" disabled selected>Select Course</option>
+            <option value = "" disabled selected>Select Activity</option>
             <option value={{course.value}} ng-repeat="course in rt.display.activity">{{course.name}}</option>
           </select>
           <label>Activity</label>
@@ -40,16 +41,16 @@
     <!-- CONTENT -->
     <div ng-if="rt.status.no_data" class="row">
       <div class="col s12" style="color:#b71c1c; font-size:20px; text-align:center">
-        No Data Avaliable in the last 10 minutes</div>
+        No Data Avaliable in the last {{rt.api.time_limit_threshold}} minutes</div>
       </div>
     </div>
     
     <div class="row">
       <div ng-repeat="person in rt.display.elderly_attendance">
         <div class="col s6 m3 l2 animated fadeIn">
-          <div ng-class="{'card card-profile card-red': person.recent_status == '2', 'card card-profile card-green': person.recent_status == '1', 'card card-profile card-orange': person.recent_status == '0'}">
+          <div ng-class="{'card card-profile card-red': person.recent == '2', 'card card-profile card-green': person.recent == '1', 'card card-profile card-orange': person.recent == '0'}">
             <div class="card-profile-avatar-edit">
-              <a class="modal-trigger" data-target="updateModal" style="margin-right  :10px !important" ng-click="rt.refresh(person.resident_index)">
+              <a class="modal-trigger" data-target="updateModal" style="margin-right  :10px !important" ng-click="rt.refresh(person.id)">
                 <img src={{person.image}} style="cursor: pointer"></img>
                 <i class="material-icons">edit</i>
               </a>
@@ -67,7 +68,7 @@
     <!-- Update Modal -->
     <div id="updateModal" class="modal modal-fixed-footer ">
       <div class="modal-content">
-        <h4>Update Elderly Attendace - {{rt.display.update_modal.resident_name}}</h4>
+        <h4>Update Elderly Attendance - {{rt.display.update_modal.resident_name}}</h4>
 
         <!--<div class="input-field col s12">
           <i class="material-icons prefix">account_circle</i>
@@ -84,15 +85,17 @@
           <i class="material-icons prefix">access_time</i>
           <select multiple ng-model="rt.update.status">
             <option value = "" disabled selected>Select Time Slots</option>
-            <option value="0800-0830">8am to 8.30am</option>
-            <option value="0830-0900">8.30am to 9am</option>
-            <option value="0900-0930">9am to 9.30am</option>
-            <option value="0930-1000">9.30am to 10am</option>
-            <option value="1000-1030">10am to 10.30am</option>
-            <option value="1030-1100">10.30am to 11am</option>
-            <option value="1100-1130">11am to 11.30am</option>
-            <option value="1100-1130">11.30am to 12:00pm</option>
-            <option value="1100-1130">12.00am to 12:30pm</option>
+            <option value="08:00-08:30">8am to 8.30am</option>
+            <option value="08:30-09:00">8.30am to 9am</option>
+            <option value="09:00-09:30">9am to 9.30am</option>
+            <option value="09:30-10:00">9.30am to 10am</option>
+            <option value="10:00-10:30">10am to 10.30am</option>
+            <option value="10:30-11:00">10.30am to 11am</option>
+            <option value="11:00-11:30">11am to 11.30am</option>
+            <option value="11:00-11:30">11.30am to 12:00pm</option>
+            <option value="11:00-11:30">12.00am to 12:30pm</option>
+            <option value="22:00-22:30">10.00pm to 10:30pm</option>
+            <option value="23:00-23:30">11.30pm to 11:00pm</option>
           </select>
           <label>Time Slots</label>
         </div>

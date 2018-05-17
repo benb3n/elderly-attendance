@@ -1,5 +1,5 @@
 angular.module('RealTimeCtrl', [])
-.controller('RealTimeController', function ($scope, $q, $timeout, RTService) {
+.controller('RealTimeController', function ($scope, $q, $timeout, $rootScope, RTService) {
     var vm = this;
     vm.api = {
         project: 3,
@@ -7,7 +7,8 @@ angular.module('RealTimeCtrl', [])
         center_code_name : 'smu-4048',
         all_activity_count: 5000,
         all_device_count: 3000,
-        latest_sensor_reading_count: 1000
+        latest_sensor_reading_count: 1000,
+        time_limit_threshold : 20
     }
 
 
@@ -21,6 +22,7 @@ angular.module('RealTimeCtrl', [])
             });
         $('select').material_select();
         $('.modal').modal();
+
     });
 
     /***************
@@ -127,19 +129,30 @@ angular.module('RealTimeCtrl', [])
             vm.data.all_residents = result;
             console.log("resident", result)
             result.results.forEach(function(value, index){
-                vm.data.all_residents_by_resident_index[value.resident_index] = value;
+                vm.data.all_residents_by_resident_index[value.project_prefix + value.raw_index] = value;
             })
             return getAllCenters(vm.api.project_prefix)
         })
         .then(function(result){
             vm.data.all_centers = result;
-            console.log("centers", result)
-            vm.selectedCenter = result.results[0].code_name
-            //vm.selectedGwDevice = result.results[0].device_list.split("; ")
             result.results.forEach(function(value, index){
                 vm.data.all_centers_by_center_code[value.code_name] = value;
-                vm.display.centers.push({name: value.code_name, value: value.code_name})
             })
+
+            var project_prefix = JSON.parse(localStorage["projectprefix"]);
+            vm.data.access_list_centers = project_prefix[0].code_name
+            console.log("centers", vm.data.all_centers)
+            vm.selectedCenter = vm.data.access_list_centers[0]
+            vm.data.access_list_centers.forEach(function(value, index){
+                vm.display.centers.push({name: value, value: value})
+            })
+
+            /*vm.selectedCenter = vm.data.all_centers[0]
+            vm.data.all_centers.forEach(function(value, index){
+                vm.data.all_centers_by_center_code[value.code_name] = value;
+                vm.display.centers.push({name: value.code_name, value: value.code_name})
+            })*/
+
             generateRealTimeData();
         })
         /*.then(function(result){
@@ -163,14 +176,11 @@ angular.module('RealTimeCtrl', [])
         .then(function(){
 
         })*/
-
-
     }
-
     function generateRealTimeData(){
-        var end_datetime = moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
-        var start_datetime = moment('2018-03-01').subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
-        var start_date = moment('2018-03-01').subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
+        var end_datetime =  moment(new Date()).format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
+        var start_datetime = moment(new Date()).subtract(vm.api.time_limit_threshold, "minutes").format("YYYY-MM-DDTHH:mm:ss") //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DDTHH:mm:ss") //2017-06-01T10:00:00
+        var start_date = moment(new Date()).subtract(vm.api.time_limit_threshold, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
         var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD")
 
         $q.when()
@@ -179,14 +189,15 @@ angular.module('RealTimeCtrl', [])
             return getAllCentersActivity(vm.api.project_prefix, vm.selectedCenter, start_date, end_date)
         })
         .then(function(result){
-            vm.data.all_centers_activity = result
+            vm.display.activity = []
+            vm.data.all_centers_activity = result 
             console.log("activity" , result)
             result.results.forEach(function(value, index){
                 vm.data.all_centers_activity_by_id[value.id] = value;
-                vm.display.activity.push({name: value.activity_desc, value: value.id})
+                vm.display.activity.push({name: value.desc, value: value.id})
             })
 
-            return getCurrentAttendees(vm.api.project_prefix, vm.selectedCenter, start_datetime, end_datetime);
+            return getCurrentAttendees(vm.api.project_prefix, vm.selectedCenter, start_datetime, end_datetime, vm.api.time_limit_threshold);
         })
         .then(function(result){
             console.log('readings' , result)
@@ -199,22 +210,25 @@ angular.module('RealTimeCtrl', [])
                 vm.status.no_data = false;
                 vm.display.elderly_attendance = [];
                 vm.display.elderly_attendance_backup = [];
-                result.data.forEach(function(value, index){
-                    vm.data.real_time_activity_reading_hash[value.resident_index] = value;
+
+                result.forEach(function(value, index){
+                    vm.data.real_time_activity_reading_hash[value.index] = value;
                 })
 
                 vm.data.all_residents.results.forEach(function(value, index){
+                    
+                    var index = value.project_prefix + value.raw_index;
                     var obj = {
-                        resident_index: value.resident_index,
-                        id: vm.data.all_residents_by_resident_index[value.resident_index].id,
-                        gender: vm.data.all_residents_by_resident_index[value.resident_index].gender,
+                        //resident_index: value.display_name,
+                        id: vm.data.all_residents_by_resident_index[index].id,
+                        gender: vm.data.all_residents_by_resident_index[index].gender,
                         display_name: value.display_name,
-                        device_id: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? vm.data.real_time_activity_reading_hash[value.resident_index].device_id : "",
+                        device_id: (vm.data.real_time_activity_reading_hash[index]) ? vm.data.real_time_activity_reading_hash[index].device_id : "",
                         image: (value.profile_picture!= null) ? value.profile_picture : "https://openclipart.org/download/247319/abstract-user-flat-3.svg",
-                        status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? "Present And Left" : "Present") : "Absent",
-                        recent_status: (vm.data.real_time_activity_reading_hash[value.resident_index]) ? ((vm.data.real_time_activity_reading_hash[value.resident_index].recent_status == 0) ? ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status : ""+vm.data.real_time_activity_reading_hash[value.resident_index].recent_status) : "2"
+                        status: (vm.data.real_time_activity_reading_hash[index]) ? ((vm.data.real_time_activity_reading_hash[index].recent == 0) ? "Present And Left" : "Present") : "Absent",
+                        recent: (vm.data.real_time_activity_reading_hash[index]) ? ((vm.data.real_time_activity_reading_hash[index].recent == 0) ? ""+vm.data.real_time_activity_reading_hash[index].recent : ""+vm.data.real_time_activity_reading_hash[index].recent) : "2"
                     }
-                    vm.data.elderly_attendance_hash[value.resident_index] = obj
+                    vm.data.elderly_attendance_hash[value.id] = obj
                     vm.display.elderly_attendance.push(obj)
                 })
 
@@ -230,8 +244,6 @@ angular.module('RealTimeCtrl', [])
         })
 
     }
-
-
 
     /**********************
         BUTTON FUNCTION
@@ -252,14 +264,67 @@ angular.module('RealTimeCtrl', [])
         var $input = $('.datepicker').pickadate()
         var picker = $input.pickadate('picker')
         picker.set('select', new Date())
+
+        vm.display.update_modal.id = resident_index;
         vm.display.update_modal.resident_name = vm.data.elderly_attendance_hash[resident_index].display_name
 
-        $('.modal').modal();
-        $('#updateModal').modal('open');
+        vm.update.update_check = false
+        $q.when()
+        .then(function(){
+            var current_date = moment(new Date()).format("YYYY-MM-DD")
+            return viewAttendance(vm.api.project_prefix, vm.api.center_code_name, current_date, current_date)
+        })
+        .then(function(result){
+            if(result.results.length > 0){
+                vm.update.update_check = true
+                vm.update.update_id = resident_index
+                result.results.forEach(function(value, index){
+                    if(value.participant == resident_index){
+                        var timing = value.timing_list.substring(1, value.timing_list.length - 1)
+                        timing = timing.replace(/\s/g,'')
+                        timing = timing.split(",")
+                        vm.update.status = timing
+                    }
+                })
+            }
+            
+            //$('.modal').modal();
+            //$('#updateModal').modal('open');
+
+            $timeout(function(){
+                $('select').material_select();
+                Materialize.updateTextFields();
+           })
+        })
+
+        
     }
     function updateAttendance(){
-        console.log(vm.update)
-        $('#updateModal').modal('close');
+        if(vm.update.update_check){
+            var updated_date = moment($('#update_date').val()).format("YYYY-MM-DD")
+            $q.when()
+            .then(function(){
+                return editAttendance(vm.data.all_centers_by_center_code[vm.selectedCenter].id , vm.display.update_modal.id , updated_date, vm.update.status, vm.update.update_id)
+            })
+            .then(function(result){
+                console.log(result)
+                vm.update.update_check = false
+                $('#updateModal').modal('close')
+            })
+        }else{
+            var created_date = moment($('#update_date').val()).format("YYYY-MM-DD")
+            $q.when()
+            .then(function(){
+                return createAttendance(vm.data.all_centers_by_center_code[vm.selectedCenter].id, vm.display.update_modal.id , created_date, vm.update.status)
+            })
+            .then(function(result){
+                console.log(result)
+                $('#updateModal').modal('close');
+            })
+        }
+        
+
+        
     }
 
     /********************
@@ -326,15 +391,72 @@ angular.module('RealTimeCtrl', [])
         return _defer.promise;
     }
 
-    function getCurrentAttendees (project_prefix, center_code_name, start_datetime, end_datetime) {
+    function getCurrentAttendees (project_prefix, center_code_name, start_datetime, end_datetime, recent_threshold_min) {
         var _defer = $q.defer();
-        RTService.getCurrentAttendees(project_prefix, center_code_name, start_datetime, end_datetime, function (result) {
+        RTService.getCurrentAttendees(project_prefix, center_code_name, start_datetime, end_datetime, recent_threshold_min, function (result) {
             if (result) {
                 _defer.resolve(result)
             } else {
                 _defer.reject();
             }
         });
+        return _defer.promise;
+    }
+
+    function createAttendance(center, participant, attendance_date, timing_list){
+        var _defer = $q.defer();
+        var params = {
+            center: center,
+            participant: participant,
+            attendance_date: attendance_date,
+            timing_list:  "22:30-23:00,23:00:23:30,23:30:00:00" //timing_list 
+        }
+        console.log(params)
+        RTService.createAttendance(params, function(result){
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        })
+        return _defer.promise;
+    }
+
+    function editAttendance(center, participant, attendance_date, timing_list, id){
+        var _defer = $q.defer();
+        var params = {
+            center: center,
+            participant: participant,
+            attendance_date: attendance_date,
+            timing_list:  "22:30-23:00,23:00:23:30,23:30:00:00" 
+        }
+        console.log(params)
+        RTService.editAttendance(id, params, function(result){
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        })
+        return _defer.promise;
+    }
+
+    function viewAttendance(project_prefix, center_code_name, start_date, end_date){
+        var _defer = $q.defer();
+        var params = {
+            project_prefix: project_prefix,
+            center_code_name: center_code_name,
+            start_date: start_date,
+            end_date: end_date
+        }
+        console.log(params)
+        RTService.viewAttendance(params, function(result){
+            if (result) {
+                _defer.resolve(result)
+            } else {
+                _defer.reject();
+            }
+        })
         return _defer.promise;
     }
 

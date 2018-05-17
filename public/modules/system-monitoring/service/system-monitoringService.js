@@ -9,7 +9,7 @@ angular.module('SystemMonitoringService', [])
     service.getAllCenters = getAllCenters;
     service.addDevice = addDevice;
     service.updateDevice = updateDevice;
-    service.getAlleviceMapping = getAlleviceMapping;
+    service.getAllDeviceMapping = getAllDeviceMapping;
     service.addDeviceMapping = addDeviceMapping;
     service.updateDeviceMapping = updateDeviceMapping;
 
@@ -38,7 +38,7 @@ angular.module('SystemMonitoringService', [])
             callback( (typeof error.data.non_field_errors == 'undefined')? false : error.data.non_field_errors[0]  )});
     }
 
-    function getAlleviceMapping(params, callback){
+    function getAllDeviceMapping(params, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
         $http.get(digitalOceanAPI.url + '/api/v1/manifest_device/devicelog/', params).then(
         function(result){ 

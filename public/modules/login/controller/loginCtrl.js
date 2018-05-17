@@ -1,5 +1,5 @@
 angular.module('LoginCtrl', [])
-.controller('LoginController', function ($scope, $location, $q, $http, $timeout, LService) {
+.controller('LoginController', function ($scope, $location, $q, $http, $timeout, $rootScope, LService) {
     document.getElementById("navbar").style.visibility = "hidden";
     document.getElementById("body_content").setAttribute('class', 'login');
 
@@ -39,19 +39,42 @@ angular.module('LoginCtrl', [])
             if (result.token) {
                 $http.defaults.headers.common.Authorization = 'Token ' + result.token;
                 LService.getUserRole(function (role) {
-                    console.log(role)
-                    document.getElementById("body_content").setAttribute('class', '');
-                    document.getElementById("navbar").style.visibility = "visible";
-                    localStorage.currentUserToken = 'Token ' + result.token;
-                    localStorage.currentUser =  vm.username,
-                    localStorage.currentCenterCode = 'SMU',
-                    localStorage.currentRole = role;
+                    if(role){
+                        LService.getCenterAccessList(function(center_access_list){
+                            var output = new Array();
 
-                    //console.log(localStorage.currentUser + " , " + localStorage.currentUserToken + " , " +
-                    //localStorage.currentCenterCode + " , " + localStorage.currentRole)
+                            center_access_list.results.forEach(function(value, indrx){
+                                var project = {project_prefix: value.project_prefix, code_name: value.code_name}
+                                var existing = output.filter(function(v, i) {
+                                    return v.project_prefix == project.project_prefix;
+                                  });
+                                  if (existing.length) {
+                                    var existingIndex = output.indexOf(existing[0]);
+                                    output[existingIndex].value = output[existingIndex].value.concat(project.code_name);
+                                  } else {
+                                    if (typeof project.code_name == 'string')
+                                      project.code_name = [project.code_name];
+                                    output.push(project);
+                                  }
+                            })
 
-                    Materialize.toast('Login Successful', 3000, 'rounded green');
-                    $location.path('/home');
+                            document.getElementById("body_content").setAttribute('class', '');
+                            document.getElementById("navbar").style.visibility = "visible";
+                            localStorage.currentUserToken = 'Token ' + result.token;
+                            localStorage.currentUser =  vm.username,
+                            localStorage.currentCenterCode = 'SMU',
+                            localStorage.currentRole = role;
+                            localStorage["projectprefix"] = JSON.stringify(output);
+
+                            //console.log(role)
+                            //console.log(localStorage.currentUser + " , " + localStorage.currentUserToken + " , " +
+                            //localStorage.currentCenterCode + " , " + localStorage.currentRole)
+
+                            Materialize.toast('Welcome back ' + vm.username + '!!', 3000, 'rounded green');
+                            $location.path('/home');
+                        })
+                    }
+                    
                 })
             } else {
                 console.log("ERROR")

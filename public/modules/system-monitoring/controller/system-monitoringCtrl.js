@@ -143,7 +143,7 @@ angular.module('SystemMonitoringCtrl', [])
             result.results.forEach(function(value, index){
                 vm.data.all_centers_by_center_code[value.code_name] = value;
             })
-            return getAllDevices(vm.api.project_prefix);
+            return getAllDevices(vm.api.project_prefix, 'beacon');
         })
         .then(function(result){
             console.log("devices", result)
@@ -172,7 +172,7 @@ angular.module('SystemMonitoringCtrl', [])
             vm.display.system_monitoring_device.sort(compareCount)
             vm.display.system_monitoring_device_backup = angular.copy(vm.display.system_monitoring_device)           
 
-            return getAlleviceMapping({project:vm.api.project})
+            return getAllDeviceMapping({project:vm.api.project})
         })
         .then(function(result){
             console.log('mapping', result)
@@ -317,7 +317,7 @@ angular.module('SystemMonitoringCtrl', [])
         })
         .then(function(result){
             //console.log(result)
-            location.reload(); 
+            //location.reload(); 
         })
     }
 
@@ -362,9 +362,9 @@ angular.module('SystemMonitoringCtrl', [])
     /******************
         WEB SERVICE 
     ******************/
-   function getAlleviceMapping (params) { 
+   function getAllDeviceMapping (params) { 
     var _defer = $q.defer();
-    SMService.getAlleviceMapping(params, function (result) {
+    SMService.getAllDeviceMapping(params, function (result) {
         if (result) {
             _defer.resolve(result)
         } else {
@@ -418,11 +418,11 @@ angular.module('SystemMonitoringCtrl', [])
         });
         return _defer.promise;
     }
-    function getAllDevices (project_prefix, page_size) { //url, _defer, overall
+    function getAllDevices (project_prefix, device_type) { //url, _defer, overall
         var _defer = $q.defer();
         var params = {
             project_prefix: project_prefix,
-            page_size: page_size
+            device_type: device_type
         }
         SMService.getAllDevices(params, function (result) {
             if (result) {

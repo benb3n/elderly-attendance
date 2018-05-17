@@ -9,9 +9,46 @@ angular.module('RealTimeService', [])
     service.getAllCenters = getAllCenters;
     service.getAllCentersActivity = getAllCentersActivity;
     service.getCurrentAttendees = getCurrentAttendees;
-    
+    service.createAttendance = createAttendance;
+    service.editAttendance = editAttendance;
+    service.viewAttendance = viewAttendance;
+
     return service;
     
+    function viewAttendance(params, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centerattendance/', {params:params})
+        .then(
+            function(result){ callback(result.data) },
+            function(error){ 
+                console.log(error)
+                callback(false) }
+        );
+        
+    }
+
+    function createAttendance(params, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.post(digitalOceanAPI.url + '/api/v1/manifest_center/centerattendance/create', params)
+        .then(
+            function(result){ callback(result.data) },
+            function(error){ 
+                console.log(error)
+                callback(false) }
+        ); 
+    }
+
+    function editAttendance(id, params, callback){
+        $http.defaults.headers.common.Authorization = localStorage.currentUserToken
+        $http.put(digitalOceanAPI.url + '/api/v1/manifest_center/centerattendance/'+ id +'/', params)
+        .then(
+            function(result){ callback(result.data) },
+            function(error){ 
+                console.log(error)
+                callback(false) }
+        ); 
+    }
+
     function getAllDevices(project_prefix, page_size, callback){
         /*var apiURL = "";
         if(typeof url != 'undefined'){
@@ -82,14 +119,14 @@ angular.module('RealTimeService', [])
         );
     }
 
-    function getCurrentAttendees(project_prefix, center_code_name, start_date, end_date, callback){
+    function getCurrentAttendees(project_prefix, center_code_name, start_date, end_date, recent_threshold_min, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
         var params = {
             project_prefix: project_prefix,
             center_code_name: center_code_name,
             start_datetime: start_date,
             end_datetime: end_date,
-            recent_threshold_min: 20 //RealTimeThreshold.recent_threshold_min,
+            recent_threshold_min: recent_threshold_min //RealTimeThreshold.recent_threshold_min,
         }
         console.log(params)
         $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/currentattendees/', {params: params})

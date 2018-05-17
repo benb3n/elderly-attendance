@@ -5,7 +5,7 @@ angular.module('LoginService', [])
     service.login = login;
     service.logout = logout;
     service.getUserRole = getUserRole;
-
+    service.getCenterAccessList = getCenterAccessList;
 
     return service;
     
@@ -33,7 +33,15 @@ angular.module('LoginService', [])
         );
     }
 
-    
+    function getCenterAccessList(callback){
+        $http.get(digitalOceanAPI.url + "/api/v1/manifest_center/center/access/", )
+        .then(
+            function(result){ 
+                callback(result.data) },
+            function(){ callback(false) }
+        );
+
+    }    
 
 })
   
