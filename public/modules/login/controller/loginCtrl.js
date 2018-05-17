@@ -57,13 +57,18 @@ angular.module('LoginCtrl', [])
                                     output.push(project);
                                   }
                             })
+                         
 
                             document.getElementById("body_content").setAttribute('class', '');
                             document.getElementById("navbar").style.visibility = "visible";
                             localStorage.currentUserToken = 'Token ' + result.token;
                             localStorage.currentUser =  vm.username,
-                            localStorage.currentCenterCode = 'SMU',
+                            localStorage.currentCenterCode = 'SMU'
+                            var index = role.indexOf(";") + 1
+                            role = role.substring(index).toLowerCase()
+                            console.log(role)
                             localStorage.currentRole = role;
+                            localStorage["role"] = role
                             localStorage["projectprefix"] = JSON.stringify(output);
 
                             //console.log(role)

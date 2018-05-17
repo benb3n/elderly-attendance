@@ -2,6 +2,7 @@ angular.module('AttendanceCtrl', [])
 .controller('AttendanceController', function ($scope, $q, $timeout, AService) {
     var vm = this;
     vm.api = {
+        role: localStorage["role"],
         project: 3,
         project_prefix: 'SMU',
         center_code_name : 'smu-office',
@@ -10,6 +11,9 @@ angular.module('AttendanceCtrl', [])
         latest_sensor_reading_count: 1000
     }
 
+    if(vm.api.role == 'staff'){
+        vm.edit_resident_status = true
+    }
 
     $(document).ready(function() {
         
@@ -341,7 +345,7 @@ angular.module('AttendanceCtrl', [])
 
             result.results.forEach(function(value , index){
                 vm.display.attendance_alert.push({
-                    name: vm.data.all_residents_by_resident_index[value.id].name_first,
+                    name: vm.data.all_residents_by_resident_index[value.participant].name_first,
                     image: "https://openclipart.org/download/247319/abstract-user-flat-3.svg",
                     //course: "Physical Activities",
                     last_seen: moment(new Date()).diff(moment(value.modified_timestamp), 'days') + "days" ,

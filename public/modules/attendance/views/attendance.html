@@ -3,7 +3,7 @@
         <div class="col s12">
             <ul class="tabs tabs-fixed-width">
                 <li class="tab col s3"><a class="active" href="#alert">Resident Alerts</a></li>
-                <li class="tab col s3"><a  href="#resident"> Resident</a></li>
+                <li class="tab col s3" ng-hide="attendance.edit_resident_status"><a  href="#resident"> Resident</a></li>
                 <!--<li class="tab col s3"><a href="#center">Centers</a></li>-->
                 <li class="tab col s3"><a  href="#activity">Center Activities</a></li>
             </ul>
@@ -50,7 +50,7 @@
         <!-- END OF ALERTS -->
 
         <!-- RESIDENT -->
-        <div id="resident" class="col s12">
+        <div id="resident" class="col s12"  ng-hide="attendance.edit_resident_status">
             <button class="btn-floating btn-small waves-effect waves-light modal-trigger" data-target="addResidentModal" id="add_resident_btn" ng-click="attendance.refresh();"><i class="material-icons">add</i></button>
             <table id="resident_table" class="table responsive-table display nowrap" style="width:100%" cellspacing="0"></table>
         </div>

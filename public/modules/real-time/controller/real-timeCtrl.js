@@ -74,7 +74,7 @@ angular.module('RealTimeCtrl', [])
     function applyEventTypeFilter(data){
         var result = [];
         vm.selectedStatus.forEach(function(value, index) {
-            result = result.concat(filterByAttr("recent_status", value, data));
+            result = result.concat(filterByAttr("recent", value, data));
         });
         return result;
     }
@@ -191,7 +191,7 @@ angular.module('RealTimeCtrl', [])
         .then(function(result){
             vm.display.activity = []
             vm.data.all_centers_activity = result 
-            console.log("activity" , result)
+            //console.log("activity" , result)
             result.results.forEach(function(value, index){
                 vm.data.all_centers_activity_by_id[value.id] = value;
                 vm.display.activity.push({name: value.desc, value: value.id})
@@ -200,7 +200,7 @@ angular.module('RealTimeCtrl', [])
             return getCurrentAttendees(vm.api.project_prefix, vm.selectedCenter, start_datetime, end_datetime, vm.api.time_limit_threshold);
         })
         .then(function(result){
-            console.log('readings' , result)
+            //console.log('readings' , result)
 
             if(result.length == 0){
                 vm.status.no_data = true;
@@ -216,7 +216,6 @@ angular.module('RealTimeCtrl', [])
                 })
 
                 vm.data.all_residents.results.forEach(function(value, index){
-                    
                     var index = value.project_prefix + value.raw_index;
                     var obj = {
                         //resident_index: value.display_name,
@@ -275,15 +274,16 @@ angular.module('RealTimeCtrl', [])
             return viewAttendance(vm.api.project_prefix, vm.api.center_code_name, current_date, current_date)
         })
         .then(function(result){
+            console.log(result)
             if(result.results.length > 0){
-                vm.update.update_check = true
-                vm.update.update_id = resident_index
                 result.results.forEach(function(value, index){
                     if(value.participant == resident_index){
+                        vm.update.update_id = value.id
                         var timing = value.timing_list.substring(1, value.timing_list.length - 1)
                         timing = timing.replace(/\s/g,'')
                         timing = timing.split(",")
                         vm.update.status = timing
+                        vm.update.update_check = true
                     }
                 })
             }
@@ -300,6 +300,7 @@ angular.module('RealTimeCtrl', [])
         
     }
     function updateAttendance(){
+        console.log(vm.update.update_check)
         if(vm.update.update_check){
             var updated_date = moment($('#update_date').val()).format("YYYY-MM-DD")
             $q.when()
@@ -409,7 +410,7 @@ angular.module('RealTimeCtrl', [])
             center: center,
             participant: participant,
             attendance_date: attendance_date,
-            timing_list:  "22:30-23:00,23:00:23:30,23:30:00:00" //timing_list 
+            timing_list:  JSON.stringify(timing_list).replace(/["']/g, "")
         }
         console.log(params)
         RTService.createAttendance(params, function(result){
@@ -428,7 +429,7 @@ angular.module('RealTimeCtrl', [])
             center: center,
             participant: participant,
             attendance_date: attendance_date,
-            timing_list:  "22:30-23:00,23:00:23:30,23:30:00:00" 
+            timing_list: JSON.stringify(timing_list).replace(/["']/g, "")
         }
         console.log(params)
         RTService.editAttendance(id, params, function(result){
