@@ -4,8 +4,9 @@ angular.module('AttendanceCtrl', [])
     vm.api = {
         role: localStorage["role"],
         project: 3,
-        project_prefix: 'SMU',
-        center_code_name : 'smu-office',
+        project_prefix: localStorage["project"] ,
+        center_code_name : localStorage["center"] ,
+        //center_code_name : 'smu-office',
         all_activity_count: 5000,
         all_device_count: 3000,
         latest_sensor_reading_count: 1000

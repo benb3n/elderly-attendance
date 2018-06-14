@@ -39,7 +39,6 @@ app.get('/*', function(req, res) {
 var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 var day_of_week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 app.post('/report', (req, res) => {
-	//console.log(req.body)
 
 	var workbook = new Excel.Workbook();
 	workbook.creator = 'iCity';
@@ -48,11 +47,73 @@ app.post('/report', (req, res) => {
 	workbook.modified = new Date();
 	workbook.lastPrinted = new Date();
 
-	var current_date = new Date("01/01/2018");
+	var current_date = new Date(); //new Date("01/01/2018");
+
+	
+
+	//DAILY ATTENDANCE
 	var worksheet = workbook.addWorksheet('Current Daily Attendance Taking');
-	worksheet.getCell('A1').value = 'Attendance for Date: ' + new Date();
+	worksheet.getCell('A1').value = 'Attendance for Date: ' + new Date().toLocaleDateString("en-US");
 
+	//DATA
+	var activities = req.body.center_activity
+	var daily_attendance = req.body.daily_reporting_table_data
+	console.log(daily_attendance)
 
+	var column_no = 1
+	var start_row = 3
+	var third_row = worksheet.getRow(3)
+
+	var num_of_sets = Math.ceil(daily_attendance.length / 55)
+	//console.log(num_of_sets)
+	var grid_col = Math.ceil(daily_attendance.length / 55) * (activities.length + 2)
+	//console.log(grid_col)
+
+	//draw all the grids
+	for(var i = start_row; i < 55; i++){
+		var row = worksheet.getRow(i);
+		applyBorder(row, grid_col)
+	}
+
+	//Set headers to the table
+	for(var num = 0; num < num_of_sets; num++){
+		var col = toColumnName(column_no)
+		if(num > 0){
+			worksheet.getCell(col+3).value = "No"
+			column_no++
+		}
+		col = toColumnName(column_no)
+		worksheet.getCell(col+3).value = "Unit No"
+		column_no++
+		col = toColumnName(column_no)
+		worksheet.getCell(col+3).value = "Name"
+		column_no++
+
+		//Add activities to header
+		for (i = 0; i < activities.length; i++){
+			col = toColumnName(column_no) + "3"
+			worksheet.getCell(col).value = activities[i]
+			column_no++;
+		}
+	}
+
+	//Populate the table with data
+	start_row = 4
+	for(var i  = 0; i < daily_attendance.length; i++){
+		fill_up_row_data(worksheet, start_row, daily_attendance[i])
+		start_row++;
+	}
+
+	worksheet.getCell("B60").value = "Total for the Day"
+	worksheet.getCell("B62").value = "(Mark 1 if present)"
+	worksheet.getCell("B62").fill = {
+		type: 'pattern',
+		pattern:'solid',
+		fgColor:{argb:'FFFFFF00'}
+	};
+	worksheet.getCell("B63").value = "est 225 persons restricted to 2 sided paper"
+
+	//MONTHLY ATTENDANCE
 	worksheet = workbook.addWorksheet('Monthly Attendance Reporting');
 
 	worksheet.getCell('A1').value = 'Monthly Attendance Reporting: ' + months[current_date.getMonth()] + " " + current_date.getFullYear();
@@ -95,7 +156,7 @@ app.post('/report', (req, res) => {
 
 		//Color all the sunday column red in the data
 		for(var col = 3; col < header_length; col++){
-			if(fourth_row.getCell(col).value == "Sun"){
+			if(fourth_row.getCell(col).value == "Sun"  ){
 				row.getCell(col).fill = {
 					type: 'pattern',
 					pattern:'solid',
@@ -193,7 +254,6 @@ function applyBorder(row, col_no){
 }
 
 function generate_data_ws(worksheet, no_of_days, row_no, current_date, data, header_count){
-	console.log(header_count)
 	if(row_no == 4){
 		var fourth_row_data = ['Month : ' + months[current_date.getMonth()] + " " + current_date.getFullYear(), , , , ,]
 		for(var i = 1; i <= no_of_days; i++){
@@ -233,7 +293,8 @@ function generate_data_ws(worksheet, no_of_days, row_no, current_date, data, hea
 
 			//Total Attendance of the day
 			var cell = ''+column_name + row_no;
-			worksheet.getCell(cell).value = { formula: "=SUM(" + column_name + "6:" + column_name +  row_no +")", result: data[i-1] };
+			worksheet.getCell(cell).value = data[i-1] 
+			//worksheet.getCell(cell).value = { formula: "=SUM(" + column_name + "6:" + column_name +  row_no +")", result: data[i-1] };
 
 			if(fourth_row.getCell(col_no).value == "Sun"){
 				var beforeCell = ''+column_name + (row_no-1);

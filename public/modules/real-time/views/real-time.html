@@ -39,6 +39,8 @@
     <!-- END OF FILTER -->
 
     <!-- CONTENT -->
+    <table id="real_time_table" class="table responsive-table display nowrap" style="width:100%" cellspacing="0"></table>
+
     <div ng-if="rt.status.no_data" class="row">
       <div class="col s12" style="color:#b71c1c; font-size:20px; text-align:center">
         No Data Avaliable in the last {{rt.api.time_limit_threshold}} minutes</div>
@@ -62,6 +64,8 @@
           </div>
         </div>
       </div>
+
+      
     </div>
     <!-- END OF CONTENT -->
 

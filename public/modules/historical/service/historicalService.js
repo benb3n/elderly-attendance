@@ -1,6 +1,6 @@
 angular.module('HistoricalService', [])
 
-.factory('HService', function($http, starlightAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
+.factory('HService', function($http, starlightAPI, digitalOceanAPI, sensorReadingAPI, systemMonitoringAPI, deviceAPI, APIToken) {
     var service = {};
     service.getSensorReadings = getSensorReadings;
     service.getAllDevices = getAllDevices;
@@ -12,11 +12,13 @@ angular.module('HistoricalService', [])
 
     return service;
     
-    function generateReport (monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, callback) { 
+    function generateReport (monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, center_activity, daily_reporting_table_data, callback) { 
         $http.post("/report", {
             monthly_table: monthly_reporting_table_data, 
             monthly_table_total: monthly_reporting_table_data_total_attendance,
-            monthly_legend: monthly_reporting_table_legend_data
+            monthly_legend: monthly_reporting_table_legend_data,
+            center_activity: center_activity,
+            daily_reporting_table_data: daily_reporting_table_data
         })
         .then(
             function(result){            
@@ -44,7 +46,7 @@ angular.module('HistoricalService', [])
 
     function getAllCenterAttendanceInterval(project_prefix, center_code_name, start_datetime, end_datetime, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken;
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centerattendanceinterval/',
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centerattendanceinterval/',
             {
                 params: {
                     project_prefix : project_prefix,
@@ -63,7 +65,7 @@ angular.module('HistoricalService', [])
 
     function getCenterActivities(project_prefix, center_code_name, start_date, end_date, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken;
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/centeractivity/',
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/centeractivity/',
         //https://dev-starlight.icitylab.com/api/v1/manifest_center/centeractivity/?end_date=2017-12-31
             {
                 /*headers: {
@@ -86,7 +88,7 @@ angular.module('HistoricalService', [])
 
     function getAllCenters(project_prefix, page_size, callback){
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_center/center/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/center/',{
             params: {
                 project_prefix: project_prefix,
                 page_size: page_size
@@ -99,11 +101,11 @@ angular.module('HistoricalService', [])
     }
     
     function getAllResidents(project_prefix, page_size, callback){
+        //console.log("HAHAS")
         $http.defaults.headers.common.Authorization = localStorage.currentUserToken
-        $http.get(starlightAPI.url + '/api/v1/manifest_user/resident/',{
+        $http.get(digitalOceanAPI.url + '/api/v1/manifest_user/participant/',{
             params: {
-                project_prefix: project_prefix,
-                page_size: page_size
+                project_prefix: project_prefix
             }
         })
         .then(
@@ -119,7 +121,7 @@ angular.module('HistoricalService', [])
         }else{
             apiURL = sensorReadingAPI.url;
         }*/
-        $http.get(sensorReadingAPI.url,
+        $http.get(digitalOceanAPI.url,
             {
                 headers: {
                     "Authorization": APIToken.token

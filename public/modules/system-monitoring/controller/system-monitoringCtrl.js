@@ -3,7 +3,8 @@ angular.module('SystemMonitoringCtrl', [])
     var vm = this;
     vm.api = {
         project: 3,
-        project_prefix: 'SMU',
+        project_prefix: localStorage["project"] ,
+        center_code_name : localStorage["center"] ,
         system_monitoring_device_type: "battery_voltage",
         center: 'gl15',//localStorage.getItem('center_code_name'),
         all_device_count: 1000,

@@ -2,11 +2,12 @@ angular.module('HistoricalCtrl', [])
 .controller('HistoricalController', function ($scope, $q, $timeout, HService, FileSaver, Blob) {
     var vm = this;
     vm.api = {
-        project: 'mp',
-        center_code_name : 'gl15',
-        all_activity_count: 5000,
-        all_device_count: 3000,
-        latest_sensor_reading_count: 1000
+      project_prefix: localStorage["project"] ,
+      center_code_name : localStorage["center"] ,
+      all_activity_count: 5000,
+      all_device_count: 3000,
+      latest_sensor_reading_count: 1000,
+      min_amount_spent: 5
     }
 
     $(document).ready(function() {
@@ -39,8 +40,6 @@ angular.module('HistoricalCtrl', [])
       $('select').material_select();
       Materialize.updateTextFields();
     });
-
-
 
   /***************
       WATCHERS
@@ -153,6 +152,9 @@ angular.module('HistoricalCtrl', [])
 
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_person,vm.selectedEndDate_person);
     //callSensorReadings(vm.selectedCenter,vm.selectedStartDate_courses,vm.selectedEndDate_courses);
+    vm.report = {
+      activity: []
+    }
 
     vm.data = {
       all_residents:[],
@@ -221,7 +223,7 @@ angular.module('HistoricalCtrl', [])
       vm.data.all_centers = result;
       console.log("centers", result)
       vm.selectedCenter = result.results[0].code_name
-      vm.selectedGwDevice = result.results[0].device_list.split("; ")
+      //vm.selectedGwDevice = result.results[0].device_list.split("; ")
       result.results.forEach(function(value, index){
         vm.data.all_centers_by_center_code[value.code_name] = value;
         vm.display.centers.push({name: value.code_name, value: value.code_name})
@@ -239,16 +241,16 @@ angular.module('HistoricalCtrl', [])
     var start_date = moment(start_date_time).subtract(10, "minutes").format("YYYY-MM-DD")  //moment(end_datetime).subtract(10, "minutes").format("YYYY-MM-DD")
     var end_date =  moment(new Date()).format("YYYY-MM-DD") //2017-06-01T10:00:00 //moment(new Date()).format("YYYY-MM-DD")
 
-
     $q.when()
     .then(function(){
       return getCenterActivities(vm.api.project, vm.api.center_code_name, start_date, end_date);
     })
     .then(function(result){
+      //console.log(result)
       result.results.forEach(function(value, index){
-        var start_index = value.repeat_params.indexOf("[") + 1;
-        var end_index = value.repeat_params.indexOf("]");
-        value.repeat_days_of_week = value.repeat_params.substring(start_index, end_index)
+        //var start_index = value.repeat_params.days_of_week.indexOf("[") + 1;
+        //var end_index = value.repeat_params.days_of_week.indexOf("]");
+        value.repeat_days_of_week = value.repeat_params.days_of_week //.substring(start_index, end_index)
         value.start_hour = value.start_time.substring(0,2)
         value.start_minute = value.start_time.substring(3,5)
         value.end_hour = value.end_time.substring(0,2)
@@ -256,17 +258,43 @@ angular.module('HistoricalCtrl', [])
         vm.data.all_centers_activity.push(value)
         vm.data.all_centers_activity_by_id[value.id] = value;
         vm.display.activity.push({name: value.activity_desc, value: value.id})
-      })
-      console.log("activity" , vm.data.all_centers_activity)
 
-      return getAllCenterAttendanceInterval(vm.api.project, vm.api.center_code_name, start_datetime, end_datetime );
+        //Get array of activities for report
+        vm.report.activity.push(value.desc)
+      })
+
+      console.log("activity" , vm.data.all_centers_activity)
+      //return getAllCenterAttendanceInterval(vm.api.project, vm.api.center_code_name, start_datetime, end_datetime );
     })
     .then(function(result){
+   
+      var result = {"project_prefix": "smu", "start_datetime": "2018-05-22T00:00:00", "end_datetime": "2017-05-22T00:00:00", "num_errors": 0, "data_length": 1, 
+      "data": [
+        {
+          "resident_display_name": "Ali bin HUSSAIN", 
+          "start_timestamp": "2018-05-22T09:55:37", 
+          "time_spent_sec": 90.0, 
+          "resident_index": "MP0012", 
+          "time_spent_min": 7.0, 
+          "resident_profile_picture": null, 
+          "device_id": "c074ab8a97a5", 
+          "end_timestamp": "2018-05-22T12:22:21"},
+        {
+          "resident_display_name": "Jimmy Choo", 
+          "start_timestamp": "2018-05-22T09:55:37", 
+          "time_spent_sec": 80.0, 
+          "resident_index": "MP0012", 
+          "time_spent_min": 9.0, 
+          "resident_profile_picture": null, 
+          "device_id": "c074ab8a97a5", 
+          "end_timestamp": "2018-05-22T12:22:21"}]
+      }
 
       var arr = [];
       var total_time_spent_in_sec = 0;
       result.data.forEach(function(value, index){
-        if(value.time_spent_min >= 5){
+        //if(value.time_spent_min >= 5){
+        if(value.time_spent_min >= vm.api.min_amount_spent){
           vm.data.real_time_activity_reading_hash[value.resident_index] = value;
           value.year = moment(value.start_timestamp).format('YYYY');
           value.month = moment(value.start_timestamp).format('M');
@@ -281,7 +309,8 @@ angular.module('HistoricalCtrl', [])
             var range = moment.range(moment(activity.start_date, 'YYYY-MM-DD') , moment(activity.end_date,'YYYY-MM-DD') );
             if(range.contains(moment(value.start_timestamp)) && activity.repeat_days_of_week.indexOf(value.day_of_the_week) != -1
             && parseInt(activity.start_hour + activity.start_minute) <= parseInt(value.hour + value.minute)
-            && parseInt(activity.end_hour + activity.end_minute) >= parseInt(value.hour + value.minute) && counter == 0){
+            //&& parseInt(activity.end_hour + activity.end_minute) >= parseInt(value.hour + value.minute) 
+            && counter == 0){
               value.activity_desc = activity.activity_desc;
               vm.data.real_time_activity_reading.push(value);
               counter = 1;
@@ -300,6 +329,7 @@ angular.module('HistoricalCtrl', [])
         //r[a.resident_display_name + " -" + a.device_id].push(a);
         return r;
       }, Object.create(null));
+
 
       vm.data.real_time_activity_reading_by_activity = vm.data.real_time_activity_reading.reduce(function (r, a) {
         r[a.resident_display_name] = r[a.resident_display_name] || [];
@@ -1387,7 +1417,7 @@ angular.module('HistoricalCtrl', [])
   function generateReport(){
     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     //var wb = XLSX.utils.book_new();
-    var current_date = new Date("01/01/2018")
+    var current_date = new Date("01/06/2018")
     var no_of_days = new Date(current_date.getFullYear(), current_date.getMonth(), 0).getDate() + 2;
     console.log(no_of_days)
     var monthly_reporting_table_data = {}
@@ -1410,10 +1440,11 @@ angular.module('HistoricalCtrl', [])
           monthly_reporting_table_data[value.resident_display_name].push(value.resident_display_name)
           monthly_reporting_table_data[value.resident_display_name].push("M")
           
+          
           monthly_reporting_table_data[value.resident_display_name] = monthly_reporting_table_data[value.resident_display_name].concat(new Array(no_of_days).fill(''));
           monthly_reporting_table_data[value.resident_display_name][day + 5] = 1;
-          monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] = (monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] == '') ? 1 : monthly_reporting_table_data[value.resident_display_name][no_of_days + 5- 2] + 1;
-          monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 1] =  1;
+          monthly_reporting_table_data[value.resident_display_name][no_of_days + 3] = (monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] == '') ? 1 : monthly_reporting_table_data[value.resident_display_name][no_of_days + 5- 2] + 1;
+          monthly_reporting_table_data[value.resident_display_name][no_of_days + 4] =  1;
           
 
           //Calculate Total Attendance for the Day for monthly
@@ -1421,6 +1452,7 @@ angular.module('HistoricalCtrl', [])
           monthly_reporting_table_data_total_attendance[no_of_days - 2] += 1;
           monthly_reporting_table_data_total_attendance[no_of_days - 1] += 1;
           unique_attendance_arr.push(value.resident_display_name+day)
+
         }else{
           monthly_reporting_table_data[value.resident_display_name][day+5] = 1;
           monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] = (monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] == '') ? 1 : monthly_reporting_table_data[value.resident_display_name][no_of_days + 5 - 2] + 1;
@@ -1462,6 +1494,11 @@ angular.module('HistoricalCtrl', [])
     console.log(monthly_reporting_table_legend_data)
     
     //UNIT NO	NAME	Exercise	Daily Activity	Event 2	Event 3	NO 	UNIT NO 	NAME	Exercise
+    var daily_reporting_table_data = [
+      ["#08-08", "Jimmy Choo" , "1" , "" , "", ""],
+      ["#08-09", "Ali " , "1" , "" , "", "1"]
+    ]
+
 
     var today = new Date();
     var report_month = months[today.getMonth()];
@@ -1469,7 +1506,7 @@ angular.module('HistoricalCtrl', [])
     console.log()
     $q.when()
     .then(function(){
-      return getReport( Object.values(monthly_reporting_table_data) , monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data);
+      return getReport( Object.values(monthly_reporting_table_data) , monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, vm.report.activity, daily_reporting_table_data);
     })
     .then(function(data){
       var element = document.createElement('a');
@@ -1595,9 +1632,9 @@ angular.module('HistoricalCtrl', [])
   /********************
       WEB SERVICES
   *********************/
-  function getReport (monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data){
+  function getReport (monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, center_activity, daily_reporting_table_data){
     var _defer = $q.defer();
-    HService.generateReport( monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, function (result) {
+    HService.generateReport( monthly_reporting_table_data, monthly_reporting_table_data_total_attendance, monthly_reporting_table_legend_data, center_activity, daily_reporting_table_data, function (result) {
       if (result) {
         _defer.resolve(result);
       } else {

@@ -128,6 +128,7 @@ angular.module('RealTimeService', [])
             end_datetime: end_date,
             recent_threshold_min: recent_threshold_min //RealTimeThreshold.recent_threshold_min,
         }
+        console.log(digitalOceanAPI.url + '/api/v1/manifest_center/currentattendees/')
         console.log(params)
         $http.get(digitalOceanAPI.url + '/api/v1/manifest_center/currentattendees/', {params: params})
         .then(

@@ -58,7 +58,7 @@ angular.module('LoginCtrl', [])
                                   }
                             })
                          
-
+                            console.log(output)
                             document.getElementById("body_content").setAttribute('class', '');
                             document.getElementById("navbar").style.visibility = "visible";
                             localStorage.currentUserToken = 'Token ' + result.token;
@@ -70,6 +70,8 @@ angular.module('LoginCtrl', [])
                             localStorage.currentRole = role;
                             localStorage["role"] = role
                             localStorage["projectprefix"] = JSON.stringify(output);
+                            localStorage["project"] = output[0].project_prefix;
+                            localStorage["center"] = output[0].code_name[0];
 
                             //console.log(role)
                             //console.log(localStorage.currentUser + " , " + localStorage.currentUserToken + " , " +

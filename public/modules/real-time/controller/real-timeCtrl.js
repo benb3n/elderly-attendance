@@ -3,8 +3,8 @@ angular.module('RealTimeCtrl', [])
     var vm = this;
     vm.api = {
         project: 3,
-        project_prefix: 'SMU',
-        center_code_name : 'smu-4048',
+        project_prefix: localStorage["project"] ,
+        center_code_name : localStorage["center"] ,
         all_activity_count: 5000,
         all_device_count: 3000,
         latest_sensor_reading_count: 1000,
@@ -22,7 +22,7 @@ angular.module('RealTimeCtrl', [])
             });
         $('select').material_select();
         $('.modal').modal();
-
+        Materialize.updateTextFields();
     });
 
     /***************
@@ -200,11 +200,201 @@ angular.module('RealTimeCtrl', [])
             return getCurrentAttendees(vm.api.project_prefix, vm.selectedCenter, start_datetime, end_datetime, vm.api.time_limit_threshold);
         })
         .then(function(result){
-            //console.log('readings' , result)
+            console.log('readings' , result)
 
             if(result.length == 0){
                 vm.status.no_data = true;
                 vm.loading = false;
+
+                vm.display.table_attendane = [{
+                    display_name: "ben",
+                    status: "Present",
+                    visit: "0",
+                    visit_but_not_home: "0",
+                    call: "1",
+                    call_but_not_home: "1",
+                    distribute_item: "0",
+                    see_outside: "1"
+                },
+                {
+                    display_name: "hx",
+                    status: "Present And Left",
+                    visit: "0",
+                    visit_but_not_home: "0",
+                    call: "1",
+                    call_but_not_home: "1",
+                    distribute_item: "0",
+                    see_outside: "1"
+                },
+                {
+                    display_name: "huba",
+                    status: "Absent",
+                    visit: "0",
+                    visit_but_not_home: "0",
+                    call: "1",
+                    call_but_not_home: "1",
+                    distribute_item: "0",
+                    see_outside: "1"
+                }
+                ]
+                
+                var row_count = 0;
+                $('#real_time_table').DataTable({
+                    "destroy": true,
+                    "responsive": true,
+                    "bAutoWidth": false,
+                    "data": vm.display.table_attendane, //vm.display.elderly_attendance,
+                    "columns": [
+                        { title: "Name", data: "display_name" },
+                        { title: "Status", data: "status" },
+                        {
+                            title: "Visit",
+                            data:   "visit",
+                            render: function ( data, type, row ) {
+                                row_count++;
+                                var id = "Visit" + row_count
+                                if ( data === '1' ) {
+                                    return '<input type="checkbox" checked="checked" id='+ id +' > <label for=' + id + '></label>';
+                                }else {
+                                    return '<input type="checkbox" id='+ id +'> <label for=' + id + '></label>';
+                                }
+                                return data;
+                            },
+                            className: "dt-body-center"
+                        },
+                        {
+                            title: "Visit but Not Home",
+                            data:   "visit_but_not_home",
+                            render: function ( data, type, row ) {
+                                row_count++;
+                                var id = "VisitNH" + row_count
+                                if ( data === '1' ) {
+                                    return '<input type="checkbox" checked="checked" id='+ id +' > <label for=' + id + '></label>';
+                                }else {
+                                    return '<input type="checkbox" id='+ id +'> <label for=' + id + '></label>';
+                                }
+                                return data;
+                            },
+                            className: "dt-body-center"
+                        },
+                        {
+                            title: "Call",
+                            data:   "call",
+                            render: function ( data, type, row ) {
+                                row_count++;
+                                var id = "Call" + row_count
+                                if ( data === '1' ) {
+                                    return '<input type="checkbox" checked="checked" id='+ id +' > <label for=' + id + '></label>';
+                                }else {
+                                    return '<input type="checkbox" id='+ id +'> <label for=' + id + '></label>';
+                                }
+                                return data;
+                            },
+                            className: "dt-body-center"
+                        },
+                        {
+                            title: "Call but Not Home",
+                            data:   "call_but_not_home",
+                            render: function ( data, type, row ) {
+                                row_count++;
+                                var id = "CallNH" + row_count
+                                if ( data === '1' ) {
+                                    return '<input type="checkbox" checked="checked" id='+ id +' > <label for=' + id + '></label>';
+                                }else {
+                                    return '<input type="checkbox" id='+ id +'> <label for=' + id + '></label>';
+                                }
+                                return data;
+                            },
+                            className: "dt-body-center"
+                        },
+                        {
+                            title: "Distribute Item",
+                            data:   "distribute_item",
+                            render: function ( data, type, row ) {
+                                row_count++;
+                                var id = "Distribute" + row_count
+                                if ( data === '1' ) {
+                                    return '<input type="checkbox" checked="checked" id='+ id +' > <label for=' + id + '></label>';
+                                }else {
+                                    return '<input type="checkbox" id='+ id +'> <label for=' + id + '></label>';
+                                }
+                                return data;
+                            },
+                            className: "dt-body-center"
+                        },
+                        {
+                            title: "Seen Outside",
+                            data:   "see_outside",
+                            render: function ( data, type, row ) {
+                                row_count++;
+                                var id = "Outside" + row_count
+                                if ( data === '1' ) {
+                                    return '<input type="checkbox" checked="checked" id='+ id +' > <label for=' + id + '></label>';
+                                }else {
+                                    return '<input type="checkbox" id='+ id +'> <label for=' + id + '></label>';
+                                }
+                                return data;
+                            },
+                            className: "dt-body-center"
+                        }
+                    ],
+                    "language": {
+                        "emptyTable": "No Data Available"
+                    },
+                    "rowCallback": function ( row, data, index ) {
+                        // Set the checked state of the checkbox in the table
+                        $('input.editor-active', row).prop( 'checked', data.visit == 1 );
+                        if(data.status == "Present"){
+                            $(row).find('td:eq(1)').css('color', 'green');
+                        }else if (data.status == "Present And Left") {
+                            $(row).find('td:eq(1)').css('color', 'brown');
+                        }else{
+                            $(row).find('td:eq(1)').css('color', 'red');
+                        }
+                    }
+                })
+
+                var real_time_table = $('#real_time_table').DataTable();
+                $("#real_time_table").on("click", "input[type='checkbox']", function(){
+                    var tr = $(this).closest("tr");
+                    var rowIndex = tr.index();
+
+                    if($(this).prop("checked")){
+                        var id = $(this)[0].id
+                        if(id.indexOf("VisitNH") != -1){
+                            vm.display.table_attendane[rowIndex].visit_but_not_home = "1"
+                        }else if(id.indexOf("Visit") != -1){
+                            vm.display.table_attendane[rowIndex].visit = "1"
+                        }else if(id.indexOf("CallNH") != -1){
+                            vm.display.table_attendane[rowIndex].call_but_not_home = "1"
+                        }else if(id.indexOf("Call") != -1){
+                            vm.display.table_attendane[rowIndex].call = "1"
+                        }else if(id.indexOf("Distribute") != -1){
+                            vm.display.table_attendane[rowIndex].distribute_item = "1"
+                        }else if(id.indexOf("Outside") != -1){
+                            vm.display.table_attendane[rowIndex].see_outside = "1"
+                        }
+                    }else{
+                        var id = $(this)[0].id
+                        if(id.indexOf("VisitNH") != -1){
+                            vm.display.table_attendane[rowIndex].visit_but_not_home = "0"
+                        }else if(id.indexOf("Visit") != -1){
+                            vm.display.table_attendane[rowIndex].visit = "0"
+                        }else if(id.indexOf("CallNH") != -1){
+                            vm.display.table_attendane[rowIndex].call_but_not_home = "0"
+                        }else if(id.indexOf("Call") != -1){
+                            vm.display.table_attendane[rowIndex].call = "0"
+                        }else if(id.indexOf("Distribute") != -1){
+                            vm.display.table_attendane[rowIndex].distribute_item = "0"
+                        }else if(id.indexOf("Outside") != -1){
+                            vm.display.table_attendane[rowIndex].see_outside = "0"
+                        }
+                    }
+                
+                });
+
+
+
             }else{
                 vm.data.real_time_activity_reading = result
                 vm.status.no_data = false;
@@ -215,6 +405,8 @@ angular.module('RealTimeCtrl', [])
                     vm.data.real_time_activity_reading_hash[value.index] = value;
                 })
 
+                
+                
                 vm.data.all_residents.results.forEach(function(value, index){
                     var index = value.project_prefix + value.raw_index;
                     var obj = {
@@ -225,11 +417,49 @@ angular.module('RealTimeCtrl', [])
                         device_id: (vm.data.real_time_activity_reading_hash[index]) ? vm.data.real_time_activity_reading_hash[index].device_id : "",
                         image: (value.profile_picture!= null) ? value.profile_picture : "https://openclipart.org/download/247319/abstract-user-flat-3.svg",
                         status: (vm.data.real_time_activity_reading_hash[index]) ? ((vm.data.real_time_activity_reading_hash[index].recent == 0) ? "Present And Left" : "Present") : "Absent",
-                        recent: (vm.data.real_time_activity_reading_hash[index]) ? ((vm.data.real_time_activity_reading_hash[index].recent == 0) ? ""+vm.data.real_time_activity_reading_hash[index].recent : ""+vm.data.real_time_activity_reading_hash[index].recent) : "2"
+                        recent: (vm.data.real_time_activity_reading_hash[index]) ? ((vm.data.real_time_activity_reading_hash[index].recent == 0) ? ""+vm.data.real_time_activity_reading_hash[index].recent : ""+vm.data.real_time_activity_reading_hash[index].recent) : "2",
+                        visit: "1"
                     }
                     vm.data.elderly_attendance_hash[value.id] = obj
                     vm.display.elderly_attendance.push(obj)
+
+               
+                    $('#real_time_table').DataTable({
+                    "destroy": true,
+                    "responsive": true,
+                    "bAutoWidth": false,
+                    "data": data, //vm.display.elderly_attendance,
+                    "columns": [
+                        { title: "Name", data: "display_name" },
+                        {
+                            title: "Visit",
+                            data:   "visit",
+                            render: function ( data, type, row ) {
+                                if ( type === 'display' ) {
+                                    return '<input type="checkbox" class="editor-active">';
+                                }
+                                return data;
+                            },
+                            className: "dt-body-center"
+                        },
+                        {
+                            title: "Edit",
+                            data: null,
+                            className: "center",
+                            defaultContent: 
+                                '<a class="btn-floating waves-effect waves-light btn modal-trigger" data-target="updateResidentModal" ><i class="material-icons">edit</i></a>' //+
+                                //<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>   
+                                //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
+                        }
+                    ],
+                    "language": {
+                        "emptyTable": "No Data Available"
+                    }
                 })
+
+                })
+
+                
 
                 vm.display.elderly_attendance.sort(compareCount);
                 vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
@@ -322,10 +552,7 @@ angular.module('RealTimeCtrl', [])
                 console.log(result)
                 $('#updateModal').modal('close');
             })
-        }
-        
-
-        
+        } 
     }
 
     /********************
@@ -412,7 +639,6 @@ angular.module('RealTimeCtrl', [])
             attendance_date: attendance_date,
             timing_list:  JSON.stringify(timing_list).replace(/["']/g, "")
         }
-        console.log(params)
         RTService.createAttendance(params, function(result){
             if (result) {
                 _defer.resolve(result)
@@ -431,7 +657,6 @@ angular.module('RealTimeCtrl', [])
             attendance_date: attendance_date,
             timing_list: JSON.stringify(timing_list).replace(/["']/g, "")
         }
-        console.log(params)
         RTService.editAttendance(id, params, function(result){
             if (result) {
                 _defer.resolve(result)
@@ -450,7 +675,6 @@ angular.module('RealTimeCtrl', [])
             start_date: start_date,
             end_date: end_date
         }
-        console.log(params)
         RTService.viewAttendance(params, function(result){
             if (result) {
                 _defer.resolve(result)
@@ -463,7 +687,6 @@ angular.module('RealTimeCtrl', [])
 
     function getSensorReadings (gw_device, start_datetime, end_datetime, page_size) {
         var _defer = $q.defer();
-        console.log(gw_device + " , " + start_datetime + " , " + end_datetime + " , " + page_size)
         if(gw_device.length > 1){
             var results = [];
             gw_device.forEach(function(device, index){
