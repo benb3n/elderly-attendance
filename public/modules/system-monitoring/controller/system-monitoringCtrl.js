@@ -15,6 +15,8 @@ angular.module('SystemMonitoringCtrl', [])
         payload_type: 'batt_voltage'
     }
 
+    document.getElementById("username").innerHTML = localStorage["user"]
+
     $(document).ready(function() {
         $('ul.tabs').tabs();
         $('.tooltipped').tooltip({delay: 50});

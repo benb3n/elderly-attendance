@@ -49,16 +49,15 @@ app.post('/report', (req, res) => {
 
 	var current_date = new Date(); //new Date("01/01/2018");
 
-	
-
-	//DAILY ATTENDANCE
+	/********************************
+	 * 1st Sheet - DAILY ATTENDANCE *
+	 *********************************/
 	var worksheet = workbook.addWorksheet('Current Daily Attendance Taking');
 	worksheet.getCell('A1').value = 'Attendance for Date: ' + new Date().toLocaleDateString("en-US");
 
 	//DATA
 	var activities = req.body.center_activity
 	var daily_attendance = req.body.daily_reporting_table_data
-	console.log(daily_attendance)
 
 	var column_no = 1
 	var start_row = 3
@@ -90,7 +89,7 @@ app.post('/report', (req, res) => {
 		column_no++
 
 		//Add activities to header
-		for (i = 0; i < activities.length; i++){
+		for (var i = 0; i < activities.length; i++){
 			col = toColumnName(column_no) + "3"
 			worksheet.getCell(col).value = activities[i]
 			column_no++;
@@ -233,6 +232,144 @@ app.post('/report', (req, res) => {
 
 
 
+	/*************************************
+	 * 3rd Sheet - Summary of Attendance *
+	 * ***********************************/
+	worksheet = workbook.addWorksheet('Summary of Attendance');
+	worksheet.getCell('A1').value = 'Summary of Attendance (by week)'
+	worksheet.getCell("A1").font = { bold: true };
+	worksheet.getCell('F1').value = months[new Date().getMonth()] + " " + new Date().getFullYear()
+	worksheet.getCell("F1").font = { bold: true };
+
+	//HEADERS
+	worksheet.getCell('A3').value = "Dates"
+	worksheet.getCell('B3').value = "Day"
+	//Add activities to header
+	column_no = 3
+	for (var i = 0; i < activities.length; i++){
+		col = toColumnName(column_no) + "3"
+		worksheet.getCell(col).value = activities[i]
+		column_no++;
+	}
+
+	var summary_of_attendance = [
+		["1", "", "1", ""],
+		["1", "1", "1", ""],
+		["1", "", "1", ""],
+		["3", "1", "3", "0"],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "1", "1", ""],
+		["1", "", "1", "1"],
+		["1", "1", "1", ""],
+		["1", "", "1", ""],
+		["7", "2", "7", "1"],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "1", "1", ""],
+		["1", "", "1", "1"],
+		["1", "1", "1", ""],
+		["1", "", "1", ""],
+		["7", "2", "7", "1"],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "1", "1", ""],
+		["1", "", "1", "1"],
+		["1", "1", "1", ""],
+		["1", "", "1", ""],
+		["7", "2", "7", "1"],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "", "1", ""],
+		["1", "1", "1", ""],
+		["1", "", "1", "1"],
+		["1", "1", "1", ""],
+		["1", "", "1", ""],
+		["7", "2", "7", "1"],
+		["31", "9", "31", "5"]
+	]
+
+
+	var num_of_weeks = weekCount(new Date().getFullYear(), new Date().getMonth())
+	var num_of_days = daysInMonth(new Date().getMonth(), new Date().getFullYear())
+	var first_day = (new Date(new Date().getFullYear(), new Date().getMonth(), 1).getDay() == 0) ? 7 : new Date(new Date().getFullYear(), new Date().getMonth(), 1).getDay()
+	
+	start_row = 4
+	day_counter = 1
+	data_row_counter = 0
+	for(var i = 0; i < num_of_weeks; i++){
+		if(i == 0){
+			//Populate the first week from starting day to Sunday
+			counters = populateData(worksheet, start_row, day_counter, first_day, data_row_counter, activities, summary_of_attendance)
+			start_row = counters[0]
+			day_counter = counters[1]
+			data_row_counter = counters[2]
+
+			//Add the Total Row for each week
+			counters = createTotalRow(worksheet, start_row, day_counter, data_row_counter, activities, summary_of_attendance)
+			start_row = counters[0]
+			data_row_counter = counters[1]
+
+		}else if(i == (num_of_weeks-1)){
+			var start_day_of_the_last_wk = num_of_days - (num_of_days - (num_of_weeks-2) * 7 - (8-first_day)) + 1
+			var last_day = (new Date(new Date().getFullYear(), new Date().getMonth(), start_day_of_the_last_wk).getDay() == 0) ? 7 : new Date(new Date().getFullYear(), new Date().getMonth(), start_day_of_the_last_wk).getDay()
+
+			//Populate the first week from starting day to Sunday
+			counters = populateData(worksheet, start_row, day_counter, last_day, data_row_counter, activities, summary_of_attendance)
+			start_row = counters[0]
+			day_counter = counters[1]
+			data_row_counter = counters[2]
+
+			//Add the Total Row for each week
+			counters = createTotalRow(worksheet, start_row, day_counter, data_row_counter, activities, summary_of_attendance)
+			start_row = counters[0]
+			data_row_counter = counters[1]
+
+		}else{
+			//Populate the first week from starting day to Sunday
+			counters = populateData(worksheet, start_row, day_counter, 1, data_row_counter, activities, summary_of_attendance)
+			start_row = counters[0]
+			day_counter = counters[1]
+			data_row_counter = counters[2]
+
+			//Add the Total Row for each week
+			counters = createTotalRow(worksheet, start_row, day_counter, data_row_counter, activities, summary_of_attendance)
+			start_row = counters[0]
+			data_row_counter = counters[1]
+
+		}
+	}
+
+	//draw all the grids
+	var grid_col = 2 + activities.length
+	for(var i = 3; i < start_row; i++){
+		var row = worksheet.getRow(i);
+		applyBorder(row, grid_col)
+	}
+
+	//draw all the grids
+	for(var i = 1; i <= grid_col; i++){
+		worksheet.getRow(start_row).getCell(i).border = {
+			top: {style:'double'},
+			left: {style:'thin'},
+			bottom: {style:'thin'},
+			right: {style:'thin'}
+		};
+	}
+
+	//Add the Total Row for each week
+	counters = createFinalTotalRow(worksheet, start_row, day_counter, data_row_counter, activities, summary_of_attendance)
+	start_row = counters[0]
+	data_row_counter = counters[1]
+
+	
+
+
+
+
 
 	workbook.xlsx.writeFile( __dirname + "/public/report/Attendance Reporting.xlsx" )
 		.then(function() {
@@ -241,6 +378,68 @@ app.post('/report', (req, res) => {
 		});
 
 });
+
+//3rd Sheet Functions
+function populateData(worksheet, start_row, day_counter, first_day, data_row_counter, activities, summary_of_attendance){
+	for(var day = first_day; day <= 7; day++){
+		worksheet.getCell("A"+start_row).value = day_counter;
+		worksheet.getCell("A" + start_row).alignment = { vertical: 'middle', horizontal: 'center' };
+		worksheet.getCell("B"+start_row).value = (day == 7) ? "Sun" : day_of_week[day];
+		worksheet.getCell("B" + start_row).alignment = { vertical: 'middle', horizontal: 'center' };
+		column_no = 3
+		for (j = 0; j < activities.length; j++){
+			col = toColumnName(column_no) + "" + start_row
+			worksheet.getCell(col).value = summary_of_attendance[(data_row_counter)][j]
+			worksheet.getCell(col).alignment = { vertical: 'middle', horizontal: 'center' };
+			column_no++;
+
+		}
+		start_row++;
+		day_counter++;
+		data_row_counter++;
+	}
+	return [start_row, day_counter, data_row_counter]
+}
+
+function createTotalRow(worksheet, start_row, day_counter, data_row_counter, activities, summary_of_attendance){
+	var column_range = "A" + start_row +":" + "B" + start_row
+	worksheet.mergeCells(column_range)
+	worksheet.getCell("A" + start_row).value = "Total"
+	worksheet.getCell("A" + start_row).alignment = { vertical: 'middle', horizontal: 'center' };
+	worksheet.getCell("A" + start_row).font = { bold: true };
+	column_no = 3
+	for (var j = 0; j < activities.length; j++){
+		col = toColumnName(column_no) + "" + start_row
+		worksheet.getCell(col).value = summary_of_attendance[(data_row_counter)][j]
+		worksheet.getCell(col).alignment = { vertical: 'middle', horizontal: 'center' };
+		worksheet.getCell(col).font = { bold: true };
+		column_no++
+	}
+	start_row++
+	data_row_counter++
+	return [start_row, data_row_counter]
+}
+
+function createFinalTotalRow(worksheet, start_row, day_counter, data_row_counter, activities, summary_of_attendance){
+	var column_range = "A" + start_row +":" + "B" + start_row
+	worksheet.mergeCells(column_range)
+	worksheet.getCell("A" + start_row).value = "TOTAL"
+	worksheet.getCell("A" + start_row).alignment = { vertical: 'middle', horizontal: 'center' };
+	worksheet.getCell("A" + start_row).font = { bold: true };
+	column_no = 3
+	for (var j = 0; j < activities.length; j++){
+		col = toColumnName(column_no) + "" + start_row
+		worksheet.getCell(col).value = summary_of_attendance[(data_row_counter)][j]
+		worksheet.getCell(col).alignment = { vertical: 'middle', horizontal: 'center' };
+		worksheet.getCell(col).font = { bold: true };
+		column_no++
+	}
+	start_row++
+	data_row_counter++
+	return [start_row, data_row_counter]
+}
+
+//End of 3rd Sheet Functions
 
 function applyBorder(row, col_no){
 	for(var i = 1; i <= col_no; i++){
@@ -374,6 +573,22 @@ function merge_row_w_same_column(worksheet, column_number, start_row, end_row, d
 		bottom: {style:'thin'},
 		right: {style:'thin'}
 	};
+}
+
+function weekCount(year, month_number) {
+    // month_number is in the range 1..12
+    var firstOfMonth = new Date(year, month_number-1, 1);
+    var lastOfMonth = new Date(year, month_number, 0);
+    var used = firstOfMonth.getDay() + lastOfMonth.getDate();
+    return Math.ceil( used / 7);
+}
+
+// Month here is 1-indexed (January is 1, February is 2, etc). This is
+// because we're using 0 as the day so that it returns the last day
+// of the last month, so you have to add 1 to the month number 
+// so it returns the correct amount of days
+function daysInMonth (month, year) {
+    return new Date(year, month, 0).getDate();
 }
 
 /**

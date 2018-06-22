@@ -27,6 +27,8 @@
           </div>
         <div class="col s12 m2">
           <button ng-click="historical.generateDataCourses()" class="waves-effect waves-light btn">Generate</button>
+        </div>
+        <div class="col s12 m2" ng-hide="historical.edit_resident_status">
           <a class="btn-floating btn-small waves-effect waves-light red darken-4 tooltipped" data-position="bottom" data-delay="50" data-tooltip="Download Report" ng-click="historical.generateReport()">
             <i class="material-icons">file_download</i>
           </a>

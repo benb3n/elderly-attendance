@@ -12,10 +12,13 @@ angular.module('AttendanceCtrl', [])
         latest_sensor_reading_count: 1000
     }
 
-    if(vm.api.role == 'staff'){
+    document.getElementById("username").innerHTML = localStorage["user"]
+
+    if(vm.api.role == 'staff' || vm.api.role == 'volunteer'){
         vm.edit_resident_status = true
     }
 
+    
     $(document).ready(function() {
         
         $('ul.tabs').tabs();

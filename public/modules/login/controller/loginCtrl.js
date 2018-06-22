@@ -39,6 +39,7 @@ angular.module('LoginCtrl', [])
             if (result.token) {
                 $http.defaults.headers.common.Authorization = 'Token ' + result.token;
                 LService.getUserRole(function (role) {
+                 
                     if(role){
                         LService.getCenterAccessList(function(center_access_list){
                             var output = new Array();
@@ -58,7 +59,6 @@ angular.module('LoginCtrl', [])
                                   }
                             })
                          
-                            console.log(output)
                             document.getElementById("body_content").setAttribute('class', '');
                             document.getElementById("navbar").style.visibility = "visible";
                             localStorage.currentUserToken = 'Token ' + result.token;
@@ -66,8 +66,8 @@ angular.module('LoginCtrl', [])
                             localStorage.currentCenterCode = 'SMU'
                             var index = role.indexOf(";") + 1
                             role = role.substring(index).toLowerCase()
-                            console.log(role)
-                            localStorage.currentRole = role;
+                            
+                            localStorage["user"] = vm.username
                             localStorage["role"] = role
                             localStorage["projectprefix"] = JSON.stringify(output);
                             localStorage["project"] = output[0].project_prefix;

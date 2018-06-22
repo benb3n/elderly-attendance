@@ -15,8 +15,11 @@ angular.module('LoginService', [])
         $http.post(digitalOceanAPI.url + "/api-token-auth/", params)
         .then(
             function(result){ 
+                console.log(result)
                 callback(result.data) },
-            function(){ callback(false) }
+            function(error){ 
+                console.log(error)
+                callback(false) }
         )
     }
 

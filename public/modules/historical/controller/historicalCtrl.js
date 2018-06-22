@@ -2,12 +2,19 @@ angular.module('HistoricalCtrl', [])
 .controller('HistoricalController', function ($scope, $q, $timeout, HService, FileSaver, Blob) {
     var vm = this;
     vm.api = {
+      role: localStorage["role"],
       project_prefix: localStorage["project"] ,
       center_code_name : localStorage["center"] ,
       all_activity_count: 5000,
       all_device_count: 3000,
       latest_sensor_reading_count: 1000,
       min_amount_spent: 5
+    }
+
+    document.getElementById("username").innerHTML = localStorage["user"]
+    
+    if(vm.api.role == 'staff' || vm.api.role == 'volunteer'){
+      vm.edit_resident_status = true
     }
 
     $(document).ready(function() {
