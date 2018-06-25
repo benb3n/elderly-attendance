@@ -337,7 +337,7 @@ angular.module('RealTimeCtrl', [])
             $('#real_time_table').DataTable({
                 "scrollX": true,
                 "bAutoWidth": true,
-                dom : 'l<"add">frtip',
+                dom : 'l<"add"><"addbutton">frtip',
                 "data": vm.display.table_attendance, //vm.display.elderly_attendance,
                 "columns": vm.display.table_attendance_columns,
                 "language": {
@@ -356,8 +356,9 @@ angular.module('RealTimeCtrl', [])
                 }
             })
 
-            $("div.add").html('<div class="input-field col s12 m2" style="margin-top:25px"> <i class="material-icons prefix">today</i> <input ng-model="rt.selected_date" id="current_date_filter" type="date" class="datepicker"> <label  class="card-filter-label-date active" for="current_date_filter">Select Date</label> </div>');
-    
+            $("div.add").html('<div class="input-field col s12 m2" style="margin-top:25px"> <i class="material-icons prefix">today</i> <input ng-model="rt.selected_date" id="current_date_filter" type="date" class="datepicker"> <label  class="card-filter-label-date active" for="current_date_filter">Select Date</label> </div> ');
+            $("div.addbutton").html('<a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>')
+  
             //CHECKBOX ON CHECHKED
             var real_time_table = $('#real_time_table').DataTable();
             $("#real_time_table").on("click", "input[type='checkbox']", function(){
@@ -395,63 +396,6 @@ angular.module('RealTimeCtrl', [])
                     }
                 }    
             });
-                
-                
-                
-                /*vm.data.all_residents.results.forEach(function(value, index){
-                    var index = value.project_prefix + value.raw_index;
-                    var obj = {
-                        //resident_index: value.display_name,
-                        id: vm.data.all_residents_by_resident_index[index].id,
-                        gender: vm.data.all_residents_by_resident_index[index].gender,
-                        display_name: value.display_name,
-                        device_id: (vm.data.real_time_activity_reading_hash[index]) ? vm.data.real_time_activity_reading_hash[index].device_id : "",
-                        image: (value.profile_picture!= null) ? value.profile_picture : "https://openclipart.org/download/247319/abstract-user-flat-3.svg",
-                        status: (vm.data.real_time_activity_reading_hash[index]) ? ((vm.data.real_time_activity_reading_hash[index].recent == 0) ? "Present And Left" : "Present") : "Absent",
-                        recent: (vm.data.real_time_activity_reading_hash[index]) ? ((vm.data.real_time_activity_reading_hash[index].recent == 0) ? ""+vm.data.real_time_activity_reading_hash[index].recent : ""+vm.data.real_time_activity_reading_hash[index].recent) : "2",
-                        visit: "1"
-                    }
-                    vm.data.elderly_attendance_hash[value.id] = obj
-                    vm.display.elderly_attendance.push(obj)
-
-               
-                    /*$('#real_time_table').DataTable({
-                    "destroy": true,
-                    "responsive": true,
-                    "bAutoWidth": false,
-                    "data": data, //vm.display.elderly_attendance,
-                    "columns": [
-                        { title: "Name", data: "display_name" },
-                        {
-                            title: "Visit",
-                            data:   "visit",
-                            render: function ( data, type, row ) {
-                                if ( type === 'display' ) {
-                                    return '<input type="checkbox" class="editor-active">';
-                                }
-                                return data;
-                            },
-                            className: "dt-body-center"
-                        },
-                        {
-                            title: "Edit",
-                            data: null,
-                            className: "center",
-                            defaultContent: 
-                                '<a class="btn-floating waves-effect waves-light btn modal-trigger" data-target="updateResidentModal" ><i class="material-icons">edit</i></a>' //+
-                                //<button  class="btn-floating btn-small waves-effect waves-light" id="edit_btn"><i class="material-icons">edit</i></button>   
-                                //'&nbsp;&nbsp; <button  class="btn-floating btn-small waves-effect waves-light  red darken-4" id="delete_btn"><i class="material-icons">delete</i></button>'
-                        }
-                    ],
-                    "language": {
-                        "emptyTable": "No Data Available"
-                    }
-                })
-
-                })*/
-
-                
-
                 vm.display.elderly_attendance.sort(compareCount);
                 vm.display.elderly_attendance_backup = angular.copy(vm.display.elderly_attendance);
             }
@@ -529,16 +473,13 @@ angular.module('RealTimeCtrl', [])
                     }
                 })
             }
-            
-            //$('.modal').modal();
-            //$('#updateModal').modal('open');
 
             $timeout(function(){
                 $('select').material_select();
                 Materialize.updateTextFields();
-           })
+            })
+            
         })
-
         
     }
     function updateAttendance(){
